@@ -1,3 +1,14 @@
+/* 
+ * ColorPicker v1.0
+ *
+ * Copyright (c) 2011 Martijn W. van der Lee
+ * Licensed under the MIT.
+ *
+ * Full-featured colorpicker for jQueryUI with full theming support.
+ * Most images from jPicker by Christopher T. Tillman.
+ * Sourcecode created from scratch by Martijn W. van der Lee.
+ */
+
 //@todo Display inline
 //@todo Modal popup option: overlay? center?
 //@todo Close on 'escape' key?
