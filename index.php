@@ -18,8 +18,8 @@
 				display: 		inline-block;
 			}	
         </style>
-		<script src="jquery.colorpicker-1.0.js"></script>        
-		<link href="jquery.colorpicker-1.0.css" rel="stylesheet" type="text/css"/>        
+		<script src="jquery.colorpicker-0.2.js"></script>        
+		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>        
         <script>
            	$( function() {			
 				// For the documentation
@@ -36,7 +36,7 @@
 							}
 				});
 				
-                //$('#cp2').colorpicker({alpha: true});
+                $('#cp2').colorpicker({alpha: true});
             });
         </script>
     </head>

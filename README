@@ -1,4 +1,4 @@
-jQuery.colorpicker v1.0
+jQuery.colorpicker v0.2
 
 Copyright (c) 2011 Martijn W. van der Lee
 Licensed under the MIT.
@@ -6,3 +6,69 @@ Licensed under the MIT.
 Full-featured colorpicker for jQueryUI with full theming support.
 Most images from jPicker by Christopher T. Tillman.
 Sourcecode created from scratch by Martijn W. van der Lee.
+
+
+autoOpen: false
+	If true, the dialog opens automatically upon page load.
+	If false, dialog opens on click of selected element.
+
+color: '#00FF00'
+	Initial color. Formats recognized are:
+		#rrggbb
+		#rgb
+		rgb(r,g,b)
+		rgba(r,g,b,a)
+		rgb(r%,g%,b%)
+		rgba(r%,g%,b%,a%)
+		transparent, or any of the HTML colors, as defined by W3C.		
+
+mode: 'h'
+	Determines the functionality of the map and bar components. Allowed values
+	are; 'h', 's', 'l', 'r', 'g', 'b' or 'a', for hue, saturation, luminosity,
+	red, green, blue and alpha respectively.
+	
+title: 'Pick a color'
+	Title to display in the header.
+
+onChange:		undefined
+onSelect:		undefined
+onClose:		undefined
+	Events trigger on each change, confirmation (click on OK button) and
+	cancellation (click on Cancel, outside window or window close button)
+	respectively.
+	Note that onChange may be triggered in rapid succession when dragging the
+	mouse accross the map or bar and may be triggered without a change in color
+	upon specific user interactions.
+
+closeOnOutside:	true
+	Close the window when clicking outside the colorpicker display.
+
+revert:			true
+	Revert the current color back to the selected color when cancelling.
+
+swatches:		undefined
+	'undefined' to show swatches of HTML colors or provide your own object
+	with colornames and [r,g,b] array.
+	For example { 'red': [ 255, 0, 0 ], 'blue': [0, 0, 255] }
+
+showHeader:		true
+showMap:		true
+showBar:		true
+showPreview:	true
+showInputs:		true
+showHex:		true
+showSwatches:	true
+	Set whether to show the individual control components of the colorpicker
+	dialog. Set to false to hide. The footer, which contains the OK and Cancel
+	buttons, cannot be hidden.
+
+hsv:			true
+rgb:			true
+alpha:			false
+	Whether or not to show the inputs for HSV, RGB and/or alpha respectively.
+
+duration:		'fast'
+showAnim:		'fadeIn'
+showOptions:	{}
+	Set the effect to use when opening or closing the dialog.
+	Same as standard jQueryUI datepicker.
