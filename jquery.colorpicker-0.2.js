@@ -29,7 +29,7 @@ $.widget("ui.colorpicker", {
 		autoOpen:		false,
 		color:			'#00FF00',
         mode:			'h',
-        title:			'Pick a date',		
+        title:			'Pick a color',		
 		onClose:		undefined,
 		onSelect:		undefined,
 		onChange:		undefined,
