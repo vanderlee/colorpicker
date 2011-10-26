@@ -30,10 +30,14 @@
 								
 							},
 					onSelect: function(hex, rgba, inst) {
-								console.log(hex);
-								console.log(rgba);
-								console.log(inst);
-							}
+								//console.log(hex);
+								//console.log(rgba);
+								//console.log(inst);
+							},
+					showOn: 'both',
+					//buttonImage: '',
+					//buttonImageOnly: true,
+					buttonColorize: true
 				});
 				
                 $('#cp2').colorpicker({alpha: true});

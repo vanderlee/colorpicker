@@ -1,5 +1,5 @@
 /* 
- * ColorPicker v0.3
+ * ColorPicker v0.4
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -11,45 +11,63 @@
 
 //@todo Close on 'escape' key?
 //@todo Methods? open/close/enable/disable
-//@todo Clip to websafe colors
-//@todo Custom user-defined buttons
-//@todo Undo/redo for OK clicks?
+//@todo Custom user-defined buttons -> "none" | "transparent"
+//@todo Undo/redo memory?
 //@todo Small size variant (128x128)
 //@todo Distance between rgb/hsv/a options
-//@todo Exchange close/cancel; public-accessible close must cancel
-//@todo Force hex correction upon done
+//@todo Force hex correction (limit and padding) upon done
 //@todo upon websafe, correct initial color upon open
-//@todo websafe in hex/input
+//@todo Shared swatches; cookies/session/global
+//@todo Populate ("background-color") selection
+//@todo Language files: Done/Color/Pick a color/H/S/V/R/G/B/A/color swatches
+//@todo isRTL? What to RTL, besides button?
 
 (function($, undefined) {  
 
 $.widget("ui.colorpicker", {   
 	options: {
-		showOn:			'focus',		// 'focus', 'button', 'both'
-		autoOpen:		false,
-		color:			'#00FF00',
-        mode:			'h',
-        title:			'Pick a color',		
-		onClose:		undefined,
-		onSelect:		undefined,
-		closeOnOutside:	true,
-		revert:			true,			// on cancel, revert changes to color
-		swatches:		undefined,
-		hsv:			true,
-		rgb:			true,
-        alpha:			false,
-		showHeader:		false,
-		showMap:		true,
-		showBar:		true,
-		showPreview:	true,
-		showInputs:		true,
-		showHex:		true,
-		showSwatches:	false,
-		showButtonPanel:false,
-		duration:		'fast',
-		showAnim:		'fadeIn',
-		showOptions:	{},
-		limit:			''		// '', 'websafe', 'nibble', 'binary'
+		showOn:				'focus',		// 'focus', 'button', 'both'
+		
+		buttonImage:		'images/ui-colorpicker.png',
+		buttonImageOnly:	false,
+		buttonText:			'Color',
+		buttonColorize:		false,
+		
+		autoOpen:			false,
+		
+		color:				'#00FF00',
+		
+        mode:				'h',
+		
+        title:				'Pick a color',		
+		
+		onClose:			undefined,
+		onSelect:			undefined,
+		
+		closeOnOutside:		true,
+		
+		revert:				true,			// on cancel, revert changes to color
+		
+		swatches:			undefined,
+		
+		hsv:				true,
+		rgb:				true,        
+		alpha:				false,
+		
+		showHeader:			false,
+		showMap:			true,
+		showBar:			true,
+		showPreview:		true,
+		showInputs:			true,
+		showHex:			true,
+		showSwatches:		false,
+		showButtonPanel:	false,
+		
+		duration:			'fast',
+		showAnim:			'fadeIn',
+		showOptions:		{},
+		
+		limit:				''		// '', 'websafe', 'nibble', 'binary'
 	},
 	
 	_curInst: undefined,
@@ -77,6 +95,8 @@ $.widget("ui.colorpicker", {
 		self.inline		= false;
 		self.changed	= false;
 		
+		self.image		= undefined;
+		
         self.mode		= self.options.mode;
        		
 		if (!self.options.swatches) {
@@ -84,6 +104,9 @@ $.widget("ui.colorpicker", {
 		}
 		               
 		if (this.element[0].nodeName.toLowerCase() == 'input') {
+			self.options.color = self.element.val();
+			self._loadColor();			
+			
 			$('body').prepend(self.container);
 			self.dialog = $('.ui-colorpicker:first');
 			
@@ -112,19 +135,35 @@ $.widget("ui.colorpicker", {
 				self.close();
 			});
 
-			switch (self.options.showOn) {
-				case 'focus':
-				case 'both':
-					self.element.focus( function() {
-						self.open();
-					});
-					break;
+			if (self.options.showOn == 'focus' || self.options.showOn == 'both') {
+				self.element.focus( function() {
+					self.open();
+				});
 			}
-			switch (self.options.showOn) {
-				case 'button':
-				case 'both':
-					//Plaatje
-					break;
+			if (self.options.showOn == 'button' || self.options.showOn == 'both') {
+				self.options.buttonText
+				if (self.options.buttonImage != '') {
+					self.image = $('<img/>').addClass('ui-colorpicker-image')
+					.attr({
+						'src':		self.options.buttonImage,
+						'alt':		self.options.buttonText,
+						'title':	self.options.buttonText
+					});
+					
+					if (self.options.buttonColorize) {
+						self.image.css('background-color', '#'+self.color.toHex());
+					}					
+				}
+
+				if (self.options.buttonImageOnly && self.image) {
+					self.image.click( function() {
+						self.open();
+					}).insertAfter(self.element);
+				} else {
+					$('<button type="button"></button>').click( function() {
+						self.open();
+					}).html(self.image? self.image : self.options.buttonText).button().insertAfter(self.element);
+				}
 			}
 			
 			if (self.options.autoOpen) {
@@ -159,6 +198,12 @@ $.widget("ui.colorpicker", {
 		return this;
 	},
 	
+	_loadColor: function() {
+		var rgb = this._parseColor(this.options.color);        
+        this.color = (rgb === false? new this.Color() : new this.Color(rgb[0], rgb[1], rgb[2]));		
+        this.currentColor = $.extend({}, this.color);					
+	},
+	
 	_generate: function() {
 		var self = this;
 		
@@ -172,9 +217,7 @@ $.widget("ui.colorpicker", {
 		if (self.options.showSwatches)	{	self.parts.push(new self.Swatches(self));	}
 		if (self.options.showButtonPanel){	self.parts.push(new self.Footer(self));		}		
 		
-        var rgb = self._parseColor(self.options.color);        
-        self.color = (rgb === false? new self.Color() : new self.Color(rgb[0], rgb[1], rgb[2]));		
-        self.currentColor = $.extend({}, self.color);			
+		self._loadColor();
 				
 		if (!self.generated) {	
 			self.dialog.append(self.layout);        
@@ -211,8 +254,6 @@ $.widget("ui.colorpicker", {
 	
 	open: function() {
 		if (!this.opened) {
-			this.options.color = this.element.val();
-
 			this._generate();
 
 			var offset = this.element.offset();
@@ -277,11 +318,19 @@ $.widget("ui.colorpicker", {
 			case 'binary':		this.color.limit(2);	break;
 		}
 		
+		// update internals
 		if (!this.inline) {
+			var hex = this.color.toHex().toLowerCase();
 			if (!this.element.is(':focus') && !this.color.equals(this._parseColor(this.element.val()))) {
-				this.element.val(this.color.toHex().toLowerCase());
+				this.element.val(hex);
+			}
+
+			if (this.options.buttonColorize && this.image !== undefined) {
+				this.image.css('background-color', '#'+hex);
 			}
 		}
+					
+		// callback
 		this._callback(this.options.onSelect);
 		
 		$.each(this.parts, function(index, part) {
