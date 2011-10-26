@@ -15,12 +15,7 @@ autoOpen: false
 color: '#00FF00'
 	Initial color. Formats recognized are:
 		#rrggbb
-		#rgb
-		rgb(r,g,b)
-		rgba(r,g,b,a)
-		rgb(r%,g%,b%)
-		rgba(r%,g%,b%,a%)
-		transparent, or any of the HTML colors, as defined by W3C.		
+		rrggbb (same as previous, but without the #)
 
 mode: 'h'
 	Determines the functionality of the map and bar components. Allowed values
@@ -51,16 +46,16 @@ swatches:		undefined
 	with colornames and [r,g,b] array.
 	For example { 'red': [ 255, 0, 0 ], 'blue': [0, 0, 255] }
 
-showHeader:		true
+showHeader:		false
 showMap:		true
 showBar:		true
 showPreview:	true
 showInputs:		true
 showHex:		true
 showSwatches:	true
+showButtonPanel:false
 	Set whether to show the individual control components of the colorpicker
-	dialog. Set to false to hide. The footer, which contains the OK and Cancel
-	buttons, cannot be hidden.
+	dialog. Set to false to hide.
 
 hsv:			true
 rgb:			true
@@ -72,3 +67,14 @@ showAnim:		'fadeIn'
 showOptions:	{}
 	Set the effect to use when opening or closing the dialog.
 	Same as standard jQueryUI datepicker.
+
+limit:			''
+	Limit the selectable colors to any of the predefined limits:
+		''			No limitations, allow 8bpp color for a palette of all
+					16 million colors.
+		'websafe'	Set of 216 colors composed of 00, 33, 66, 99, cc and ff
+					color channel values in #rrggbb.
+		'nibble'	4 bits per color, can be easily converted to #rgb format.
+					The palette is limited to 4096 colors.
+		'binary'	Allow only #00 or #ff as color channel values for primary
+					colors only; only 8 colors are available with this limit.
