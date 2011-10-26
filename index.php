@@ -18,7 +18,7 @@
 				display: 		inline-block;
 			}	
         </style>
-		<script src="jquery.colorpicker-0.2.js"></script>        
+		<script src="jquery.colorpicker.js"></script>        
 		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>        
         <script>
            	$( function() {			
@@ -42,7 +42,7 @@
     </head>
     <body>
         <div id="switcher"></div>
-        Here it is: <span id="cp">KLIK!</span>
+        Color: <input type="color" id="cp" value="ff9900"/>
 		<br/>
 		<br/>
 		<br/>
@@ -77,6 +77,6 @@
 		<br/>
 		<br/>
 		<br/>
-        Here is more: <span id="cp2">KLIK!</span>	
+        Inline:<div id="cp2"></div>	
     </body>
 </html>
