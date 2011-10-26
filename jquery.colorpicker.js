@@ -12,7 +12,6 @@
 //@todo Close on 'escape' key?
 //@todo Methods? open/close/enable/disable
 //@todo Clip to websafe colors
-//@todo Open on focus/click/etc
 //@todo Custom user-defined buttons
 //@todo Undo/redo for OK clicks?
 //@todo Small size variant (128x128)
@@ -26,6 +25,7 @@
 
 $.widget("ui.colorpicker", {   
 	options: {
+		showOn:			'focus',		// 'focus', 'button', 'both'
 		autoOpen:		false,
 		color:			'#00FF00',
         mode:			'h',
@@ -88,46 +88,57 @@ $.widget("ui.colorpicker", {
 			self.dialog = $('.ui-colorpicker:first');
 			
 			$(document).mousedown( function(event) {
-				if (!self.opened || !self.options.closeOnOutside)
-					return;
-
-				if (event.target == self.element[0]) {
+				if (!self.opened						// not opened
+				 || event.target == self.element[0]) {	// click on input				 
+					// Not opened or clicked on element; do not close
 					return;
 				}
-
-				var parents = $(event.target).parents()
+				
+				// Check if clicked on any part of dialog
+				var parents = $(event.target).parents('.ui-colorpicker');
 				for (var p in parents) {
 					if (parents[p] === self.dialog.get(0)) {
-						return;	// part of window
+						self.element.blur();	// inside window!
+						// part of dialog; do not close.
+						return;
 					}
+				}
+				
+				// no closeOnOutside
+				if (!self.options.closeOnOutside) {
+					return;
 				}
 
 				self.close();
 			});
-			
-			self.element.bind('click autoopen', function(event) {
-				if (!self.opened) {
-					self.options.color = self.element.val();
 
-					self._generate();
-
-					var offset = self.element.offset();
-					var x = offset.left;
-					var y = offset.top + self.element.outerHeight();
-					x -= Math.max(0, (x + self.dialog.width())  - $(window).width());
-					y -= Math.max(0, (y + self.dialog.height()) - $(window).height());		
-					self.dialog.css({'left': x, 'top': y});
-
-					self._effectShow();
-					self.opened = true;
-				}		
-			});			
-			
-			if (self.options.autoOpen) {
-				self.element.trigger('autoopen');
+			switch (self.options.showOn) {
+				case 'focus':
+				case 'both':
+					self.element.focus( function() {
+						self.open();
+					});
+					break;
+			}
+			switch (self.options.showOn) {
+				case 'button':
+				case 'both':
+					//Plaatje
+					break;
 			}
 			
-			self.element.bind('keyup', function(event) {
+			if (self.options.autoOpen) {
+				self.open();
+			}
+			
+			self.element.keydown( function(event) {
+				switch (event.keyCode) {
+					case 9: self.close();
+							break; // hide on tab out
+				}
+			});
+			
+			self.element.keyup( function(event) {
 				var rgb = self._parseColor(self.element.val());     
 				if (rgb) {
 					self.color = (rgb === false? new self.Color() : new self.Color(rgb[0], rgb[1], rgb[2]));		
@@ -198,6 +209,24 @@ $.widget("ui.colorpicker", {
 		this._effectGeneric('hide', 'slideUp', 'fadeOut', callback);
 	},
 	
+	open: function() {
+		if (!this.opened) {
+			this.options.color = this.element.val();
+
+			this._generate();
+
+			var offset = this.element.offset();
+			var x = offset.left;
+			var y = offset.top + this.element.outerHeight();
+			x -= Math.max(0, (x + this.dialog.width())  - $(window).width());
+			y -= Math.max(0, (y + this.dialog.height()) - $(window).height());		
+			this.dialog.css({'left': x, 'top': y});
+
+			this._effectShow();
+			this.opened = true;
+		}			
+	},
+	
 	close: function() {				
 		var self = this;
 		
@@ -249,7 +278,7 @@ $.widget("ui.colorpicker", {
 		}
 		
 		if (!this.inline) {
-			if (!this.color.equals(this._parseColor(this.element.val()))) {
+			if (!this.element.is(':focus') && !this.color.equals(this._parseColor(this.element.val()))) {
 				this.element.val(this.color.toHex().toLowerCase());
 			}
 		}
