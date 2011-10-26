@@ -34,8 +34,8 @@
 								//console.log(rgba);
 								//console.log(inst);
 							},
-					showOn: 'both',
-					//buttonImage: '',
+					showOn: 'button',
+					buttonImage: '',
 					//buttonImageOnly: true,
 					buttonColorize: true
 				});

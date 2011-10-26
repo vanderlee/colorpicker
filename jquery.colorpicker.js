@@ -16,7 +16,7 @@
 //@todo Small size variant (128x128)
 //@todo Distance between rgb/hsv/a options
 //@todo Force hex correction (limit and padding) upon done
-//@todo upon websafe, correct initial color upon open
+//@todo if limit, correct initial color upon open
 //@todo Shared swatches; cookies/session/global
 //@todo Populate ("background-color") selection
 //@todo Language files: Done/Color/Pick a color/H/S/V/R/G/B/A/color swatches
@@ -143,8 +143,7 @@ $.widget("ui.colorpicker", {
 			if (self.options.showOn == 'button' || self.options.showOn == 'both') {
 				self.options.buttonText
 				if (self.options.buttonImage != '') {
-					self.image = $('<img/>').addClass('ui-colorpicker-image')
-					.attr({
+					self.image = $('<img/>').attr({
 						'src':		self.options.buttonImage,
 						'alt':		self.options.buttonText,
 						'title':	self.options.buttonText
@@ -160,9 +159,11 @@ $.widget("ui.colorpicker", {
 						self.open();
 					}).insertAfter(self.element);
 				} else {
-					$('<button type="button"></button>').click( function() {
+					var button = $('<button type="button"></button>').html(self.image ? self.image : self.options.buttonText).button().insertAfter(self.element).click( function() {
 						self.open();
-					}).html(self.image? self.image : self.options.buttonText).button().insertAfter(self.element);
+					});
+					
+					self.image = self.image? $('img', button).first() : undefined;
 				}
 			}
 			
@@ -325,7 +326,7 @@ $.widget("ui.colorpicker", {
 				this.element.val(hex);
 			}
 
-			if (this.options.buttonColorize && this.image !== undefined) {
+			if (this.image && this.options.buttonColorize) {
 				this.image.css('background-color', '#'+hex);
 			}
 		}
