@@ -1,5 +1,5 @@
 /* 
- * ColorPicker v0.4
+ * ColorPicker v0.5
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -759,7 +759,6 @@ $.widget("ui.colorpicker", {
 			var height  = div.height();
 
 			var y = event.pageY - offset.top;
-			console.log(y);
 
 			y = Math.max(0, Math.min(y / height, 1));
 
