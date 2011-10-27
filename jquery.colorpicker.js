@@ -371,52 +371,50 @@ $.widget("ui.colorpicker", {
         
     Map: function(inst) {
         var self = this;
-		var e = undefined;
-        var isMouseDown = false;
-        var isDragging = false;        
+		var e = undefined;     		
 
         this.init = function() {
             e = $(_html()).appendTo($('#ui-colorpicker-map-container', inst.dialog));
 
-			$(document).bind('mousedown mousemove mouseup', _handleEvents);
+			e.bind('mousedown', _mousedown);
         };
 
         this.generate = function() {
             switch (inst.mode) {
                 case 'h':
-                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': 1}).show();
+                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
                     $('#ui-colorpicker-map-layer-2', e).hide();
                     break;
                     
                 case 's':
                 case 'a':
-                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -260px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -520px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
                     break;          
                     
                 case 'v':
                     $(e).css('background-color', 'black');
-                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -780px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
                     $('#ui-colorpicker-map-layer-2', e).hide();
                     break;          
                     
                 case 'r':
-                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1040px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1300px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
                     break;          
                     
                 case 'g':
-                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1560px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1820px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
                     break;          
                     
                 case 'b':
-                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -2080px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -2340px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
                     break;          
             }
             self.repaint();
-        }
+        };
         
         this.repaint = function() {
             var div = $('#ui-colorpicker-map-layer-pointer', e);
@@ -471,88 +469,101 @@ $.widget("ui.colorpicker", {
                 'top': y - 7
                 });
         };
-
-        var _handleEvents = function(event) {
+		
+		var _mousedown = function(event) {
 			if (!inst.opened)
 				return;
 			
-            switch (event.type) {
-                case 'mousedown':
-                    isMouseDown = true;
-                    break;
-                case 'mouseup':
-                    isMouseDown = false;
-                    isDragging = false;
-                    break;
-            }            
+			var div		= $('#ui-colorpicker-map-layer-pointer', e);
+			var offset	= div.offset();
+			var width	= div.width();
+			var height	= div.height();
 
-			if (isMouseDown) {
-                var div = $('#ui-colorpicker-map-layer-pointer', e);
-                var offset = div.offset();
-                var width = div.width();
-                var height = div.height();
+			var x		= event.pageX - offset.left;
+			var y		= event.pageY - offset.top;
 
-                var x = event.pageX - offset.left;
-                var y = event.pageY - offset.top;          
+			if (x >= 0 && x < width
+			 && y >= 0 && y < height) {
+				event.stopImmediatePropagation();                
+				event.preventDefault(); 			
+				$(document).unbind('mousedown', _mousedown);
+				$(document).bind('mouseup', _mouseup);
+				$(document).bind('mousemove', _mousemove);
+				_mousemove(event);
+			}			
+		};
+		
+		var _mouseup = function(event) {
+			event.stopImmediatePropagation();                
+			event.preventDefault(); 			
+			$(document).unbind('mouseup', _mouseup);
+			$(document).unbind('mousemove', _mousemove);
+			$(document).bind('mousedown', _mousedown);
+		};
+		
+		var _mousemove = function(event) {
+			event.stopImmediatePropagation();                
+			event.preventDefault();		
+			
+			if (event.pageX == self.x && event.pageY == self.y) {
+				return;
+			}
+			self.x = event.pageX;
+			self.y = event.pageY;
+			
+			var div = $('#ui-colorpicker-map-layer-pointer', e);
+			var offset = div.offset();
+			var width = div.width();
+			var height = div.height();
 
-                if (event.type == 'mousedown'
-                        && x >= 0 && x < width
-                        && y >= 0 && y < height) {
-                    isDragging = true;
-                }
+			var x = event.pageX - offset.left;
+			var y = event.pageY - offset.top;		
 
-                if (isDragging) {
-                    x = Math.max(0, Math.min(x / width, 1));
-                    y = Math.max(0, Math.min(y / height, 1));
+			x = Math.max(0, Math.min(x / width, 1));
+			y = Math.max(0, Math.min(y / height, 1));
 
-                    // interpret values                
-                    switch (inst.mode) {
-                        case 'h':
-                            inst.color.s = x;
-                            inst.color.v = 1 - y;
-                            inst.color.updateRGB();
-                            break;
+			// interpret values                
+			switch (inst.mode) {
+				case 'h':
+					inst.color.s = x;
+					inst.color.v = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-                        case 's':
-                        case 'a':
-                            inst.color.h = x;
-                            inst.color.v = 1 - y;
-                            inst.color.updateRGB();
-                            break;
+				case 's':
+				case 'a':
+					inst.color.h = x;
+					inst.color.v = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-                        case 'v':
-                            inst.color.h = x;
-                            inst.color.s = 1 - y;
-                            inst.color.updateRGB();
-                            break;
+				case 'v':
+					inst.color.h = x;
+					inst.color.s = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-                        case 'r':
-                            inst.color.b = x;
-                            inst.color.g = 1 - y;
-                            inst.color.updateHSV();
-                            break;
+				case 'r':
+					inst.color.b = x;
+					inst.color.g = 1 - y;
+					inst.color.updateHSV();
+					break;
 
-                        case 'g':
-                            inst.color.b = x;
-                            inst.color.r = 1 - y;
-                            inst.color.updateHSV();
-                            break;
+				case 'g':
+					inst.color.b = x;
+					inst.color.r = 1 - y;
+					inst.color.updateHSV();
+					break;
 
-                        case 'b':
-                            inst.color.r = x;
-                            inst.color.g = 1 - y;
-                            inst.color.updateHSV();
-                            break;
-                    }
+				case 'b':
+					inst.color.r = x;
+					inst.color.g = 1 - y;
+					inst.color.updateHSV();
+					break;
+			}
 
-                    inst._change();
-
-                    // handled
-                    event.stopImmediatePropagation();                
-                    event.preventDefault();                
-                }            
-            }
-        }
+			inst._change();
+		}        
         
         var _html = function() {
             var html = '<div id="ui-colorpicker-map" class="ui-colorpicker-border">'
@@ -575,7 +586,7 @@ $.widget("ui.colorpicker", {
         this.init = function() {
             e = $(self._html()).appendTo($('#ui-colorpicker-bar-container', inst.dialog));
             
-            $(document).bind('mousedown mousemove mouseup', _handleEvents);
+			e.bind('mousedown', _mousedown);
         };
 
         this.generate = function() {            
@@ -598,45 +609,45 @@ $.widget("ui.colorpicker", {
             
             switch (inst.mode) {
                 case 'h':
-                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 0', 'opacity': 1}).show();
+                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
                     $('#ui-colorpicker-bar-layer-2', e).hide();
                     $('#ui-colorpicker-bar-layer-3', e).hide();
                     $('#ui-colorpicker-bar-layer-4', e).hide();
                     break;
                     
                 case 's':
-                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -260px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -520px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
                     $('#ui-colorpicker-bar-layer-3', e).hide();
                     $('#ui-colorpicker-bar-layer-4', e).hide();
                     break;
                     
                 case 'v':
-                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -520px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
                     $('#ui-colorpicker-bar-layer-2', e).hide();
                     $('#ui-colorpicker-bar-layer-3', e).hide();
                     $('#ui-colorpicker-bar-layer-4', e).hide();
                     break;
                     
                 case 'r':
-                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -1560px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -1300px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -780px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -1040px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
                     break;
                     
                 case 'g':
-                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -2600px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -2340px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -1820px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -2080px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -2600px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
                     break;
                     
                 case 'b':
-                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -3640px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -3380px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -2860px', 'opacity': 1}).show();
-                    $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -3120px', 'opacity': 1}).show();
+                    $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -3640px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -3380px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -2860px', 'opacity': ''}).show();
+                    $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -3120px', 'opacity': ''}).show();
                     break;
                     
                 case 'a':
@@ -647,7 +658,7 @@ $.widget("ui.colorpicker", {
                     break;                    
             }
             self.repaint();
-        }
+        };
 
         this.repaint = function() {
             var div = $('#ui-colorpicker-bar-layer-pointer', e);
@@ -660,7 +671,7 @@ $.widget("ui.colorpicker", {
                     
                 case 's':
                     y = (1 - inst.color.s) * div.height();
-                    $('#ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.v);                      
+                    $('#ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.v);					
                     $(e).css('background-color', '#'+inst.color.normClone().toHex());
                     break;
                     
@@ -701,84 +712,95 @@ $.widget("ui.colorpicker", {
             }            
             
             $('#ui-colorpicker-bar-pointer', e).css('top', y - 3);
-        }
+        };
 
-        var _handleEvents = function(event) {
+		var _mousedown = function(event) {
 			if (!inst.opened)
 				return;
 			
-            switch (event.type) {
-                case 'mousedown':
-                    isMouseDown = true;
-                    break;
-                case 'mouseup':
-                    isMouseDown = false;
-                    isDragging = false;
-                    break;
-            }            
+			var div		= $('#ui-colorpicker-bar-layer-pointer', e);
+			var offset	= div.offset();
+			var width	= div.width();
+			var height	= div.height();
 
-            if (isMouseDown) {''
-                var div = $('#ui-colorpicker-bar-layer-pointer', e);
-                var offset  = div.offset();
-                var width   = div.width();
-                var height  = div.height();
+			var x		= event.pageX - offset.left;
+			var y		= event.pageY - offset.top;
 
-                var x = event.pageX - offset.left;
-                var y = event.pageY - offset.top;          
+			if (x >= 0 && x < width
+			 && y >= 0 && y < height) {
+				event.stopImmediatePropagation();                
+				event.preventDefault(); 			
+				$(document).unbind('mousedown', _mousedown);
+				$(document).bind('mouseup', _mouseup);
+				$(document).bind('mousemove', _mousemove);
+				_mousemove(event);
+			}			
+		};
+		
+		var _mouseup = function(event) {
+			event.stopImmediatePropagation();                
+			event.preventDefault(); 			
+			$(document).unbind('mouseup', _mouseup);
+			$(document).unbind('mousemove', _mousemove);
+			$(document).bind('mousedown', _mousedown);
+		};
+		
+		var _mousemove = function(event) {
+			event.stopImmediatePropagation();                
+			event.preventDefault();		
+			
+			if (event.pageY == self.y) {
+				return;
+			}
+			self.y = event.pageY;
+						
+			var div = $('#ui-colorpicker-bar-layer-pointer', e);
+			var offset  = div.offset();
+			var height  = div.height();
 
-                if (event.type == 'mousedown'
-                        && x >= 0 && x < width
-                        && y >= 0 && y < height) {
-                    isDragging = true;
-                }
-                
-                if (isDragging) {;
-                    y = Math.max(0, Math.min(y / height, 1));
+			var y = event.pageY - offset.top;
+			console.log(y);
 
-                    // interpret values                
-                    switch (inst.mode) {
-                        case 'h':
-                            inst.color.h = 1 - y;
-                            inst.color.updateRGB();
-                            break;
-                            
-                        case 's':
-                            inst.color.s = 1 - y;
-                            inst.color.updateRGB();
-                            break;
-                            
-                        case 'v':
-                            inst.color.v = 1 - y;
-                            inst.color.updateRGB();
-                            break;
-                            
-                        case 'r':
-                            inst.color.r = 1 - y;
-                            inst.color.updateHSV();
-                            break;
-                            
-                        case 'g':
-                            inst.color.g = 1 - y;
-                            inst.color.updateHSV();
-                            break;
-                            
-                        case 'b':
-                            inst.color.b = 1 - y;
-                            inst.color.updateHSV();
-                            break;
-                            
-                        case 'a':
-                            inst.color.a = 1 - y;
-                            break;
-                    }             
+			y = Math.max(0, Math.min(y / height, 1));
 
-                    inst._change();
+			// interpret values                
+			switch (inst.mode) {
+				case 'h':
+					inst.color.h = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-                    // handled
-                    event.stopImmediatePropagation();                
-                    event.preventDefault();                
-                }            
-            }    
+				case 's':
+					inst.color.s = 1 - y;
+					inst.color.updateRGB();
+					break;
+
+				case 'v':
+					inst.color.v = 1 - y;
+					inst.color.updateRGB();
+					break;
+
+				case 'r':
+					inst.color.r = 1 - y;
+					inst.color.updateHSV();
+					break;
+
+				case 'g':
+					inst.color.g = 1 - y;
+					inst.color.updateHSV();
+					break;
+
+				case 'b':
+					inst.color.b = 1 - y;
+					inst.color.updateHSV();
+					break;
+
+				case 'a':
+					inst.color.a = 1 - y;
+					break;
+			}             
+
+			inst._change();             
         }        
 
         this._html = function() {
