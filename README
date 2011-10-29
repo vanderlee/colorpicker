@@ -1,0 +1,81 @@
+jQuery.colorpicker v0.2
+
+Copyright (c) 2011 Martijn W. van der Lee
+Licensed under the MIT.
+
+Full-featured colorpicker for jQueryUI with full theming support.
+Most images from jPicker by Christopher T. Tillman.
+Sourcecode created from scratch by Martijn W. van der Lee.
+
+IE support; make sure you have a doctype defined, or the colorpicker will not display correctly.
+
+autoOpen: false
+	If true, the dialog opens automatically upon page load.
+	If false, dialog opens on click of selected element.
+
+color: '#00FF00'
+	Initial color. Formats recognized are:
+		#rrggbb
+		rrggbb (same as previous, but without the #)
+
+mode: 'h'
+	Determines the functionality of the map and bar components. Allowed values
+	are; 'h', 's', 'l', 'r', 'g', 'b' or 'a', for hue, saturation, luminosity,
+	red, green, blue and alpha respectively.
+	
+title: 'Pick a color'
+	Title to display in the header.
+
+onChange:		undefined
+onSelect:		undefined
+onClose:		undefined
+	Events trigger on each change, confirmation (click on OK button) and
+	cancellation (click on Cancel, outside window or window close button)
+	respectively.
+	Note that onChange may be triggered in rapid succession when dragging the
+	mouse accross the map or bar and may be triggered without a change in color
+	upon specific user interactions.
+
+closeOnOutside:	true
+	Close the window when clicking outside the colorpicker display.
+
+revert:			true
+	Revert the current color back to the selected color when cancelling.
+
+swatches:		undefined
+	'undefined' to show swatches of HTML colors or provide your own object
+	with colornames and [r,g,b] array.
+	For example { 'red': [ 255, 0, 0 ], 'blue': [0, 0, 255] }
+
+showHeader:		false
+showMap:		true
+showBar:		true
+showPreview:	true
+showInputs:		true
+showHex:		true
+showSwatches:	true
+showButtonPanel:false
+	Set whether to show the individual control components of the colorpicker
+	dialog. Set to false to hide.
+
+hsv:			true
+rgb:			true
+alpha:			false
+	Whether or not to show the inputs for HSV, RGB and/or alpha respectively.
+
+duration:		'fast'
+showAnim:		'fadeIn'
+showOptions:	{}
+	Set the effect to use when opening or closing the dialog.
+	Same as standard jQueryUI datepicker.
+
+limit:			''
+	Limit the selectable colors to any of the predefined limits:
+		''			No limitations, allow 8bpp color for a palette of all
+					16 million colors.
+		'websafe'	Set of 216 colors composed of 00, 33, 66, 99, cc and ff
+					color channel values in #rrggbb.
+		'nibble'	4 bits per color, can be easily converted to #rgb format.
+					The palette is limited to 4096 colors.
+		'binary'	Allow only #00 or #ff as color channel values for primary
+					colors only; only 8 colors are available with this limit.
