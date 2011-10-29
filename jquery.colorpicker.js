@@ -1,5 +1,5 @@
 /* 
- * ColorPicker v0.5.2
+ * ColorPicker v0.5.3
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
