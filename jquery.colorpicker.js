@@ -1,5 +1,5 @@
 /* 
- * ColorPicker v0.5
+ * ColorPicker v0.5.1
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -9,7 +9,6 @@
  * Sourcecode created from scratch by Martijn W. van der Lee.
  */
 
-//@todo Close on 'escape' key?
 //@todo Methods? open/close/enable/disable
 //@todo Custom user-defined buttons -> "none" | "transparent"
 //@todo Undo/redo memory?
@@ -72,9 +71,9 @@ $.widget("ui.colorpicker", {
 	
 	_curInst: undefined,
     
-	container: '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
+	container_popup: '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
 	
-	container_inline: '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div>',
+	container_inline: '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
 	
 	layout: '<table class="ui-dialog-content ui-widget-content" cellspacing="0" cellpadding="0" border="0"><tr>'    
 			+'<td valign="top" id="ui-colorpicker-map-container"></td>'
@@ -95,6 +94,7 @@ $.widget("ui.colorpicker", {
 		self.inline		= false;
 		self.changed	= false;
 		
+		self.button		= undefined;		
 		self.image		= undefined;
 		
         self.mode		= self.options.mode;
@@ -107,10 +107,11 @@ $.widget("ui.colorpicker", {
 			self.options.color = self.element.val();
 			self._loadColor();			
 			
-			$('body').prepend(self.container);
+			$('body').append(self.container_popup);
 			self.dialog = $('.ui-colorpicker:first');
 			
-			$(document).mousedown( function(event) {
+			// Click outside/inside
+			$(document).mousedown( function(event) {		
 				if (!self.opened						// not opened
 				 || event.target == self.element[0]) {	// click on input				 
 					// Not opened or clicked on element; do not close
@@ -118,11 +119,15 @@ $.widget("ui.colorpicker", {
 				}
 				
 				// Check if clicked on any part of dialog
-				var parents = $(event.target).parents('.ui-colorpicker');
+				if ($(event.target).parents('.ui-colorpicker').length > 0) {
+					self.element.blur();	// inside window!
+					return;
+				}
+
+				// Check if clicked on button			
+				var parents = $(event.target).parents();
 				for (var p in parents) {
-					if (parents[p] === self.dialog.get(0)) {
-						self.element.blur();	// inside window!
-						// part of dialog; do not close.
+					if (parents[p] === self.button[0]) {
 						return;
 					}
 				}
@@ -141,7 +146,6 @@ $.widget("ui.colorpicker", {
 				});
 			}
 			if (self.options.showOn == 'button' || self.options.showOn == 'both') {
-				self.options.buttonText
 				if (self.options.buttonImage != '') {
 					self.image = $('<img/>').attr({
 						'src':		self.options.buttonImage,
@@ -153,18 +157,17 @@ $.widget("ui.colorpicker", {
 						self.image.css('background-color', '#'+self.color.toHex());
 					}					
 				}
-
+				
 				if (self.options.buttonImageOnly && self.image) {
-					self.image.click( function() {
-						self.open();
-					}).insertAfter(self.element);
+					self.button = self.image;
 				} else {
-					var button = $('<button type="button"></button>').html(self.image ? self.image : self.options.buttonText).button().insertAfter(self.element).click( function() {
-						self.open();
-					});
-					
-					self.image = self.image? $('img', button).first() : undefined;
+					self.button = $('<button type="button"></button>').html(self.image? self.image
+																				: self.options.buttonText).button();
+					self.image = self.image? $('img', self.button).first() : undefined;
 				}
+				self.button.insertAfter(self.element).click( function() {
+					self[self.opened? 'close' : 'open']();					
+				});
 			}
 			
 			if (self.options.autoOpen) {
@@ -254,7 +257,7 @@ $.widget("ui.colorpicker", {
 	},
 	
 	open: function() {
-		if (!this.opened) {
+		if (!this.opened) {		
 			this._generate();
 
 			var offset = this.element.offset();
@@ -265,15 +268,14 @@ $.widget("ui.colorpicker", {
 			this.dialog.css({'left': x, 'top': y});
 
 			this._effectShow();
-			this.opened = true;
+			this.opened = true;			
 		}			
 	},
 	
-	close: function() {				
+	close: function() {
 		var self = this;
 		
 		// tear down the interface
-		self.opened = false;
 		self._effectHide( function() {
 			self.dialog.empty();
 			self.generated = false;
@@ -281,7 +283,8 @@ $.widget("ui.colorpicker", {
 		
 		self.currentColor	= $.extend({}, self.color);
 		self.changed		= false;		
-			
+					
+		self.opened = false;
 		self._callback(self.options.onClose);
 	},
 		
