@@ -1,5 +1,5 @@
 /* 
- * ColorPicker v0.5.1
+ * ColorPicker v0.5.2
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -17,7 +17,6 @@
 //@todo Force hex correction (limit and padding) upon done
 //@todo if limit, correct initial color upon open
 //@todo Shared swatches; cookies/session/global
-//@todo Populate ("background-color") selection
 //@todo Language files: Done/Color/Pick a color/H/S/V/R/G/B/A/color swatches
 //@todo isRTL? What to RTL, besides button?
 
@@ -66,7 +65,11 @@ $.widget("ui.colorpicker", {
 		showAnim:			'fadeIn',
 		showOptions:		{},
 		
-		limit:				''		// '', 'websafe', 'nibble', 'binary'
+		limit:				'',		// '', 'websafe', 'nibble', 'binary'
+		
+		altField:			'',		// selector for DOM elements which change background color on change.
+		altOnChange:		true,	// true to update on each change, false to update only on close.
+		altAlpha:			true	// change opacity of altField as well?
 	},
 	
 	_curInst: undefined,
@@ -105,7 +108,7 @@ $.widget("ui.colorpicker", {
 		               
 		if (this.element[0].nodeName.toLowerCase() == 'input') {
 			self.options.color = self.element.val();
-			self._loadColor();			
+			self._loadColor();	
 			
 			$('body').append(self.container_popup);
 			self.dialog = $('.ui-colorpicker:first');
@@ -202,10 +205,21 @@ $.widget("ui.colorpicker", {
 		return this;
 	},
 	
+	_setAltField: function() {
+		if (this.options.altField) {
+			$(this.options.altField).css('background-color', '#'+this.color.toHex());
+			if (this.options.altAlpha) {
+				$(this.options.altField).css('opacity', this.color.a);
+			}
+		}
+	},
+	
 	_loadColor: function() {
 		var rgb = this._parseColor(this.options.color);        
         this.color = (rgb === false? new this.Color() : new this.Color(rgb[0], rgb[1], rgb[2]));		
-        this.currentColor = $.extend({}, this.color);					
+        this.currentColor = $.extend({}, this.color);	
+		
+		this._setAltField();
 	},
 	
 	_generate: function() {
@@ -275,17 +289,19 @@ $.widget("ui.colorpicker", {
 	close: function() {
 		var self = this;
 		
-		// tear down the interface
-		self._effectHide( function() {
-			self.dialog.empty();
-			self.generated = false;
-		});
+		this._setAltField();
 		
 		self.currentColor	= $.extend({}, self.color);
-		self.changed		= false;		
-					
-		self.opened = false;
-		self._callback(self.options.onClose);
+		self.changed		= false;									
+		
+		// tear down the interface
+		self._effectHide( function() {
+			self.dialog.empty();			
+			self.generated	= false;
+			
+			self.opened		= false;
+			self._callback(self.options.onClose);			
+		});		
 	},
 		
 	_callback: function(f) {
@@ -322,15 +338,20 @@ $.widget("ui.colorpicker", {
 			case 'binary':		this.color.limit(2);	break;
 		}
 		
-		// update internals
+		// update colors
 		if (!this.inline) {
-			var hex = this.color.toHex().toLowerCase();
+			var hex = this.color.toHex();
+			
 			if (!this.element.is(':focus') && !this.color.equals(this._parseColor(this.element.val()))) {
 				this.element.val(hex);
 			}
 
 			if (this.image && this.options.buttonColorize) {
 				this.image.css('background-color', '#'+hex);
+			}
+			
+			if (this.options.altOnChange) {
+				this._setAltField();
 			}
 		}
 					
@@ -373,8 +394,8 @@ $.widget("ui.colorpicker", {
 	},
         
     Map: function(inst) {
-        var self = this;
-		var e = undefined;     		
+        var self	= this;
+		var e		= undefined;     		
 
         this.init = function() {
             e = $(_html()).appendTo($('#ui-colorpicker-map-container', inst.dialog));
@@ -581,10 +602,8 @@ $.widget("ui.colorpicker", {
     },
     
     Bar: function(inst) {
-        var self = this;  
-		var e = undefined;
-        var isMouseDown = false;
-        var isDragging = false;        
+        var self		= this;  
+		var e			= undefined;   
         
         this.init = function() {
             e = $(self._html()).appendTo($('#ui-colorpicker-bar-container', inst.dialog));
@@ -972,11 +991,11 @@ $.widget("ui.colorpicker", {
         
         this.repaint = function() {
 			if (!$('#ui-colorpicker-hex-input', e).is(':focus')) {
-                $('#ui-colorpicker-hex-input', e).val(inst.color.toHex().toLowerCase());
+                $('#ui-colorpicker-hex-input', e).val(inst.color.toHex());
 			}
 						
 			if (!$('#ui-colorpicker-hex-alpha', e).is(':focus')) {
-				$('#ui-colorpicker-hex-alpha', e).val(inst._intToHex(inst.color.a * 255).toLowerCase());
+				$('#ui-colorpicker-hex-alpha', e).val(inst._intToHex(inst.color.a * 255));
 			}
         };
         
@@ -1308,7 +1327,7 @@ $.widget("ui.colorpicker", {
 		
         this._hexify = function(number) {
            // return Math.round(number).toString(16);
-            var digits = '0123456789ABCDEF';
+            var digits = '0123456789abcdef';
             var lsd = number % 16;
             var msd = (number - lsd) / 16;
             var hexified = digits.charAt(msd) + digits.charAt(lsd);

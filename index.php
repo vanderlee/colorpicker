@@ -26,7 +26,7 @@
 				// For the documentation
 				$('#switcher').themeswitcher();
                 
-                $('#cp').colorpicker({
+                $('#cp1').colorpicker({
 					onClose: function(hex, rgba, inst) {
 								
 							},
@@ -36,7 +36,8 @@
 								//console.log(inst);
 							},
 					showOn: 'both',
-					buttonColorize: true
+					buttonColorize: true,
+					altField: '.cp1-alt'
 				});
 				
                 $('#cp2').colorpicker({alpha: true});
@@ -45,41 +46,12 @@
     </head>
     <body>
         <div id="switcher"></div>
-        Color: <input type="color" id="cp" value="ff9900"/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-		<br/>
-        Inline:<div id="cp2"></div>	
+		
+        Color: <input type="color" id="cp1" value="ff9900"/>
+		<div class="cp1-alt" style="border: 1px inset; width: 200px; height: 40px;">asdf</div>
+		
+		<hr/>
+		
+		Inline:<div id="cp2"></div>	
     </body>
 </html>
