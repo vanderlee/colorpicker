@@ -10,7 +10,7 @@
  */
 
 //@todo Methods? open/close/enable/disable
-//@todo Custom user-defined buttons -> "none" | "transparent"
+//@todo Custom buttons -> "none" -> special "none" state?
 //@todo Undo/redo memory?
 //@todo Small size variant (128x128)
 //@todo Distance between rgb/hsv/a options
@@ -19,57 +19,43 @@
 //@todo Shared swatches; cookies/session/global
 //@todo Language files: Done/Color/Pick a color/H/S/V/R/G/B/A/color swatches
 //@todo isRTL? What to RTL, besides button?
+//@todo Change internal ranges to floatingpoint 255/360/100
 
 (function($, undefined) {  
 
-$.widget("ui.colorpicker", {   
+$.widget("vanderlee.colorpicker", {   
 	options: {
-		showOn:				'focus',		// 'focus', 'button', 'both'
-		
+		alpha:				false,		// Show alpha controls and mode
+		altAlpha:			true,		// change opacity of altField as well?
+		altField:			'',			// selector for DOM elements which change background color on change.
+		altOnChange:		true,		// true to update on each change, false to update only on close.
+		autoOpen:			false,		// Open dialog automatically upon creation
+		buttonColorize:		false,
 		buttonImage:		'images/ui-colorpicker.png',
 		buttonImageOnly:	false,
-		buttonText:			'Color',
-		buttonColorize:		false,
-		
-		autoOpen:			false,
-		
-		color:				'#00FF00',
-		
-        mode:				'h',
-		
-        title:				'Pick a color',		
-		
-		onClose:			undefined,
-		onSelect:			undefined,
-		
-		closeOnOutside:		true,
-		
-		revert:				true,			// on cancel, revert changes to color
-		
-		swatches:			undefined,
-		
-		hsv:				true,
-		rgb:				true,        
-		alpha:				false,
-		
-		showHeader:			false,
-		showMap:			true,
-		showBar:			true,
-		showPreview:		true,
-		showInputs:			true,
-		showHex:			true,
-		showSwatches:		false,
-		showButtonPanel:	false,
-		
+		buttonText:			'Color',	// Text on the button and/or title of button image.
+		closeOnOutside:		true,		// Close the dialog when clicking outside the dialog (not for inline)
+		color:				'#00FF00',	// Initial color (for inline only)
 		duration:			'fast',
+		hsv:				true,		// Show HSV controls and modes
+		limit:				'',			// Limit color "resolution": '', 'websafe', 'nibble', 'binary'
+        mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
+		rgb:				true,		// Show RGB controls and modes
 		showAnim:			'fadeIn',
+		showBar:			true,
+		showButtonPanel:	false,
+		showHeader:			false,
+		showHex:			true,
+		showInputs:			true,
+		showMap:			true,
+		showOn:				'focus',	// 'focus', 'button', 'both'		
 		showOptions:		{},
-		
-		limit:				'',		// '', 'websafe', 'nibble', 'binary'
-		
-		altField:			'',		// selector for DOM elements which change background color on change.
-		altOnChange:		true,	// true to update on each change, false to update only on close.
-		altAlpha:			true	// change opacity of altField as well?
+		showPreview:		true,
+		showSwatches:		false,
+		swatches:			null,
+        title:				'Pick a color',				
+		onClose:			null,
+		onSelect:			null			
 	},
 	
 	_curInst: undefined,
@@ -89,8 +75,9 @@ $.widget("ui.colorpicker", {
 			+'<td valign="top" id="ui-colorpicker-swatches-container"></td>'
 			+'</tr></table>',
 
-	_create: function() {  
-        var self = this;			
+	_create: function() {
+console.log(this.widgetBaseClass);		
+        var self = this;
 		
 		self.opened		= false;
 		self.generated	= false;
@@ -102,7 +89,7 @@ $.widget("ui.colorpicker", {
 		
         self.mode		= self.options.mode;
        		
-		if (!self.options.swatches) {
+		if (self.options.swatches === null) {
 			self.options.swatches = self._colors;
 		}
 		               
@@ -157,7 +144,7 @@ $.widget("ui.colorpicker", {
 					});
 					
 					if (self.options.buttonColorize) {
-						self.image.css('background-color', '#'+self.color.toHex());
+						self.image.css('background-color', self.color.toCSS());
 					}					
 				}
 				
@@ -207,7 +194,7 @@ $.widget("ui.colorpicker", {
 	
 	_setAltField: function() {
 		if (this.options.altField) {
-			$(this.options.altField).css('background-color', '#'+this.color.toHex());
+			$(this.options.altField).css('background-color', this.color.toCSS());
 			if (this.options.altAlpha) {
 				$(this.options.altField).css('opacity', this.color.a);
 			}
@@ -308,7 +295,7 @@ $.widget("ui.colorpicker", {
 		var self = this;
 		
 		if (f instanceof Function) {
-			f("#" + self.color.toHex(), {
+			f(self.color.toCSS(), {
 				r: self.color.r,
 				g: self.color.g,
 				b: self.color.b,
@@ -340,14 +327,12 @@ $.widget("ui.colorpicker", {
 		
 		// update colors
 		if (!this.inline) {
-			var hex = this.color.toHex();
-			
-			if (!this.element.is(':focus') && !this.color.equals(this._parseColor(this.element.val()))) {
-				this.element.val(hex);
+			if (!this.color.equals(this._parseColor(this.element.val()))) {
+				this.element.val(this.color.toHex());
 			}
 
 			if (this.image && this.options.buttonColorize) {
-				this.image.css('background-color', '#'+hex);
+				this.image.css('background-color', this.color.toCSS());
 			}
 			
 			if (this.options.altOnChange) {
@@ -449,7 +434,7 @@ $.widget("ui.colorpicker", {
                 case 'h':
                     x = inst.color.s * div.width();
                     y = (1 - inst.color.v) * div.width();                      
-                    $(e).css('background-color', '#'+inst.color.normClone().toHex());
+                    $(e).css('background-color', inst.color.normClone().toCSS());
                     break;
 
                 case 's':
@@ -694,12 +679,12 @@ $.widget("ui.colorpicker", {
                 case 's':
                     y = (1 - inst.color.s) * div.height();
                     $('#ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.v);					
-                    $(e).css('background-color', '#'+inst.color.normClone().toHex());
+                    $(e).css('background-color', inst.color.normClone().toCSS());
                     break;
                     
                 case 'v':
                     y = (1 - inst.color.v) * div.height();
-                    $(e).css('background-color', '#'+inst.color.normClone().toHex());
+                    $(e).css('background-color', inst.color.normClone().toCSS());
                     break;
                     
                 case 'r':
@@ -725,7 +710,7 @@ $.widget("ui.colorpicker", {
                     
                 case 'a':
                     y = (1 - inst.color.a) * div.height();
-                    $(e).css('background-color', '#'+inst.color.normClone().toHex());
+                    $(e).css('background-color', inst.color.normClone().toCSS());
                     break;
             }
             
@@ -941,9 +926,9 @@ $.widget("ui.colorpicker", {
         };       
         
         this.repaint = function() {
-            $('#ui-colorpicker-preview-initial', e).css('background-color', '#'+inst.currentColor.toHex()).attr('title', inst.currentColor.toHex());
+            $('#ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.toCSS()).attr('title', inst.currentColor.toHex());
             $('#ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.a);
-            $('#ui-colorpicker-preview-current', e).css('background-color', '#'+inst.color.toHex()).attr('title', inst.color.toHex());
+            $('#ui-colorpicker-preview-current', e).css('background-color', inst.color.toCSS()).attr('title', inst.color.toHex());
             $('#ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.a);
         };
         
@@ -991,7 +976,7 @@ $.widget("ui.colorpicker", {
         
         this.repaint = function() {
 			if (!$('#ui-colorpicker-hex-input', e).is(':focus')) {
-                $('#ui-colorpicker-hex-input', e).val(inst.color.toHex());
+                $('#ui-colorpicker-hex-input', e).val(inst.color.toHex(true));
 			}
 						
 			if (!$('#ui-colorpicker-hex-alpha', e).is(':focus')) {
@@ -1054,6 +1039,13 @@ $.widget("ui.colorpicker", {
 			$('.ui-colorpicker-close', e).button().click( function() {
                 inst.close();
             });
+			
+			if (inst.options.alpha) {
+				$('.ui-colorpicker-transparent', e).button().click( function() {
+					inst.color.a = 0;
+					inst._change();
+				});
+			}
         };       
         
         this.repaint = function() {};
@@ -1061,10 +1053,12 @@ $.widget("ui.colorpicker", {
         this.generate = function() {};
         
         this._html = function() {
-            return '<div class="ui-dialog-buttonpane ui-widget-content">'
-                +'<div class="ui-dialog-buttonset">'
-				+'<button class="ui-colorpicker-close">Done</button>'
-				+'</div></div>';
+            return	'<div class="ui-dialog-buttonpane ui-widget-content">'
+				+	(inst.options.alpha? '<button class="ui-colorpicker-transparent">transparent</button>' : '')
+                +	(inst.inline? '' : '<div class="ui-dialog-buttonset">'
+				+	'<button class="ui-colorpicker-close">Done</button>'
+				+	'</div>')
+				+	'</div>';
         };        
     },    
     
@@ -1271,7 +1265,7 @@ $.widget("ui.colorpicker", {
 	},
 	
 	Color: function() {        
-        this.updateRGB = function() {		
+        this.updateRGB = function() {	
             this.h = Math.max(0, Math.min(this.h, 1));
             this.s = Math.max(0, Math.min(this.s, 1));
             this.v = Math.max(0, Math.min(this.v, 1));
@@ -1295,7 +1289,7 @@ $.widget("ui.colorpicker", {
             return this;
         };
         
-        this.updateHSV = function() {
+        this.updateHSV = function() {	
             this.r = Math.max(0, Math.min(this.r, 1));
             this.g = Math.max(0, Math.min(this.g, 1));
             this.b = Math.max(0, Math.min(this.b, 1));
@@ -1336,6 +1330,10 @@ $.widget("ui.colorpicker", {
 
         this.toHex = function() {
             return this._hexify(this.r * 255) + this._hexify(this.g * 255) + this._hexify(this.b * 255);
+        };      
+		
+        this.toCSS = function() {
+            return '#' + this.toHex();
         };      
 		
         this.toHexAlpha = function() {
