@@ -4,4 +4,15 @@ Post to...
 	http://wiki.jqueryui.com/w/page/12137750/ColorPicker
 		- screenshot
 		- link(s)
-		- check specs/requirements and add/fix/detail
+		- check specs/requirements and add/fix them
+
+Layout mechanism
+	['header', [['map', 'websafe'], 'bar', ['preview, 'hsv', 'rgb', 'a', 'hex'], 'swatches'], 'buttonpanel']
+	[vertical[horizontal[vertical[horz...[...]]]]]
+
+Colorwheel
+Triangle/wheel
+Related-colors swatching
+Configurable swatch layout
+	container-width/height, swatch-width/height
+	Autoscaling (table?)

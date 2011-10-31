@@ -383,7 +383,7 @@ console.log(this.widgetBaseClass);
 		var e		= undefined;     		
 
         this.init = function() {
-            e = $(_html()).appendTo($('#ui-colorpicker-map-container', inst.dialog));
+            e = $(self._html()).appendTo($('#ui-colorpicker-map-container', inst.dialog));
 
 			e.bind('mousedown', _mousedown);
         };
@@ -574,7 +574,7 @@ console.log(this.widgetBaseClass);
 			inst._change();
 		}        
         
-        var _html = function() {
+        this._html = function() {
             var html = '<div id="ui-colorpicker-map" class="ui-colorpicker-border">'
 						+'<span id="ui-colorpicker-map-layer-1" style="background: url(images/map.png) no-repeat;">&nbsp;</span>'
 						+'<span id="ui-colorpicker-map-layer-2" style="background: url(images/map.png) no-repeat;">&nbsp;</span>';
