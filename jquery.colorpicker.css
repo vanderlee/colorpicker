@@ -1,7 +1,10 @@
 .ui-colorpicker {
     display: inline-block;
-    position: absolute;
 	width: auto;
+}
+
+.ui-colorpicker-inline {
+    position: static;
 }
 
 .ui-colorpicker .ui-colorpicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
@@ -34,14 +37,14 @@
 
 .ui-colorpicker-border {
 	border: 1px inset;
-    display: inline-block;	
+    display: inline-block;
 }
 
 /* Bar & map */
 #ui-colorpicker-map > *,
 #ui-colorpicker-bar > * {
     position: absolute;
-	cursor: crosshair;	
+	cursor: crosshair;
 }
 
 #ui-colorpicker-map-pointer,
@@ -82,7 +85,7 @@
 #ui-colorpicker-bar-pointer { display: inline-block; width: 20px; height: 7px; background: url(images/bar-pointer.png) no-repeat; }
 
 /* Preview */
-#ui-colorpicker-preview {   
+#ui-colorpicker-preview {
 	text-align: center;
 }
 
@@ -98,7 +101,7 @@
 }
 
 #ui-colorpicker-preview-initial-alpha,
-#ui-colorpicker-preview-current-alpha {    
+#ui-colorpicker-preview-current-alpha {
     width: 50px;
     height: 20px;
     display: inline-block;
