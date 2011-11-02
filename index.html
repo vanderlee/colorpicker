@@ -12,23 +12,23 @@
 			body {
 				font-family:	'Segoe UI', Verdana, Arial, Helvetica, sans-serif;
 				font-size:		62.5%;
-			}		
-			
+			}
+
 			#switcher {
 				float: 			right;
 				display: 		inline-block;
-			}	
+			}
         </style>
 		<script src="jquery.colorpicker.js"></script>
-		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>        
+		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>
         <script>
-           	$( function() {			
+           	$( function() {
 				// For the documentation
 				$('#switcher').themeswitcher();
-                
+
                 $('#cp1').colorpicker({
 					onClose: function(hex, rgba, inst) {
-								
+
 							},
 					onSelect: function(hex, rgba, inst) {
 								//console.log(hex);
@@ -36,26 +36,47 @@
 								//console.log(inst);
 							},
 					showOn: 'both',
+					showSwatches: true,
 					buttonColorize: true,
 					altField: '.cp1-alt',
 					showButtonPanel: true
 				});
-				
+
                 $('#cp2').colorpicker({
 					alpha: true,
 					showButtonPanel: true
+				});
+
+                var cpb = $('#cp-buttons').colorpicker({
+					showOn: ''
+				});
+				$('#cp-button-open').click( function() {
+					cpb.colorpicker('open');
+				});
+				$('#cp-button-close').click( function() {
+					cpb.colorpicker('close');
+				});
+				$('#cp-button-disable').click( function() {
+					cpb.colorpicker('disable');
 				});
             });
         </script>
     </head>
     <body>
         <div id="switcher"></div>
-		
+
         Color: <input type="color" id="cp1" value="ff9900"/>
 		<div class="cp1-alt" style="border: 1px inset; width: 200px; height: 40px;"></div>
-		
+
 		<hr/>
-		
-		Inline:<div id="cp2"></div>	
+
+		Inline:<div id="cp2"></div>
+
+		<hr/>
+
+		Activated by buttons: <input type="color" id="cp-buttons" value="927abc"/>
+		<br/><button id="cp-button-open">Open</button>
+		<br/><button id="cp-button-close">Close</button>
+		<br/><button id="cp-button-disable">Disable</button>
     </body>
 </html>
