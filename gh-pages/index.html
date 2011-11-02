@@ -19,7 +19,7 @@
 				display: 		inline-block;
 			}	
         </style>
-		<script src="jquery.colorpicker.js"></script>        
+		<script src="jquery.colorpicker.js"></script>
 		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>        
         <script>
            	$( function() {			
@@ -37,10 +37,14 @@
 							},
 					showOn: 'both',
 					buttonColorize: true,
-					altField: '.cp1-alt'
+					altField: '.cp1-alt',
+					showButtonPanel: true
 				});
 				
-                $('#cp2').colorpicker({alpha: true});
+                $('#cp2').colorpicker({
+					alpha: true,
+					showButtonPanel: true
+				});
             });
         </script>
     </head>
@@ -48,7 +52,7 @@
         <div id="switcher"></div>
 		
         Color: <input type="color" id="cp1" value="ff9900"/>
-		<div class="cp1-alt" style="border: 1px inset; width: 200px; height: 40px;">asdf</div>
+		<div class="cp1-alt" style="border: 1px inset; width: 200px; height: 40px;"></div>
 		
 		<hr/>
 		
