@@ -59,7 +59,7 @@
 			onSelect:			null
 		},
 
-		container_popup: '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
+		container_popup: '<div class="ui-colorpicker ui-colorpicker-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
 
 		container_inline: '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
 
@@ -82,6 +82,7 @@
 			self.inline		= false;
 			self.changed	= false;
 
+			self.dialog		= null;
 			self.button		= null;
 			self.image		= null;
 
@@ -187,6 +188,12 @@
 			}
 
 			return this;
+		},
+
+		destroy: function() {
+			if (this.dialog !== null) {
+				this.dialog.remove();
+			}
 		},
 
 		_setAltField: function () {
