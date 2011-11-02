@@ -576,12 +576,12 @@ console.log(this.widgetBaseClass);
         
         this._html = function() {
             var html = '<div id="ui-colorpicker-map" class="ui-colorpicker-border">'
-						+'<span id="ui-colorpicker-map-layer-1" style="background: url(images/map.png) no-repeat;">&nbsp;</span>'
-						+'<span id="ui-colorpicker-map-layer-2" style="background: url(images/map.png) no-repeat;">&nbsp;</span>';
+						+'<span id="ui-colorpicker-map-layer-1">&nbsp;</span>'
+						+'<span id="ui-colorpicker-map-layer-2">&nbsp;</span>';
             if (inst.options.alpha) {
-                html += '<span id="ui-colorpicker-map-layer-alpha" style="background: url(images/map-opacity.png);">&nbsp;</span>'
+                html += '<span id="ui-colorpicker-map-layer-alpha">&nbsp;</span>'
             }
-            html += '<span id="ui-colorpicker-map-layer-pointer"><img src="images/map-pointer.png" id="ui-colorpicker-map-pointer"/></span></div>';   
+            html += '<span id="ui-colorpicker-map-layer-pointer"><span id="ui-colorpicker-map-pointer"></span></span></div>';   
             return html;
         };       
     },
@@ -810,18 +810,18 @@ console.log(this.widgetBaseClass);
         }        
 
         this._html = function() {
-            var html = '<div id="ui-colorpicker-bar" class="ui-colorpicker-border" style="background-color: rgb(0, 0, 255);">'
-					+'<span id="ui-colorpicker-bar-layer-1" style="background: url(images/bar.png) repeat-x;">&nbsp;</span>'
-					+'<span id="ui-colorpicker-bar-layer-2" style="background: url(images/bar.png) repeat-x;">&nbsp;</span>'
-					+'<span id="ui-colorpicker-bar-layer-3" style="background: url(images/bar.png) repeat-x;">&nbsp;</span>'
-					+'<span id="ui-colorpicker-bar-layer-4" style="background: url(images/bar.png) repeat-x;">&nbsp;</span>';
+            var html = '<div id="ui-colorpicker-bar" class="ui-colorpicker-border">'
+					+'<span id="ui-colorpicker-bar-layer-1">&nbsp;</span>'
+					+'<span id="ui-colorpicker-bar-layer-2">&nbsp;</span>'
+					+'<span id="ui-colorpicker-bar-layer-3">&nbsp;</span>'
+					+'<span id="ui-colorpicker-bar-layer-4">&nbsp;</span>';
 				
 			if (inst.options.alpha) {
-                html += '<span id="ui-colorpicker-bar-layer-alpha" style="background: url(images/bar-opacity.png);">&nbsp;</span>'
-					+'<span id="ui-colorpicker-bar-layer-alphabar" style="background: url(images/bar-alpha.png);">&nbsp;</span>';
+                html += '<span id="ui-colorpicker-bar-layer-alpha">&nbsp;</span>'
+					+'<span id="ui-colorpicker-bar-layer-alphabar">&nbsp;</span>';
             }
 			
-            html += '<span id="ui-colorpicker-bar-layer-pointer"><img src="images/bar-pointer.png" id="ui-colorpicker-bar-pointer"/></span></div>';
+            html += '<span id="ui-colorpicker-bar-layer-pointer"><span id="ui-colorpicker-bar-pointer"></span></span></div>';
 			
             return html;
         };
@@ -945,8 +945,8 @@ console.log(this.widgetBaseClass);
         this._html = function() {
             return '<div id="ui-colorpicker-preview">'
 				+'<span class="ui-colorpicker-border">'
-				+'<div id="ui-colorpicker-preview-initial"><div id="ui-colorpicker-preview-initial-alpha" style="background: url(\'images/preview-opacity.png\') repeat;"></div></div>'
-				+'<div id="ui-colorpicker-preview-current"><div id="ui-colorpicker-preview-current-alpha" style="background: url(\'images/preview-opacity.png\') repeat;"></div></div>'
+				+'<div id="ui-colorpicker-preview-initial"><div id="ui-colorpicker-preview-initial-alpha"></div></div>'
+				+'<div id="ui-colorpicker-preview-current"><div id="ui-colorpicker-preview-current-alpha"></div></div>'
 				+'</span>'		
 				+'</div>';
         };        
@@ -1253,15 +1253,7 @@ console.log(this.widgetBaseClass);
 		'LavenderBlush': [0xFF, 0xF0, 0xF5],
 		'Crimson': [0xDC, 0x14, 0x3C],
 		'Pink': [0xFF, 0xC0, 0xCB],
-		'LightPink': [0xFF, 0xB6, 0xC1],
-		'RosyBrown': [0xBC, 0x8F, 0x8F],
-		'IndianRed': [0xCD, 0x5C, 0x5C],
-		'Brown': [0xA5, 0x2A, 0x2A],
-		'FireBrick': [0xB2, 0x22, 0x22],
-		'LightCoral': [0xF0, 0x80, 0x80],
-		'Maroon': [0x80, 0x00, 0x00],
-		'DarkRed': [0x8B, 0x00, 0x00],
-		'Red': [0xFF, 0x00, 0x00]
+		'LightPink': [0xFF, 0xB6, 0xC1]
 	},
 	
 	Color: function() {        
