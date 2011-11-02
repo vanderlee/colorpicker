@@ -1,3 +1,6 @@
+/*jslint devel: true, bitwise: true, regexp: true, browser: true, confusion: true, unparam: true, eqeq: true, white: true, nomen: true, plusplus: true, maxerr: 50, indent: 4 */
+/*globals jQuery */
+
 /*
  * ColorPicker v0.5.2
  *
@@ -386,107 +389,109 @@
 		Map: function (inst) {
 			var self	= this,
 				e		= null,
-				_mousedown = function (event) {
-					if (!inst.opened) {
-						return;
-					}
+				_mousedown, _mouseup, _mousemove, _html;
 
-					var div		= $('#ui-colorpicker-map-layer-pointer', e),
-						offset	= div.offset(),
-						width	= div.width(),
-						height	= div.height(),
-						x		= event.pageX - offset.left,
-						y		= event.pageY - offset.top;
+			_mousedown = function (event) {
+				if (!inst.opened) {
+					return;
+				}
 
-					if (x >= 0 && x < width && y >= 0 && y < height) {
-						event.stopImmediatePropagation();
-						event.preventDefault();
-						$(document).unbind('mousedown', _mousedown);
-						$(document).bind('mouseup', _mouseup);
-						$(document).bind('mousemove', _mousemove);
-						_mousemove(event);
-					}
-				},
+				var div		= $('#ui-colorpicker-map-layer-pointer', e),
+					offset	= div.offset(),
+					width	= div.width(),
+					height	= div.height(),
+					x		= event.pageX - offset.left,
+					y		= event.pageY - offset.top;
 
-				_mouseup = function (event) {
+				if (x >= 0 && x < width && y >= 0 && y < height) {
 					event.stopImmediatePropagation();
 					event.preventDefault();
-					$(document).unbind('mouseup', _mouseup);
-					$(document).unbind('mousemove', _mousemove);
-					$(document).bind('mousedown', _mousedown);
-				},
+					$(document).unbind('mousedown', _mousedown);
+					$(document).bind('mouseup', _mouseup);
+					$(document).bind('mousemove', _mousemove);
+					_mousemove(event);
+				}
+			};
 
-				_mousemove = function (event) {
-					event.stopImmediatePropagation();
-					event.preventDefault();
+			_mouseup = function (event) {
+				event.stopImmediatePropagation();
+				event.preventDefault();
+				$(document).unbind('mouseup', _mouseup);
+				$(document).unbind('mousemove', _mousemove);
+				$(document).bind('mousedown', _mousedown);
+			};
 
-					if (event.pageX === self.x && event.pageY === self.y) {
-						return;
-					}
-					self.x = event.pageX;
-					self.y = event.pageY;
+			_mousemove = function (event) {
+				event.stopImmediatePropagation();
+				event.preventDefault();
 
-					var div = $('#ui-colorpicker-map-layer-pointer', e),
-						offset = div.offset(),
-						width = div.width(),
-						height = div.height(),
-						x = event.pageX - offset.left,
-						y = event.pageY - offset.top;
+				if (event.pageX === self.x && event.pageY === self.y) {
+					return;
+				}
+				self.x = event.pageX;
+				self.y = event.pageY;
 
-					x = Math.max(0, Math.min(x / width, 1));
-					y = Math.max(0, Math.min(y / height, 1));
+				var div = $('#ui-colorpicker-map-layer-pointer', e),
+					offset = div.offset(),
+					width = div.width(),
+					height = div.height(),
+					x = event.pageX - offset.left,
+					y = event.pageY - offset.top;
 
-					// interpret values
-					switch (inst.mode) {
-					case 'h':
-						inst.color.s = x;
-						inst.color.v = 1 - y;
-						inst.color.updateRGB();
-						break;
+				x = Math.max(0, Math.min(x / width, 1));
+				y = Math.max(0, Math.min(y / height, 1));
 
-					case 's':
-					case 'a':
-						inst.color.h = x;
-						inst.color.v = 1 - y;
-						inst.color.updateRGB();
-						break;
+				// interpret values
+				switch (inst.mode) {
+				case 'h':
+					inst.color.s = x;
+					inst.color.v = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-					case 'v':
-						inst.color.h = x;
-						inst.color.s = 1 - y;
-						inst.color.updateRGB();
-						break;
+				case 's':
+				case 'a':
+					inst.color.h = x;
+					inst.color.v = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-					case 'r':
-						inst.color.b = x;
-						inst.color.g = 1 - y;
-						inst.color.updateHSV();
-						break;
+				case 'v':
+					inst.color.h = x;
+					inst.color.s = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-					case 'g':
-						inst.color.b = x;
-						inst.color.r = 1 - y;
-						inst.color.updateHSV();
-						break;
+				case 'r':
+					inst.color.b = x;
+					inst.color.g = 1 - y;
+					inst.color.updateHSV();
+					break;
 
-					case 'b':
-						inst.color.r = x;
-						inst.color.g = 1 - y;
-						inst.color.updateHSV();
-						break;
-					}
+				case 'g':
+					inst.color.b = x;
+					inst.color.r = 1 - y;
+					inst.color.updateHSV();
+					break;
 
-					inst._change();
-				},
+				case 'b':
+					inst.color.r = x;
+					inst.color.g = 1 - y;
+					inst.color.updateHSV();
+					break;
+				}
 
-				_html = function () {
-					var html = '<div id="ui-colorpicker-map" class="ui-colorpicker-border">'
-							+ '<span id="ui-colorpicker-map-layer-1">&nbsp;</span>'
-							+ '<span id="ui-colorpicker-map-layer-2">&nbsp;</span>'
-							+ (inst.options.alpha ? '<span id="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
-							+ '<span id="ui-colorpicker-map-layer-pointer"><span id="ui-colorpicker-map-pointer"></span></span></div>';
-					return html;
-				};
+				inst._change();
+			};
+
+			_html = function () {
+				var html = '<div id="ui-colorpicker-map" class="ui-colorpicker-border">'
+						+ '<span id="ui-colorpicker-map-layer-1">&nbsp;</span>'
+						+ '<span id="ui-colorpicker-map-layer-2">&nbsp;</span>'
+						+ (inst.options.alpha ? '<span id="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
+						+ '<span id="ui-colorpicker-map-layer-pointer"><span id="ui-colorpicker-map-pointer"></span></span></div>';
+				return html;
+			};
 
 			this.generate = function () {
 				switch (inst.mode) {
@@ -589,109 +594,110 @@
 		Bar: function (inst) {
 			var self		= this,
 				e			= null,
+				_mousedown, _mouseup, _mousemove, _html;
 
-				_mousedown = function (event) {
-					if (!inst.opened) {
-						return;
-					}
+			_mousedown = function (event) {
+				if (!inst.opened) {
+					return;
+				}
 
-					var div		= $('#ui-colorpicker-bar-layer-pointer', e),
-						offset	= div.offset(),
-						width	= div.width(),
-						height	= div.height(),
-						x		= event.pageX - offset.left,
-						y		= event.pageY - offset.top;
+				var div		= $('#ui-colorpicker-bar-layer-pointer', e),
+					offset	= div.offset(),
+					width	= div.width(),
+					height	= div.height(),
+					x		= event.pageX - offset.left,
+					y		= event.pageY - offset.top;
 
-					if (x >= 0 && x < width && y >= 0 && y < height) {
-						event.stopImmediatePropagation();
-						event.preventDefault();
-						$(document).unbind('mousedown', _mousedown);
-						$(document).bind('mouseup', _mouseup);
-						$(document).bind('mousemove', _mousemove);
-						_mousemove(event);
-					}
-				},
-
-				_mouseup = function (event) {
+				if (x >= 0 && x < width && y >= 0 && y < height) {
 					event.stopImmediatePropagation();
 					event.preventDefault();
-					$(document).unbind('mouseup', _mouseup);
-					$(document).unbind('mousemove', _mousemove);
-					$(document).bind('mousedown', _mousedown);
-				},
+					$(document).unbind('mousedown', _mousedown);
+					$(document).bind('mouseup', _mouseup);
+					$(document).bind('mousemove', _mousemove);
+					_mousemove(event);
+				}
+			};
 
-				_mousemove = function (event) {
-					event.stopImmediatePropagation();
-					event.preventDefault();
+			_mouseup = function (event) {
+				event.stopImmediatePropagation();
+				event.preventDefault();
+				$(document).unbind('mouseup', _mouseup);
+				$(document).unbind('mousemove', _mousemove);
+				$(document).bind('mousedown', _mousedown);
+			};
 
-					if (event.pageY === self.y) {
-						return;
-					}
-					self.y = event.pageY;
+			_mousemove = function (event) {
+				event.stopImmediatePropagation();
+				event.preventDefault();
 
-					var div = $('#ui-colorpicker-bar-layer-pointer', e),
-						offset  = div.offset(),
-						height  = div.height(),
-						y = event.pageY - offset.top;
+				if (event.pageY === self.y) {
+					return;
+				}
+				self.y = event.pageY;
 
-					y = Math.max(0, Math.min(y / height, 1));
+				var div = $('#ui-colorpicker-bar-layer-pointer', e),
+					offset  = div.offset(),
+					height  = div.height(),
+					y = event.pageY - offset.top;
 
-					// interpret values
-					switch (inst.mode) {
-					case 'h':
-						inst.color.h = 1 - y;
-						inst.color.updateRGB();
-						break;
+				y = Math.max(0, Math.min(y / height, 1));
 
-					case 's':
-						inst.color.s = 1 - y;
-						inst.color.updateRGB();
-						break;
+				// interpret values
+				switch (inst.mode) {
+				case 'h':
+					inst.color.h = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-					case 'v':
-						inst.color.v = 1 - y;
-						inst.color.updateRGB();
-						break;
+				case 's':
+					inst.color.s = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-					case 'r':
-						inst.color.r = 1 - y;
-						inst.color.updateHSV();
-						break;
+				case 'v':
+					inst.color.v = 1 - y;
+					inst.color.updateRGB();
+					break;
 
-					case 'g':
-						inst.color.g = 1 - y;
-						inst.color.updateHSV();
-						break;
+				case 'r':
+					inst.color.r = 1 - y;
+					inst.color.updateHSV();
+					break;
 
-					case 'b':
-						inst.color.b = 1 - y;
-						inst.color.updateHSV();
-						break;
+				case 'g':
+					inst.color.g = 1 - y;
+					inst.color.updateHSV();
+					break;
 
-					case 'a':
-						inst.color.a = 1 - y;
-						break;
-					}
+				case 'b':
+					inst.color.b = 1 - y;
+					inst.color.updateHSV();
+					break;
 
-					inst._change();
-				},
+				case 'a':
+					inst.color.a = 1 - y;
+					break;
+				}
 
-				_html = function () {
-					var html = '<div id="ui-colorpicker-bar" class="ui-colorpicker-border">'
-							+ '<span id="ui-colorpicker-bar-layer-1">&nbsp;</span>'
-							+ '<span id="ui-colorpicker-bar-layer-2">&nbsp;</span>'
-							+ '<span id="ui-colorpicker-bar-layer-3">&nbsp;</span>'
-							+ '<span id="ui-colorpicker-bar-layer-4">&nbsp;</span>';
+				inst._change();
+			};
 
-					if (inst.options.alpha) {
-						html += '<span id="ui-colorpicker-bar-layer-alpha">&nbsp;</span>'
-							+ '<span id="ui-colorpicker-bar-layer-alphabar">&nbsp;</span>';
-					}
+			_html = function () {
+				var html = '<div id="ui-colorpicker-bar" class="ui-colorpicker-border">'
+						+ '<span id="ui-colorpicker-bar-layer-1">&nbsp;</span>'
+						+ '<span id="ui-colorpicker-bar-layer-2">&nbsp;</span>'
+						+ '<span id="ui-colorpicker-bar-layer-3">&nbsp;</span>'
+						+ '<span id="ui-colorpicker-bar-layer-4">&nbsp;</span>';
 
-					html += '<span id="ui-colorpicker-bar-layer-pointer"><span id="ui-colorpicker-bar-pointer"></span></span></div>';
+				if (inst.options.alpha) {
+					html += '<span id="ui-colorpicker-bar-layer-alpha">&nbsp;</span>'
+						+ '<span id="ui-colorpicker-bar-layer-alphabar">&nbsp;</span>';
+				}
 
-					return html;
-				};
+				html += '<span id="ui-colorpicker-bar-layer-pointer"><span id="ui-colorpicker-bar-pointer"></span></span></div>';
+
+				return html;
+			};
 
 			this.generate = function () {
 				switch (inst.mode) {
@@ -1258,7 +1264,7 @@
 		},
 
 		Color: function () {
-			var a;
+			var a, args = arguments;
 
 			this.updateRGB = function () {
 				this.h = Math.max(0, Math.min(this.h, 1));
@@ -1304,13 +1310,14 @@
 			};
 
 			this.updateHSV = function () {
+				var minVal, maxVal, delta, del_R, del_G, del_B;
 				this.r = Math.max(0, Math.min(this.r, 1));
 				this.g = Math.max(0, Math.min(this.g, 1));
 				this.b = Math.max(0, Math.min(this.b, 1));
 
-				var minVal = Math.min(this.r, this.g, this.b),
-					maxVal = Math.max(this.r, this.g, this.b),
-					delta = maxVal - minVal;
+				minVal = Math.min(this.r, this.g, this.b);
+				maxVal = Math.max(this.r, this.g, this.b);
+				delta = maxVal - minVal;
 
 				this.v = maxVal;
 
@@ -1319,9 +1326,9 @@
 					this.s = 0;
 				} else {
 					this.s = delta / maxVal;
-					var del_R = (((maxVal - this.r) / 6) + (delta / 2)) / delta,
-						del_G = (((maxVal - this.g) / 6) + (delta / 2)) / delta,
-						del_B = (((maxVal - this.b) / 6) + (delta / 2)) / delta;
+					del_R = (((maxVal - this.r) / 6) + (delta / 2)) / delta;
+					del_G = (((maxVal - this.g) / 6) + (delta / 2)) / delta;
+					del_B = (((maxVal - this.b) / 6) + (delta / 2)) / delta;
 
 					if (this.r === maxVal) {
 						this.h = del_B - del_G;
@@ -1379,11 +1386,11 @@
 				this.updateHSV();
 			};
 
-			for (a = 0; a < arguments.length; a += 1) {
-				arguments[a] = Math.max(0, Math.min(arguments[a], 1));
+			for (a = 0; a < args.length; a += 1) {
+				args[a] = Math.max(0, Math.min(args[a], 1));
 			}
 
-			if (arguments.length === 0) {
+			if (args.length === 0) {
 				this.r = 0;
 				this.g = 0;
 				this.b = 0;
@@ -1391,30 +1398,30 @@
 				this.h = 0;
 				this.s = 0;
 				this.v = 0;
-			} else if (arguments.length === 3) {
+			} else if (args.length === 3) {
 				// r,g,b
-				this.r = arguments[0] || 0;
-				this.g = arguments[1] || 0;
-				this.b = arguments[2] || 0;
+				this.r = args[0] || 0;
+				this.g = args[1] || 0;
+				this.b = args[2] || 0;
 				this.a = 1;
 				this.updateHSV();
-			} else if (arguments.length === 4) {
-				this.r = arguments[0] || 0;
-				this.g = arguments[1] || 0;
-				this.b = arguments[2] || 0;
-				this.a = arguments[3] || 0;
+			} else if (args.length === 4) {
+				this.r = args[0] || 0;
+				this.g = args[1] || 0;
+				this.b = args[2] || 0;
+				this.a = args[3] || 0;
 				this.updateHSV();
-			} else if (arguments.length === 7) {
+			} else if (args.length === 7) {
 				// r,g,b,a,h,s,v
-				this.r = arguments[0] || 0;
-				this.g = arguments[1] || 0;
-				this.b = arguments[2] || 0;
-				this.a = arguments[3] || 0;
-				this.h = arguments[4] || 0;
-				this.s = arguments[5] || 0;
-				this.v = arguments[6] || 0;
+				this.r = args[0] || 0;
+				this.g = args[1] || 0;
+				this.b = args[2] || 0;
+				this.a = args[3] || 0;
+				this.h = args[4] || 0;
+				this.s = args[5] || 0;
+				this.v = args[6] || 0;
 			}
 		}
 	});
 
-})(jQuery);
+}(jQuery));
