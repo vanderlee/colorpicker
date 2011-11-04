@@ -20,19 +20,11 @@
 	vertical-align: top;
 }
 
-.ui-colorpicker table td > *{
-	margin-left: 10px;
+.ui-colorpicker-padding-left {
+	padding-left: 10px;
 }
-.ui-colorpicker table td:first-child > * {
-	margin-left: 0;
-}
-
-#ui-colorpicker-controls-container > * > * {
-	margin-top: 10px;
-}
-
-#ui-colorpicker-controls-container > *:first-child > * {
-	margin-top: 0;
+.ui-colorpicker-padding-top {
+	padding-top: 10px;
 }
 
 .ui-colorpicker-border {

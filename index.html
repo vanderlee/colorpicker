@@ -23,7 +23,6 @@
 		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>
         <script>
            	$( function() {
-				// For the documentation
 				$('#switcher').themeswitcher();
 
                 $('#cp1').colorpicker({
@@ -36,10 +35,10 @@
 								//console.log(inst);
 							},
 					showOn: 'both',
+					showHeader: true,
 					showSwatches: true,
 					buttonColorize: true,
-					altField: '.cp1-alt',
-					showButtonPanel: true
+					altField: '.cp1-alt'
 				});
 
                 $('#cp2').colorpicker({
@@ -48,7 +47,8 @@
 				});
 
                 var cpb = $('#cp-buttons').colorpicker({
-					showOn: ''
+					showOn: '',
+					parts: ['bar', 'map']
 				});
 				$('#cp-button-open').click( function() {
 					cpb.colorpicker('open');
