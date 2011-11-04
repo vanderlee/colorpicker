@@ -6,10 +6,6 @@ Post to...
 		- link(s)
 		- check specs/requirements and add/fix them
 
-Layout mechanism
-	['header', [['map', 'websafe'], 'bar', ['preview, 'hsv', 'rgb', 'a', 'hex'], 'swatches'], 'buttonpanel']
-	[vertical[horizontal[vertical[horz...[...]]]]]
-
 Colorwheel
 Triangle/wheel
 Related-colors swatching

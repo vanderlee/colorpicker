@@ -46,18 +46,19 @@ swatches:		null
 	with colornames and [r,g,b] array.
 	For example { 'red': [ 255, 0, 0 ], 'blue': [0, 0, 255] }
 
-showHeader:		false
-showMap:		true
-showBar:		true
-showPreview:	true
-showInputs:		true
-showHex:		true
-showSwatches:	true
-showButtonPanel:false
-	Set whether to show the individual control components of the colorpicker
-	dialog. Set to false to hide.
+parts:			''
+	Determine which parts to display.
+	Use any of the preset names ('full', 'popup' or 'inline') or specify
+	an array of part names (i.e. ['header', 'map', 'bar', 'hex', 'inputs',
+	'preview', 'swatches', 'footer']). If an empty string is given, the parts
+	will be automatically chosen as preset 'popup' or 'inline' depending on
+	the context in which the colorpicker is used.
 
-
+layout:
+	Set the position of elements in a table layout.
+	You could create any layout possible with HTML tables by specifying cell
+	position and size of each part.
+	@todo document how this works.
 
 duration:		'fast'
 showAnim:		'fadeIn'

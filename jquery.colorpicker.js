@@ -200,7 +200,7 @@
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
 			layout: {
-				map:		[0, 0, 1, 3],
+				map:		[0, 0, 1, 3],	// Left, Top, Width, Height (in table cells).
 				bar:		[1, 0, 1, 3],
 				preview:	[2, 0, 1, 1],
 				inputs:		[2, 1, 1, 1],
