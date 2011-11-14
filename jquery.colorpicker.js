@@ -1183,11 +1183,13 @@
 						inst.color.h = $('#ui-colorpicker-h .ui-colorpicker-number', e).val() / 360;
 						inst.color.s = $('#ui-colorpicker-s .ui-colorpicker-number', e).val() / 100;
 						inst.color.v = $('#ui-colorpicker-v .ui-colorpicker-number', e).val() / 100;
+
 						if ($(this).hasClass('ui-colorpicker-number-hsv')) {
 							inst.color.updateRGB();
 						} else if ($(this).hasClass('ui-colorpicker-number-rgb')) {
 							inst.color.updateHSV();
 						}
+
 						inst._change();
 					});
 				};
