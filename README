@@ -9,8 +9,6 @@ Sourcecode created from scratch by Martijn W. van der Lee.
 
 IE support; make sure you have a doctype defined, or the colorpicker will not display correctly.
 
-Note; this plugin is constantly changing, this file may be out of date.
-
 alpha:			false
 	Whether or not to show the inputs for alpha.
 autoOpen: false
@@ -76,3 +74,50 @@ limit:			''
 					The palette is limited to 4096 colors.
 		'binary'	Allow only #00 or #ff as color channel values for primary
 					colors only; only 8 colors are available with this limit.
+
+
+
+----------------------NEW...
+v0.5.3
+
+
+Options:
+	alpha:				false,		// Show alpha controls and mode
+	altAlpha:			true,		// change opacity of altField as well?
+	altField:			'',			// selector for DOM elements which change background color on change.
+	altOnChange:		true,		// true to update on each change, false to update only on close.
+	autoOpen:			false,		// Open dialog automatically upon creation
+	buttonColorize:		false,
+	buttonImage:		'images/ui-colorpicker.png',
+	buttonImageOnly:	false,
+	buttonText:			'Color',	// Text on the button and/or title of button image.
+	closeOnOutside:		true,		// Close the dialog when clicking outside the dialog (not for inline)
+	color:				'#00FF00',	// Initial color (for inline only)
+	duration:			'fast',
+	hsv:				true,		// Show HSV controls and modes
+	layout: {
+		map:		[0, 0, 1, 3],	// Left, Top, Width, Height (in table cells).
+		bar:		[1, 0, 1, 3],
+		preview:	[2, 0, 1, 1],
+		inputs:		[2, 1, 1, 1],
+		hex:		[2, 2, 1, 1],
+		swatches:	[3, 0, 1, 3]
+	},
+	limit:				'',			// Limit color "resolution": '', 'websafe', 'nibble', 'binary'
+	mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
+	parts:				'',
+	rgb:				true,		// Show RGB controls and modes
+	showAnim:			'fadeIn',
+	showOn:				'focus',	// 'focus', 'button', 'both'
+	showOptions:		{},
+	swatches:			null,
+	title:				'Pick a color',
+
+Events:
+	onClose:			null,
+	onSelect:			null
+
+Methods:
+	open
+	close
+	destroy

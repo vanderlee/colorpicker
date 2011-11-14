@@ -2,7 +2,7 @@
 /*globals jQuery */
 
 /*
- * ColorPicker v0.5.2
+ * ColorPicker v0.5.3
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -24,9 +24,8 @@
  * @todo Change internal ranges to floatingpoint 255/360/100
  * @todo Implement 'disabled' option
  * @todo Include header/footer in layout?
+ * @todo Split inputs into rgb/hsv/a parts
  */
-
-
 
 (function ($) {
 	"use strict";
@@ -646,10 +645,6 @@
 			return result.toLowerCase();
 		},
 
-		_crop: function (value) {
-			return value > 1 ? 1 : (value < 0 ? 0 : value);
-		},
-
 		// This will be deprecated by jQueryUI 1.9 widget
 		_hoverable: function (e) {
 			e.hover(function () {
@@ -1148,8 +1143,7 @@
 			inputs: function (inst) {
 				var self = this,
 					e = null,
-					_html,
-					_getColorFromInputs;
+					_html;
 
 				_html = function () {
 					var html = '<div id="ui-colorpicker-inputs">';
@@ -1173,18 +1167,6 @@
 					return html + '</div>';
 				};
 
-				_getColorFromInputs = function () {
-					return new inst.Color(
-						$('#ui-colorpicker-r .ui-colorpicker-number', e).val() / 255,
-						$('#ui-colorpicker-g .ui-colorpicker-number', e).val() / 255,
-						$('#ui-colorpicker-b .ui-colorpicker-number', e).val() / 255,
-						$('#ui-colorpicker-a .ui-colorpicker-number', e).val() / 100,
-						$('#ui-colorpicker-h .ui-colorpicker-number', e).val() / 360,
-						$('#ui-colorpicker-s .ui-colorpicker-number', e).val() / 100,
-						$('#ui-colorpicker-v .ui-colorpicker-number', e).val() / 100
-					);
-				};
-
 				this.init = function () {
 					e = $(_html()).appendTo($('#ui-colorpicker-inputs-container', inst.dialog));
 
@@ -1194,7 +1176,13 @@
 					});
 
 					$('.ui-colorpicker-number', e).bind('change input keyup', function () {
-						inst.color = _getColorFromInputs();
+						inst.color.r = $('#ui-colorpicker-r .ui-colorpicker-number', e).val() / 255;
+						inst.color.g = $('#ui-colorpicker-g .ui-colorpicker-number', e).val() / 255;
+						inst.color.b = $('#ui-colorpicker-b .ui-colorpicker-number', e).val() / 255;
+						inst.color.a = $('#ui-colorpicker-a .ui-colorpicker-number', e).val() / 100;
+						inst.color.h = $('#ui-colorpicker-h .ui-colorpicker-number', e).val() / 360;
+						inst.color.s = $('#ui-colorpicker-s .ui-colorpicker-number', e).val() / 100;
+						inst.color.v = $('#ui-colorpicker-v .ui-colorpicker-number', e).val() / 100;
 						if ($(this).hasClass('ui-colorpicker-number-hsv')) {
 							inst.color.updateRGB();
 						} else if ($(this).hasClass('ui-colorpicker-number-rgb')) {
@@ -1603,12 +1591,6 @@
 				this.b = args[2] || 0;
 				this.a = 1;
 				this.updateHSV();
-//			} else if (args.length === 4) {
-//				this.r = args[0] || 0;
-//				this.g = args[1] || 0;
-//				this.b = args[2] || 0;
-//				this.a = args[3] || 0;
-//				this.updateHSV();
 			} else if (args.length === 7) {
 				// r,g,b,a,h,s,v
 				this.r = args[0] || 0;
