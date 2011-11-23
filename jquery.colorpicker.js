@@ -2,7 +2,7 @@
 /*globals jQuery */
 
 /*
- * ColorPicker v0.5.3
+ * ColorPicker v0.6
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -425,14 +425,31 @@
 					}
 				}
 
-				$(self._layoutTable(layout_parts)).appendTo(self.dialog).addClass('ui-dialog-content ui-widget-content');
+				$(self._layoutTable(layout_parts, function(cell, x, y) {
+					var classes = [];
+
+					if (x > 0) {
+						classes.push('ui-colorpicker-padding-left');
+					}
+
+					if (y > 0) {
+						classes.push('ui-colorpicker-padding-top');
+					}
+
+					return '<td id="ui-colorpicker-' + cell.part + '-container"'
+						+ (cell.pos[2] > 1 ? ' colspan="' + cell.pos[2] + '"' : '')
+						+ (cell.pos[3] > 1 ? ' rowspan="' + cell.pos[3] + '"' : '')
+						+ (classes.length > 0 ? ' class="' + classes.join(' ') + '"' : '')
+						+ ' valign="top"></td>';
+				})).appendTo(self.dialog).addClass('ui-dialog-content ui-widget-content');
+
 				self._initAllParts();
 				self._generateAllParts();
 				self.generated = true;
 			}
 		},
 
-		_layoutTable: function(layout) {
+		_layoutTable: function(layout, callback) {
 			var layout = layout.sort(function(a, b) {
 					if (a.pos[1] == b.pos[1]) {
 						return a.pos[0] - b.pos[0];
@@ -443,6 +460,7 @@
 				x,
 				y,
 				width, height,
+				columns, rows,
 				index,
 				cell,
 				html;
@@ -461,6 +479,19 @@
 				bitmap.push(new Array(height));
 			}
 
+			// Mark rows and columns which have layout assigned
+			rows	= new Array(height);
+			columns = new Array(width);
+			for (index in layout) {
+				// mark columns
+				for (x = 0; x < layout[index].pos[2]; x += 1) {
+					columns[layout[index].pos[0] + x] = true;
+				}
+				for (y = 0; y < layout[index].pos[3]; y += 1) {
+					rows[layout[index].pos[1] + y] = true;
+				}
+			}
+
 			// Generate the table
 			html = '';
 			cell = layout[index = 0];
@@ -470,21 +501,9 @@
 					if (cell !== undefined && x == cell.pos[0] && y == cell.pos[1]) {
 						// Create a "real" cell
 						var w,
-							h,
-							classes = [];
+							h;
 
-						if (x > 0) {
-							classes.push('ui-colorpicker-padding-left');
-						}
-						if (y > 0) {
-							classes.push('ui-colorpicker-padding-top');
-						}
-
-						html += '<td id="ui-colorpicker-' + cell.part + '-container"'
-							+ (cell.pos[2] > 1 ? ' colspan="' + cell.pos[2] + '"' : '')
-							+ (cell.pos[3] > 1 ? ' rowspan="' + cell.pos[3] + '"' : '')
-							+ (classes.length > 0 ? ' class="' + classes.join(' ') + '"' : '')
-							+ ' valign="top"></td>';
+						html += callback(cell, x, y);
 
 						for (h = 0; h < cell.pos[3]; h +=1) {
 							for (w = 0; w < cell.pos[2]; w +=1) {
@@ -497,14 +516,21 @@
 					} else {
 						// Fill in the gaps
 						var colspan = 0;
-						while (x < width && bitmap[x][y] === undefined) {
-							colspan += 1;
+						var walked = false;
+
+						while (x < width && bitmap[x][y] === undefined && (cell === undefined || y < cell.pos[1] || (y == cell.pos[1] && x < cell.pos[0]))) {
+							if (columns[x] === true) {
+								colspan += 1;
+							}
+							walked = true;
 							x += 1;
 						}
+
 						if (colspan > 0) {
 							html += '<td colspan="'+colspan+'"></td>';
+						} else if (!walked) {
+							x += 1;
 						}
-						x += 1;
 					}
 				}
 				html += '</tr>';
