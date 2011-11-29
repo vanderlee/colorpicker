@@ -11,7 +11,6 @@
  * Most images from jPicker by Christopher T. Tillman.
  * Sourcecode created from scratch by Martijn W. van der Lee.
  *
- * @todo Methods? open/close/enable/disable
  * @todo Custom buttons ->none" -> special "none" state?
  * @todo Undo/redo memory?
  * @todo Small size variant (128x128)
@@ -21,7 +20,6 @@
  * @todo Shared swatches; cookies/session/global
  * @todo Language files: Done/Color/Pick a color/H/S/V/R/G/B/A/color swatches
  * @todo isRTL? What to RTL, besides button?
- * @todo Change internal ranges to floatingpoint 255/360/100
  * @todo Implement 'disabled' option
  * @todo Include header/footer in layout?
  * @todo Split inputs into rgb/hsv/a parts
@@ -30,7 +28,7 @@
 (function ($) {
 	"use strict";
 
-	var _container_popup	= '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
+	var _container_popup = '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
 
 		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
 
@@ -413,8 +411,7 @@
 			self._loadColor();
 
 			if (!self.generated) {
-				var index,
-					layout_parts = [];
+				var layout_parts = [];
 
 				for (index in self.options.layout) {
 					if (index in self.parts) {
