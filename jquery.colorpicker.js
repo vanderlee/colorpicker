@@ -374,9 +374,11 @@
 		},
 
 		_loadColor: function () {
-			var rgb = this._parseColor(this.options.color);	//@todo
-			this.color = (rgb === false ? new this.Color() : new this.Color(rgb[0], rgb[1], rgb[2]));
-			this.currentColor = $.extend({}, this.color);
+			if(!this.color) {
+				var rgb = this._parseColor(this.options.color);	//@todo
+				this.color = (rgb === false ? new this.Color() : new this.Color(rgb[0], rgb[1], rgb[2]));
+				this.currentColor = $.extend({}, this.color);
+			}
 
 			this._setAltField();
 		},
