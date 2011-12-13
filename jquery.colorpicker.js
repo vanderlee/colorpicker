@@ -186,6 +186,7 @@
 			alpha:				false,		// Show alpha controls and mode
 			altAlpha:			true,		// change opacity of altField as well?
 			altField:			'',			// selector for DOM elements which change background color on change.
+			altFieldForeground:	'',			// selector for DOM elements which change foreground color on change.
 			altOnChange:		true,		// true to update on each change, false to update only on close.
 			autoOpen:			false,		// Open dialog automatically upon creation
 			buttonColorize:		false,
@@ -370,6 +371,9 @@
 				if (this.options.altAlpha) {
 					$(this.options.altField).css('opacity', this.color.a);
 				}
+			}
+			if (this.options.altFieldForeground) {
+				$(this.options.altFieldForeground).css('color', this.color.toCSS());
 			}
 		},
 
