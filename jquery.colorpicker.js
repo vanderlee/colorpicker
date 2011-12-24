@@ -23,6 +23,7 @@
  * @todo Implement 'disabled' option
  * @todo Include header/footer in layout?
  * @todo Split inputs into rgb/hsv/a parts
+ * @todo Modal popup mode
  */
 
 (function ($) {
@@ -187,6 +188,7 @@
 			altAlpha:			true,		// change opacity of altField as well?
 			altField:			'',			// selector for DOM elements which change background color on change.
 			altOnChange:		true,		// true to update on each change, false to update only on close.
+			altProperties:		'background-color',	// comma separated list of any of 'background-color', 'color', 'border-color', 'outline-color'
 			autoOpen:			false,		// Open dialog automatically upon creation
 			buttonColorize:		false,
 			buttonImage:		'images/ui-colorpicker.png',
@@ -365,8 +367,23 @@
 		},
 
 		_setAltField: function () {
-			if (this.options.altField) {
-				$(this.options.altField).css('background-color', this.color.toCSS());
+			if (this.options.altField && this.options.altProperties) {
+				var index,
+					property,
+					properties = this.options.altProperties.split(',');
+
+				for (index in properties) {
+					property = $.trim(properties[index]);
+					switch (property) {
+						case 'color':
+						case 'background-color':
+						case 'outline-color':
+						case 'border-color':
+							$(this.options.altField).css(property, this.color.toCSS());
+							break;
+					}
+				}
+
 				if (this.options.altAlpha) {
 					$(this.options.altField).css('opacity', this.color.a);
 				}

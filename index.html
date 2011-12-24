@@ -3,7 +3,7 @@
     <head>
         <title>jqcp</title>
 		<!-- jQuery/jQueryUI (hosted) -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
 		<script src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
 		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css"/>
@@ -38,7 +38,8 @@
 					showHeader: true,
 					showSwatches: true,
 					buttonColorize: true,
-					altField: '.cp1-alt'
+					altField: '.cp1-alt',
+					altProperties: 'background-color,color'
 				});
 
                 $('#cp2').colorpicker({
@@ -66,7 +67,9 @@
         <div id="switcher"></div>
 
         Color: <input type="color" id="cp1" value="ff9900"/>
-		<div class="cp1-alt" style="border: 1px inset; width: 200px; height: 40px;"></div>
+		<div class="cp1-alt" style="border: 1px inset; width: 180px; height: 60px;">
+			<div style=" background-color: white; border: 1px solid black; margin: 5px; padding: 5px; font-size: 20px; font-weight: bold;">Text</div>
+		</div>
 
 		<hr/>
 

@@ -21,8 +21,16 @@ Options:
 		Change the background color of the elements specified in this element.
 
 	altOnChange:		true
-		if true, the altField element(s) are updated on every change, otherwise
+		If true, the altField element(s) are updated on every change, otherwise
 		only upon closing.
+
+	altProperties:		'background-color'
+		Comma-separated list of CSS properties to set color of in the altField.
+		The following properties are allowed, all others are ignored.
+			background-color
+			color
+			border-color
+			outline-color
 
 	autoOpen:			false
 		If true, the dialog opens automatically upon page load.
