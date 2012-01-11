@@ -11,19 +11,19 @@
  * Most images from jPicker by Christopher T. Tillman.
  * Sourcecode created from scratch by Martijn W. van der Lee.
  *
- * @todo Custom buttons ->none" -> special "none" state?
  * @todo Undo/redo memory?
  * @todo Small size variant (128x128)
  * @todo Distance between rgb/hsv/a options
- * @todo Force hex correction (limit and padding) upon done
- * @todo if limit, correct initial color upon open
  * @todo Shared swatches; cookies/session/global
- * @todo Language files: Done/Color/Pick a color/H/S/V/R/G/B/A/color swatches
+ * @todo Language files: Done/None/Revert/Color/Pick a color/H/S/V/R/G/B/A/color swatches
  * @todo isRTL? What to RTL, besides button?
  * @todo Implement 'disabled' option
  * @todo Include header/footer in layout?
  * @todo Split inputs into rgb/hsv/a parts
  * @todo Modal popup mode
+ * @todo Special rendering mode for color_none?
+ * @todo closeOnEscape
+ * @todo What to do with this.changed?
  */
 
 (function ($) {
@@ -208,9 +208,10 @@
 			},
 			limit:				'',			// Limit color "resolution": '', 'websafe', 'nibble', 'binary'
 			mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
-			parts:				'',
+			parts:				'',			// leave empty for automatic selection
 			rgb:				true,		// Show RGB controls and modes
 			showAnim:			'fadeIn',
+			showNoneButton:		false,
 			showOn:				'focus',	// 'focus', 'button', 'both'
 			showOptions:		{},
 			swatches:			null,
@@ -222,6 +223,8 @@
 
 		_create: function () {
 			var self = this;
+
+			self.color_none = false;
 
 			self.opened		= false;
 			self.generated	= false;
@@ -287,9 +290,7 @@
 							'title':	self.options.buttonText
 						});
 
-						if (self.options.buttonColorize) {
-							self.image.css('background-color', self.color.toCSS());
-						}
+						self._setImageBackground();
 					}
 
 					if (self.options.buttonImageOnly && self.image) {
@@ -311,9 +312,7 @@
 					if (event.keyCode === 9) {
 						self.close();
 					}
-				});
-
-				self.element.keyup(function (event) {
+				}).keyup(function (event) {
 					var rgb = self._parseHex(self.element.val());
 					if (rgb) {
 						self.color = (rgb === false ? new self.Color() : new self.Color(rgb[0], rgb[1], rgb[2]));
@@ -367,7 +366,7 @@
 		},
 
 		_setAltField: function () {
-			if (this.options.altField && this.options.altProperties) {
+			if (this.options.altOnChange && this.options.altField && this.options.altProperties) {
 				var index,
 					property,
 					properties = this.options.altProperties.split(',');
@@ -379,21 +378,22 @@
 						case 'background-color':
 						case 'outline-color':
 						case 'border-color':
-							$(this.options.altField).css(property, this.color.toCSS());
+							$(this.options.altField).css(property, this.color_none? '' : this.color.toCSS());
 							break;
 					}
 				}
 
 				if (this.options.altAlpha) {
-					$(this.options.altField).css('opacity', this.color.a);
+					$(this.options.altField).css('opacity', this.color_none? '' : this.color.a);
 				}
 			}
 		},
 
 		_loadColor: function () {
 			if(!this.color) {
-				var rgb = this._parseColor(this.options.color);	//@todo
+				var rgb = this._parseColor(this.options.color);
 				this.color = (rgb === false ? new this.Color() : new this.Color(rgb[0], rgb[1], rgb[2]));
+				this.color_none = (rgb === false);
 				this.currentColor = $.extend({}, this.color);
 			}
 
@@ -584,6 +584,8 @@
 			if (!this.opened) {
 				this._generate();
 
+				this._change();		//@todo side-effects
+
 				var offset = this.element.offset(),
 					x = offset.left,
 					y = offset.top + this.element.outerHeight();
@@ -596,16 +598,25 @@
 			}
 		},
 
+		_setImageBackground: function() {
+			if (this.image && this.options.buttonColorize) {
+				this.image.css('background-color', this.color_none? '' : this.color.toCSS());
+			}
+		},
+
 		close: function () {
 			var self = this;
 
-			this._setAltField();
+			// update colors
+			//this.element.val(self.color_none ? '' : this.color.toHex());
+			//this._setImageBackground();
+			//this._setAltField();
 
-			self.currentColor	= $.extend({}, self.color);
-			self.changed		= false;
+			this.currentColor	= $.extend({}, this.color);
+			this.changed		= false;
 
 			// tear down the interface
-			self._effectHide(function () {
+			this._effectHide(function () {
 				self.dialog.empty();
 				self.generated	= false;
 
@@ -618,12 +629,21 @@
 			var self = this;
 
 			if (f instanceof Function) {
-				f(self.color.toCSS(), {
-					r: self.color.r,
-					g: self.color.g,
-					b: self.color.b,
-					a: self.color.a
-				}, self);
+				if (self.color_none) {
+					f('', {
+						r: 0,
+						g: 0,
+						b: 0,
+						a: 0
+					}, self);
+				} else {
+					f(self.color.toCSS(), {
+						r: self.color.r,
+						g: self.color.g,
+						b: self.color.b,
+						a: self.color.a
+					}, self);
+				}
 			}
 		},
 
@@ -639,9 +659,7 @@
 			});
 		},
 
-		_change: function () {
-			this.changed = true;
-
+		_limit: function() {
 			switch (this.options.limit) {
 			case 'websafe':
 				this.color.limit(6);
@@ -655,20 +673,25 @@
 				this.color.limit(2);
 				break;
 			}
+		},
+
+		_change: function (no_color) {
+			this.color_none = no_color === true;
+
+			this.changed = true;
+
+			this._limit();
 
 			// update colors
 			if (!this.inline) {
-				if (!this.color.equals(this._parseHex(this.element.val()))) {
+				if (this.color_none) {
+					this.element.val('');
+				} else if(!this.color.equals(this._parseHex(this.element.val()))) {
 					this.element.val(this.color.toHex());
 				}
 
-				if (this.image && this.options.buttonColorize) {
-					this.image.css('background-color', this.color.toCSS());
-				}
-
-				if (this.options.altOnChange) {
-					this._setAltField();
-				}
+				this._setImageBackground();
+				this._setAltField();
 			}
 
 			// callback
@@ -1393,15 +1416,21 @@
 			footer: function (inst) {
 				var self = this,
 					e = null,
-					_html;
+					_html,
+					_none_button_text;
 
 				_html = function () {
 					return '<div class="ui-dialog-buttonpane ui-widget-content">'
 						+ (inst.options.alpha ? '<button class="ui-colorpicker-transparent">transparent</button>' : '')
 						+ (inst.inline ? '' : '<div class="ui-dialog-buttonset">'
+							+ (inst.options.showNoneButton ? '<button class="ui-colorpicker-none">None</button>' : '')
 							+ '<button class="ui-colorpicker-close">Done</button>'
 							+ '</div>')
 						+ '</div>';
+				};
+
+				_none_button_text = function (e) {
+					$('.ui-colorpicker-none .ui-button-text', e).text(inst.color_none? 'Revert' : 'None');
 				};
 
 				this.init = function () {
@@ -1410,6 +1439,12 @@
 					$('.ui-colorpicker-close', e).button().click(function () {
 						inst.close();
 					});
+
+					$('.ui-colorpicker-none', e).button().click(function () {
+						inst._change(!inst.color_none);
+						_none_button_text(e);
+					});
+					_none_button_text(e);
 
 					if (inst.options.alpha) {
 						$('.ui-colorpicker-transparent', e).button().click(function () {
@@ -1619,6 +1654,8 @@
 			for (a = 0; a < args.length; a += 1) {
 				args[a] = Math.max(0, Math.min(args[a], 1));
 			}
+
+			this.no_color = false;
 
 			if (args.length === 0) {
 				this.r = 0;

@@ -103,6 +103,9 @@ Options:
 	showAnim:			'fadeIn'
 		Same as jQueryUI DatePicker.
 
+	showNoneButton:		false
+		Show the None/Revert button if buttonpane is visible.
+
 	showOn:				'focus'
 		Same as jQueryUI DatePicker.
 

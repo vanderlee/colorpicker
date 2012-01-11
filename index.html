@@ -27,18 +27,18 @@
 
                 $('#cp1').colorpicker({
 					onClose: function(hex, rgba, inst) {
-
+								console.log('onClose: '+hex+', ('+rgba.r+','+rgba.g+','+rgba.b+','+rgba.a+')');
 							},
 					onSelect: function(hex, rgba, inst) {
-								//console.log(hex);
-								//console.log(rgba);
-								//console.log(inst);
+								console.log('onSelect: '+hex+', ('+rgba.r+','+rgba.g+','+rgba.b+','+rgba.a+')');
 							},
 					showOn: 'both',
 					showHeader: true,
 					showSwatches: true,
+					showNoneButton: true,
 					buttonColorize: true,
 					altField: '.cp1-alt',
+					limit: 'websafe',
 					altProperties: 'background-color,color'
 				});
 
@@ -66,7 +66,7 @@
     <body>
         <div id="switcher"></div>
 
-        Color: <input type="color" id="cp1" value="ff9900"/>
+        Color: <input type="color" id="cp1" value="fe9810"/>
 		<div class="cp1-alt" style="border: 1px inset; width: 180px; height: 60px;">
 			<div style=" background-color: white; border: 1px solid black; margin: 5px; padding: 5px; font-size: 20px; font-weight: bold;">Text</div>
 		</div>
