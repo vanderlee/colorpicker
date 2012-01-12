@@ -595,6 +595,14 @@
 
 				this._effectShow();
 				this.opened = true;
+				var self = this;
+				// Without waiting for domready the width of the map is 0 and we
+				// wind up with the cursor stuck in the upper left corner
+				$(function() {
+  				$.each(self.parts, function (index, part) {
+    				part.repaint();
+    			});
+				});
 			}
 		},
 
@@ -623,6 +631,14 @@
 				self.opened		= false;
 				self._callback(self.options.onClose);
 			});
+		},
+		
+		setColor: function(c) {
+		  var self = this;
+		  self.options.color = c;
+		  self._loadColor();
+			self._setAltField();
+	    self._change();
 		},
 
 		_callback: function (f) {
@@ -686,8 +702,12 @@
 			if (!this.inline) {
 				if (this.color_none) {
 					this.element.val('');
+					// Don't lose the current selection if we close and reopen
+					this.options.color = '';
 				} else if(!this.color.equals(this._parseHex(this.element.val()))) {
 					this.element.val(this.color.toHex());
+					// Don't lose the current selection if we close and reopen
+					this.options.color = this.element.val();
 				}
 
 				this._setImageBackground();
@@ -697,9 +717,14 @@
 			// callback
 			this._callback(this.options.onSelect);
 
-			$.each(this.parts, function (index, part) {
-				part.repaint();
-			});
+      // With this check we can call _change() from setColor and update the button even
+      // if the widget is not open right now
+      if (this.opened)
+      {
+  			$.each(this.parts, function (index, part) {
+  				part.repaint();
+  			});
+  		}
 		},
 
 		_intToHex: function (dec) {
@@ -908,7 +933,6 @@
 					var div = $('#ui-colorpicker-map-layer-pointer', e),
 						x = 0,
 						y = 0;
-
 					switch (inst.mode) {
 					case 'h':
 						x = inst.color.s * div.width();
@@ -947,7 +971,6 @@
 						$('#ui-colorpicker-map-layer-2', e).css('opacity', inst.color.b);
 						break;
 					}
-
 					if (inst.options.alpha) {
 						$('#ui-colorpicker-map-layer-alpha', e).css('opacity', 1 - inst.color.a);
 					}
