@@ -1,0 +1,37 @@
+***************
+*** 564,570 ****
+  		open: function () {
+  			if (!this.opened) {
+  				this._generate();
+- 
+  				var offset = this.element.offset(),
+  					x = offset.left,
+  					y = offset.top + this.element.outerHeight();
+--- 564,569 ----
+  		open: function () {
+  			if (!this.opened) {
+  				this._generate();
+  				var offset = this.element.offset(),
+  					x = offset.left,
+  					y = offset.top + this.element.outerHeight();
+***************
+*** 670,676 ****
+  			// update colors
+  			if (!this.inline) {
+  				if (!this.color.equals(this._parseHex(this.element.val()))) {
+  					this.element.val(this.color.toHex());
+  				}
+  
+  				if (this.image && this.options.buttonColorize) {
+--- 685,695 ----
+  			// update colors
+  			if (!this.inline) {
+  				if (!this.color.equals(this._parseHex(this.element.val()))) {
++ 				  var c = this.color.toHex();
+  					this.element.val(this.color.toHex());
++ 					// Without this, on the next click to open the widget it has reverted to its original setting,
++ 					// which does not match what we're seeing on the button or what would be submitted at this point
++ 					this.options.color = c;
+  				}
+  
+  				if (this.image && this.options.buttonColorize) {
