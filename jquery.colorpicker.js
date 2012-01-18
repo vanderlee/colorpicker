@@ -595,6 +595,15 @@
 
 				this._effectShow();
 				this.opened = true;
+
+				var self = this;
+				// Without waiting for domready the width of the map is 0 and we
+				// wind up with the cursor stuck in the upper left corner
+				$(function() {
+					$.each(self.parts, function (index, part) {
+						part.repaint();
+					});
+				});
 			}
 		},
 
