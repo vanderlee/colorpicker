@@ -634,6 +634,16 @@
 			});
 		},
 
+		setColor: function(c) {
+			var rgb = this._parseColor(c);
+			if (rgb !== false) {
+				this.color = new this.Color(rgb[0], rgb[1], rgb[2]);
+				this.color_none = false;
+				this.currentColor = $.extend({}, this.color);
+				this._change();
+			}
+		},
+
 		_callback: function (f) {
 			var self = this;
 
