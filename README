@@ -45,8 +45,8 @@ Options:
 	buttonImageOnly:	false
 		Same as jQueryUI DatePicker.
 
-	buttonText:			'Color'
-		Same as jQueryUI DatePicker.
+	buttonText:			null
+		Same as jQueryUI DatePicker. If null, use language default.
 
 	closeOnOutside:		true
 		Close the window when clicking outside the colorpicker display.
@@ -100,6 +100,10 @@ Options:
 	rgb:				true,		// Show RGB controls and modes
 		Whether or not to show the inputs for RGB.
 
+	regional:			'',
+		Sets the language to use. Note that you must load the appropriate language
+		file from the i18n directory. '' is included by default.
+
 	showAnim:			'fadeIn'
 		Same as jQueryUI DatePicker.
 
@@ -117,8 +121,8 @@ Options:
 		with colornames and [r,g,b] array.
 		For example { 'red': [ 255, 0, 0 ], 'blue': [0, 0, 255] }
 
-	title:				'Pick a color'
-		Title to display in the header.
+	title:				null
+		Title to display in the header. If null, use language default.
 
 Events:
 	onClose:			null

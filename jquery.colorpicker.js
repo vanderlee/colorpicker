@@ -2,7 +2,7 @@
 /*globals jQuery */
 
 /*
- * ColorPicker v0.6.1
+ * ColorPicker v0.6.3
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -15,11 +15,9 @@
  * @todo Small size variant (128x128)
  * @todo Distance between rgb/hsv/a options
  * @todo Shared swatches; cookies/session/global
- * @todo Language files: Done/None/Revert/Color/Pick a color/H/S/V/R/G/B/A/color swatches
  * @todo isRTL? What to RTL, besides button?
  * @todo Implement 'disabled' option
- * @todo Include header/footer in layout?
- * @todo Split inputs into rgb/hsv/a parts so they can be disabled/enabled
+ * @todo Split inputs into rgb/hsv/a parts
  * @todo Modal popup mode
  * @todo Special rendering mode for color_none?
  * @todo closeOnEscape
@@ -28,6 +26,25 @@
 
 (function ($) {
 	"use strict";
+
+	$.colorpicker = new function() {
+		this.regional = [];
+		this.regional[''] =	{
+			done:			'Done',
+			none:			'None',
+			revert:			'Revert',
+			button:			'Color',
+			title:			'Pick a color',
+			transparent:	'Transparent',
+			hueShort:		'H',
+			saturationShort:'S',
+			valueShort:		'V',
+			redShort:		'R',
+			greenShort:		'G',
+			blueShort:		'B',
+			alphaShort:		'A'
+		};
+	};
 
 	var _container_popup = '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
 
@@ -193,11 +210,12 @@
 			buttonColorize:		false,
 			buttonImage:		'images/ui-colorpicker.png',
 			buttonImageOnly:	false,
-			buttonText:			'Color',	// Text on the button and/or title of button image.
+			buttonText:			null,	// Text on the button and/or title of button image.
 			closeOnOutside:		true,		// Close the dialog when clicking outside the dialog (not for inline)
 			color:				'#00FF00',	// Initial color (for inline only)
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
+			regional:			'',
 			layout: {
 				map:		[0, 0, 1, 3],	// Left, Top, Width, Height (in table cells).
 				bar:		[1, 0, 1, 3],
@@ -215,7 +233,7 @@
 			showOn:				'focus',	// 'focus', 'button', 'both'
 			showOptions:		{},
 			swatches:			null,
-			title:				'Pick a color',
+			title:				null,
 
 			onClose:			null,
 			onSelect:			null
@@ -284,10 +302,12 @@
 				}
 				if (self.options.showOn === 'button' || self.options.showOn === 'both') {
 					if (self.options.buttonImage !== '') {
+						var text = self.options.buttonText ? self.options.buttonText : self._getRegional('button');
+
 						self.image = $('<img/>').attr({
 							'src':		self.options.buttonImage,
-							'alt':		self.options.buttonText,
-							'title':	self.options.buttonText
+							'alt':		text,
+							'title':	text
 						});
 
 						self._setImageBackground();
@@ -749,6 +769,11 @@
 			});
 		},
 
+		_getRegional: function(name) {
+			return $.colorpicker.regional[this.options.regional][name] !== undefined ?
+				$.colorpicker.regional[this.options.regional][name] : $.colorpicker.regional[''][name];
+		},
+
 		_parts: {
 			header: function (inst) {
 				var self = this,
@@ -756,8 +781,10 @@
 					_html;
 
 				_html = function () {
+					var title = inst.options.title ? inst.options.title :  inst._getRegional('title');
+
 					return '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">'
-						+ '<span class="ui-dialog-title">' + inst.options.title + '</span>'
+						+ '<span class="ui-dialog-title">' + title + '</span>'
 						+ '<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">'
 						+ '<span class="ui-icon ui-icon-closethick">close</span></a></div>';
 				};
@@ -1235,19 +1262,19 @@
 					var html = '<div id="ui-colorpicker-inputs">';
 
 					if (inst.options.hsv) {
-						html +=	'<div id="ui-colorpicker-h"><input class="ui-colorpicker-mode" type="radio" value="h"/><label>H:</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="360" size="10"/><span class="ui-colorpicker-unit">&deg;</span></div>'
-							+ '<div id="ui-colorpicker-s"><input class="ui-colorpicker-mode" type="radio" value="s"/><label>S:</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>'
-							+ '<div id="ui-colorpicker-v"><input class="ui-colorpicker-mode" type="radio" value="v"/><label>V:</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
+						html +=	'<div id="ui-colorpicker-h"><input class="ui-colorpicker-mode" type="radio" value="h"/><label>' + inst._getRegional('hueShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="360" size="10"/><span class="ui-colorpicker-unit">&deg;</span></div>'
+							+ '<div id="ui-colorpicker-s"><input class="ui-colorpicker-mode" type="radio" value="s"/><label>' + inst._getRegional('saturationShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>'
+							+ '<div id="ui-colorpicker-v"><input class="ui-colorpicker-mode" type="radio" value="v"/><label>' + inst._getRegional('valueShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
 					}
 
 					if (inst.options.rgb) {
-						html += '<div id="ui-colorpicker-r"><input class="ui-colorpicker-mode" type="radio" value="r"/><label>R:</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
-							+ '<div id="ui-colorpicker-g"><input class="ui-colorpicker-mode" type="radio" value="g"/><label>G:</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
-							+ '<div id="ui-colorpicker-b"><input class="ui-colorpicker-mode" type="radio" value="b"/><label>B:</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>';
+						html += '<div id="ui-colorpicker-r"><input class="ui-colorpicker-mode" type="radio" value="r"/><label>' + inst._getRegional('redShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
+							+ '<div id="ui-colorpicker-g"><input class="ui-colorpicker-mode" type="radio" value="g"/><label>' + inst._getRegional('greenShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
+							+ '<div id="ui-colorpicker-b"><input class="ui-colorpicker-mode" type="radio" value="b"/><label>' + inst._getRegional('blueShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>';
 					}
 
 					if (inst.options.alpha) {
-						html += '<div id="ui-colorpicker-a"><input class="ui-colorpicker-mode" name="mode" type="radio" value="a"/><label>A:</label><input class="ui-colorpicker-number ui-colorpicker-number-a" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
+						html += '<div id="ui-colorpicker-a"><input class="ui-colorpicker-mode" name="mode" type="radio" value="a"/><label>' + inst._getRegional('alphaShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-a" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
 					}
 
 					return html + '</div>';
@@ -1442,16 +1469,16 @@
 
 				_html = function () {
 					return '<div class="ui-dialog-buttonpane ui-widget-content">'
-						+ (inst.options.alpha ? '<button class="ui-colorpicker-transparent">transparent</button>' : '')
+						+ (inst.options.alpha ? '<button class="ui-colorpicker-transparent">' + inst._getRegional('transparent') + '</button>' : '')
 						+ (inst.inline ? '' : '<div class="ui-dialog-buttonset">'
-							+ (inst.options.showNoneButton ? '<button class="ui-colorpicker-none">None</button>' : '')
-							+ '<button class="ui-colorpicker-close">Done</button>'
+							+ (inst.options.showNoneButton ? '<button class="ui-colorpicker-none">' + inst._getRegional('none') + '</button>' : '')
+							+ '<button class="ui-colorpicker-close">' + inst._getRegional('done') + '</button>'
 							+ '</div>')
 						+ '</div>';
 				};
 
 				_none_button_text = function (e) {
-					$('.ui-colorpicker-none .ui-button-text', e).text(inst.color_none? 'Revert' : 'None');
+					$('.ui-colorpicker-none .ui-button-text', e).text(inst._getRegional(inst.color_none ? 'revert' : 'none'));
 				};
 
 				this.init = function () {

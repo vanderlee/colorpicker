@@ -21,6 +21,7 @@
         </style>
 		<script src="jquery.colorpicker.js"></script>
 		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>
+		<script src="i18n/jquery.ui.colorpicker-nl.js"></script>
         <script>
            	$( function() {
 				$('#switcher').themeswitcher();
@@ -33,12 +34,13 @@
 								console.log('onSelect: '+hex+', ('+rgba.r+','+rgba.g+','+rgba.b+','+rgba.a+')');
 							},
 					showOn: 'both',
-					showHeader: true,
 					showSwatches: true,
 					showNoneButton: true,
 					buttonColorize: true,
 					altField: '.cp1-alt',
 					limit: 'websafe',
+					parts: 'full',
+					regional: 'nl',
 					altProperties: 'background-color,color'
 				});
 
