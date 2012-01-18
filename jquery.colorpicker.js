@@ -713,12 +713,14 @@
 				this._setAltField();
 			}
 
+			if (this.opened) {
+				$.each(this.parts, function (index, part) {
+					part.repaint();
+				});
+			}
+
 			// callback
 			this._callback(this.options.onSelect);
-
-			$.each(this.parts, function (index, part) {
-				part.repaint();
-			});
 		},
 
 		_intToHex: function (dec) {
