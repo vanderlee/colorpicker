@@ -2,7 +2,7 @@
 /*globals jQuery */
 
 /*
- * ColorPicker v0.6
+ * ColorPicker v0.6.1
  *
  * Copyright (c) 2011 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -19,7 +19,7 @@
  * @todo isRTL? What to RTL, besides button?
  * @todo Implement 'disabled' option
  * @todo Include header/footer in layout?
- * @todo Split inputs into rgb/hsv/a parts
+ * @todo Split inputs into rgb/hsv/a parts so they can be disabled/enabled
  * @todo Modal popup mode
  * @todo Special rendering mode for color_none?
  * @todo closeOnEscape
