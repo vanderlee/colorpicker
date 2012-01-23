@@ -234,6 +234,7 @@
 			showOptions:		{},
 			swatches:			null,
 			title:				null,
+			zIndex:				null,
 
 			onClose:			null,
 			onSelect:			null
@@ -602,6 +603,10 @@
 
 		open: function () {
 			if (!this.opened) {
+				if (this.options.zIndex) {
+					this.dialog.css('z-index', this.options.zIndex);
+				}
+
 				this._generate();
 
 				this._change();		//@todo side-effects
@@ -646,6 +651,10 @@
 
 			// tear down the interface
 			this._effectHide(function () {
+				if (this.options.zIndex) {
+					this.dialog.css('z-index', '');
+				}
+
 				self.dialog.empty();
 				self.generated	= false;
 
