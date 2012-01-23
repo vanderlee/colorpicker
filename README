@@ -7,7 +7,8 @@ Full-featured colorpicker for jQueryUI with full theming support.
 Most images from jPicker by Christopher T. Tillman.
 Sourcecode created from scratch by Martijn W. van der Lee.
 
-IE support; make sure you have a doctype defined, or the colorpicker will not display correctly.
+IE support; make sure you have a doctype defined, or the colorpicker will not
+display correctly.
 
 Options:
 	alpha:				false
@@ -69,40 +70,42 @@ Options:
 
 	layout:				{ ... }
 		Set the position of elements in a table layout.
-		You could create any layout possible with HTML tables by specifying cell
-		position and size of each part.
+		You could create any layout possible with HTML tables by specifying
+		cell position and size of each part.
 		@todo document how this works.
 
 	limit:				''
 		Limit the selectable colors to any of the predefined limits:
-				''			No limitations, allow 8bpp color for a palette of all
-							16 million colors.
-				'websafe'	Set of 216 colors composed of 00, 33, 66, 99, cc and ff
-							color channel values in #rrggbb.
-				'nibble'	4 bits per color, can be easily converted to #rgb format.
+				''			No limitations, allow 8bpp color for a palette of
+							all 16 million colors.
+				'websafe'	Set of 216 colors composed of 00, 33, 66, 99, cc
+							and ff color channel values in #rrggbb.
+				'nibble'	4 bits per color, can be easily converted to #rgb
+							format.
 							The palette is limited to 4096 colors.
-				'binary'	Allow only #00 or #ff as color channel values for primary
-							colors only; only 8 colors are available with this limit.
+				'binary'	Allow only #00 or #ff as color channel values for
+							primary	colors only; only 8 colors are available
+							with this limit.
 
 	mode:				'h'
-		Determines the functionality of the map and bar components. Allowed values
-		are; 'h', 's', 'l', 'r', 'g', 'b' or 'a', for hue, saturation, luminosity,
-		red, green, blue and alpha respectively.
+		Determines the functionality of the map and bar components. Allowed
+		values are; 'h', 's', 'l', 'r', 'g', 'b' or 'a', for hue, saturation,
+		luminosity, red, green, blue and alpha respectively.
 
 	parts:				''
 		Determine which parts to display.
 		Use any of the preset names ('full', 'popup' or 'inline') or specify
 		an array of part names (i.e. ['header', 'map', 'bar', 'hex', 'inputs',
-		'preview', 'swatches', 'footer']). If an empty string is given, the parts
-		will be automatically chosen as preset 'popup' or 'inline' depending on
-		the context in which the colorpicker is used.
+		'preview', 'swatches', 'footer']). If an empty string is given, the
+		parts will be automatically chosen as preset 'popup' or 'inline'
+		depending on the context in which the colorpicker is used.
 
 	rgb:				true,		// Show RGB controls and modes
 		Whether or not to show the inputs for RGB.
 
 	regional:			'',
-		Sets the language to use. Note that you must load the appropriate language
-		file from the i18n directory. '' is included by default.
+		Sets the language to use. Note that you must load the appropriate
+		language file from the i18n directory. '' is included by default.
 
 	showAnim:			'fadeIn'
 		Same as jQueryUI DatePicker.
@@ -132,9 +135,9 @@ Events:
 		Triggered on each change, confirmation (click on OK button) and
 		cancellation (click on Cancel, outside window or window close button)
 		respectively.
-		Note that onSelect may be triggered in rapid succession when dragging the
-		mouse accross the map or bar and may be triggered without a change in color
-		upon specific user interactions.
+		Note that onSelect may be triggered in rapid succession when dragging
+		the mouse accross the map or bar and may be triggered without a change
+		in color upon specific user interactions.
 
 Methods:
 	open
@@ -145,3 +148,7 @@ Methods:
 
 	destroy
 		Destroy the widget
+
+	setColor
+		Set the current color to the specified color. Accepts any
+		CSS-confirmant color specification.
