@@ -32,7 +32,7 @@
 		this.regional[''] =	{
 			done:			'Done',
 			none:			'None',
-			revert:			'Revert',
+			revert:			'Color',
 			button:			'Color',
 			title:			'Pick a color',
 			transparent:	'Transparent',
