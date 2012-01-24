@@ -651,7 +651,13 @@
 
 			// tear down the interface
 			this._effectHide(function () {
-				if (this.options.zIndex) {
+				if 
+				(
+					(typeof(this.options)!== 'undefined' && this.options !== null)
+					&&
+					(typeof(this.options.zIndex)!== 'undefined' && this.options.zIndex !== null)
+				) 
+				{
 					this.dialog.css('z-index', '');
 				}
 
