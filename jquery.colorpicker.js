@@ -2,9 +2,9 @@
 /*globals jQuery */
 
 /*
- * ColorPicker v0.6.4
+ * ColorPicker v0.6.5
  *
- * Copyright (c) 2011 Martijn W. van der Lee
+ * Copyright (c) 2011-2012 Martijn W. van der Lee
  * Licensed under the MIT.
  *
  * Full-featured colorpicker for jQueryUI with full theming support.
