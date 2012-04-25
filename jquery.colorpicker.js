@@ -1717,7 +1717,7 @@
 			this.r = args[0] || 0;
 			this.g = args[1] || 0;
 			this.b = args[2] || 0;
-			this.a = args[3] === 0 ? 0 : arg[3] || 1;
+			this.a = args[3] === 0 ? 0 : args[3] || 1;
 			this.h = args[4] || 0;
 			this.s = args[5] || 0;
 			this.v = args[6] || 0;
