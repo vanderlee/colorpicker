@@ -2,7 +2,7 @@
 /*globals jQuery */
 
 /*
- * ColorPicker v0.6.5
+ * ColorPicker v0.7
  *
  * Copyright (c) 2011-2012 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -11,17 +11,16 @@
  * Most images from jPicker by Christopher T. Tillman.
  * Sourcecode created from scratch by Martijn W. van der Lee.
  *
+ * @todo Color output format
+ * @todo Output set, h, s and v as well (use FALSE/NULL) for !set?
  * @todo Undo/redo memory?
  * @todo Small size variant (128x128)
- * @todo Distance between rgb/hsv/a options
- * @todo Shared swatches; cookies/session/global
+ * @todo Shared swatches; cookies/session/global/data
  * @todo isRTL? What to RTL, besides button?
- * @todo Implement 'disabled' option
- * @todo Split inputs into rgb/hsv/a parts
+ * @todo Implement 'disabled'/'enabled' options
  * @todo Modal popup mode
- * @todo Special rendering mode for color_none?
- * @todo closeOnEscape
- * @todo What to do with this.changed?
+ * @todo Special rendering mode for color_none? Use [X] images?
+ * @todo Fix parsing from input with websafe colors
  */
 
 (function ($) {
@@ -30,7 +29,8 @@
 	$.colorpicker = new function() {
 		this.regional = [];
 		this.regional[''] =	{
-			done:			'Done',
+			ok:				'OK',
+			cancel:			'Cancel',
 			none:			'None',
 			revert:			'Color',
 			button:			'Color',
@@ -51,9 +51,9 @@
 		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
 
 		_parts_lists = {
-			'full':		['header', 'map', 'bar', 'hex', 'inputs', 'preview', 'swatches', 'footer'],
-			'popup':	['map', 'bar', 'hex', 'inputs', 'preview', 'footer'],
-			'inline':	['map', 'bar', 'hex', 'inputs', 'preview']
+			'full':		['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'swatches', 'footer'],
+			'popup':	['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
+			'inline':	['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
 		},
 
 		_colors = {
@@ -210,19 +210,22 @@
 			buttonColorize:		false,
 			buttonImage:		'images/ui-colorpicker.png',
 			buttonImageOnly:	false,
-			buttonText:			null,	// Text on the button and/or title of button image.
+			buttonText:			null,		// Text on the button and/or title of button image.
+			closeOnEscape:		true,		// Close the dialog when the escape key is pressed.
 			closeOnOutside:		true,		// Close the dialog when clicking outside the dialog (not for inline)
 			color:				'#00FF00',	// Initial color (for inline only)
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
 			regional:			'',
 			layout: {
-				map:		[0, 0, 1, 3],	// Left, Top, Width, Height (in table cells).
-				bar:		[1, 0, 1, 3],
+				map:		[0, 0, 1, 5],	// Left, Top, Width, Height (in table cells).
+				bar:		[1, 0, 1, 5],
 				preview:	[2, 0, 1, 1],
-				inputs:		[2, 1, 1, 1],
-				hex:		[2, 2, 1, 1],
-				swatches:	[3, 0, 1, 3]
+				hsv:		[2, 1, 1, 1],
+				rgb:		[2, 2, 1, 1],
+				alpha:		[2, 3, 1, 1],
+				hex:		[2, 4, 1, 1],
+				swatches:	[3, 0, 1, 5]
 			},
 			limit:				'',			// Limit color "resolution": '', 'websafe', 'nibble', 'binary'
 			mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
@@ -241,41 +244,38 @@
 		},
 
 		_create: function () {
-			var self = this;
+			var that = this;
 
-			self.color_none = false;
+			that.opened		= false;
+			that.generated	= false;
+			that.inline		= false;
+			that.changed	= false;
 
-			self.opened		= false;
-			self.generated	= false;
-			self.inline		= false;
-			self.changed	= false;
+			that.dialog		= null;
+			that.button		= null;
+			that.image		= null;
 
-			self.dialog		= null;
-			self.button		= null;
-			self.image		= null;
+			that.mode		= that.options.mode;
 
-			self.mode		= self.options.mode;
-
-			if (self.options.swatches === null) {
-				self.options.swatches = _colors;
+			if (that.options.swatches === null) {
+				that.options.swatches = _colors;
 			}
 
 			if (this.element[0].nodeName.toLowerCase() === 'input') {
-				self.options.color = self.element.val();
-				self._loadColor();
+				that._setColor(that.element.val());
 
 				$('body').append(_container_popup);
-				self.dialog = $('.ui-colorpicker:last');
+				that.dialog = $('.ui-colorpicker:last');
 
 				// Click outside/inside
 				$(document).mousedown(function (event) {
-					if (!self.opened || event.target === self.element[0]) {
+					if (!that.opened || event.target === that.element[0]) {
 						return;
 					}
 
 					// Check if clicked on any part of dialog
 					if ($(event.target).parents('.ui-colorpicker').length > 0) {
-						self.element.blur();	// inside window!
+						that.element.blur();	// inside window!
 						return;
 					}
 
@@ -283,72 +283,78 @@
 					var p,
 						parents = $(event.target).parents();
 					for (p in parents) {
-						if (self.button !== null && parents[p] === self.button[0]) {
+						if (that.button !== null && parents[p] === that.button[0]) {
 							return;
 						}
 					}
 
 					// no closeOnOutside
-					if (!self.options.closeOnOutside) {
+					if (!that.options.closeOnOutside) {
 						return;
 					}
 
-					self.close();
+					that.close();
 				});
 
-				if (self.options.showOn === 'focus' || self.options.showOn === 'both') {
-					self.element.focus(function () {
-						self.open();
+				$(document).keydown(function (event) {
+					if (event.keyCode == 27 && that.opened && that.options.closeOnEscape) {
+						that.close();
+					}
+				});
+
+				if (that.options.showOn === 'focus' || that.options.showOn === 'both') {
+					that.element.focus(function () {
+						that.open();
 					});
 				}
-				if (self.options.showOn === 'button' || self.options.showOn === 'both') {
-					if (self.options.buttonImage !== '') {
-						var text = self.options.buttonText ? self.options.buttonText : self._getRegional('button');
+				if (that.options.showOn === 'button' || that.options.showOn === 'both') {
+					if (that.options.buttonImage !== '') {
+						var text = that.options.buttonText ? that.options.buttonText : that._getRegional('button');
 
-						self.image = $('<img/>').attr({
-							'src':		self.options.buttonImage,
+						that.image = $('<img/>').attr({
+							'src':		that.options.buttonImage,
 							'alt':		text,
 							'title':	text
 						});
 
-						self._setImageBackground();
+						that._setImageBackground();
 					}
 
-					if (self.options.buttonImageOnly && self.image) {
-						self.button = self.image;
+					if (that.options.buttonImageOnly && that.image) {
+						that.button = that.image;
 					} else {
-						self.button = $('<button type="button"></button>').html(self.image || self.options.buttonText).button();
-						self.image = self.image ? $('img', self.button).first() : null;
+						that.button = $('<button type="button"></button>').html(that.image || that.options.buttonText).button();
+						that.image = that.image ? $('img', that.button).first() : null;
 					}
-					self.button.insertAfter(self.element).click(function () {
-						self[self.opened ? 'close' : 'open']();
+					that.button.insertAfter(that.element).click(function () {
+						that[that.opened ? 'close' : 'open']();
 					});
 				}
 
-				if (self.options.autoOpen) {
-					self.open();
+				if (that.options.autoOpen) {
+					that.open();
 				}
 
-				self.element.keydown(function (event) {
+				that.element.keydown(function (event) {
 					if (event.keyCode === 9) {
-						self.close();
+						that.close();
 					}
 				}).keyup(function (event) {
-					var rgb = self._parseHex(self.element.val());
+					var rgb = that._parseHex(that.element.val());
 					if (rgb) {
-						self.color = (rgb === false ? new self.Color() : new self.Color(rgb[0], rgb[1], rgb[2]));
-						self._change();
+						that.color = (rgb === false ? new that.Color() : new that.Color(rgb[0], rgb[1], rgb[2]));
+						that._change();
 					}
 				});
 			} else {
-				self.inline = true;
+				that.inline = true;
 
 				$(this.element).html(_container_inline);
-				self.dialog = $('.ui-colorpicker', this.element);
+				that.dialog = $('.ui-colorpicker', this.element);
 
-				self._generate();
+				that._generate();
 
-				self.opened = true;
+				that.opened = true;
 			}
 
 			return this;
@@ -386,6 +392,9 @@
 			$.Widget.prototype._setOption.apply(self, arguments);
 		},
 
+		/**
+		 * If an alternate field is specified, set it according to the current color.
+		 */
 		_setAltField: function () {
 			if (this.options.altOnChange && this.options.altField && this.options.altProperties) {
 				var index,
@@ -399,70 +408,75 @@
 						case 'background-color':
 						case 'outline-color':
 						case 'border-color':
-							$(this.options.altField).css(property, this.color_none? '' : this.color.toCSS());
+							$(this.options.altField).css(property, this.color.set? this.color.toCSS() : '');
 							break;
 					}
 				}
 
 				if (this.options.altAlpha) {
-					$(this.options.altField).css('opacity', this.color_none? '' : this.color.a);
+					$(this.options.altField).css('opacity', this.color.set? this.color.a : '');
 				}
 			}
 		},
 
-		_loadColor: function () {
-			if(!this.color) {
-				var rgb = this._parseColor(this.options.color);
-				this.color = (rgb === false ? new this.Color() : new this.Color(rgb[0], rgb[1], rgb[2], rgb[3]));
-				this.color_none = (rgb === false);
-				this.currentColor = $.extend({}, this.color);
-			}
+		_setColor: function(text) {
+			var rgb = this._parseColor(text);
+			this.color = (rgb === false ? new this.Color() : new this.Color(rgb[0], rgb[1], rgb[2], rgb[3]));
+			this.currentColor = $.extend({}, this.color);
 
+			//@todo only on generate and create
+			this._setImageBackground();
 			this._setAltField();
 		},
 
+		setColor: function(text) {
+			this._setColor(text);
+			this._change(this.color.set);
+		},
+
 		_generate: function () {
-			var self = this,
+			var that = this,
 				index,
 				part,
 				parts_list;
 
+			// Set color based on element?
+			that._setColor(that.inline? that.options.color : that.element.val());
+
 			// Determine the parts to include in this colorpicker
-			if (typeof self.options.parts === 'string') {
-				if (self.options.parts in _parts_lists) {
-					parts_list = _parts_lists[self.options.parts];
+			if (typeof that.options.parts === 'string') {
+				if (that.options.parts in _parts_lists) {
+					parts_list = _parts_lists[that.options.parts];
 				} else {
 					// automatic
-					parts_list = _parts_lists[self.inline ? 'inline' : 'popup'];
+					parts_list = _parts_lists[that.inline ? 'inline' : 'popup'];
 				}
 			} else {
-				parts_list = self.options.parts;
+				parts_list = that.options.parts;
 			}
 
 			// Add any parts to the internal parts list
-			self.parts = {};
+			that.parts = {};
 			for (index in parts_list) {
 				part = parts_list[index];
-				if (part in self._parts) {
-					self.parts[part] = new self._parts[part](self);
+				if (part in that._parts) {
+					that.parts[part] = new that._parts[part](that);
 				}
 			}
 
-			self._loadColor();
-
-			if (!self.generated) {
+			if (!that.generated) {
 				var layout_parts = [];
 
-				for (index in self.options.layout) {
-					if (index in self.parts) {
+				for (index in that.options.layout) {
+					if (index in that.parts) {
 						layout_parts.push({
 							part: index,
-							pos: self.options.layout[index]
+							pos: that.options.layout[index]
 						});
 					}
 				}
 
-				$(self._layoutTable(layout_parts, function(cell, x, y) {
+				$(that._layoutTable(layout_parts, function(cell, x, y) {
 					var classes = [];
 
 					if (x > 0) {
@@ -478,11 +492,11 @@
 						+ (cell.pos[3] > 1 ? ' rowspan="' + cell.pos[3] + '"' : '')
 						+ (classes.length > 0 ? ' class="' + classes.join(' ') + '"' : '')
 						+ ' valign="top"></td>';
-				})).appendTo(self.dialog).addClass('ui-dialog-content ui-widget-content');
+				})).appendTo(that.dialog).addClass('ui-dialog-content ui-widget-content');
 
-				self._initAllParts();
-				self._generateAllParts();
-				self.generated = true;
+				that._initAllParts();
+				that._generateAllParts();
+				that.generated = true;
 			}
 		},
 
@@ -609,8 +623,6 @@
 
 				this._generate();
 
-				this._change();		//@todo side-effects
-
 				var offset = this.element.offset(),
 					x = offset.left,
 					y = offset.top + this.element.outerHeight();
@@ -634,17 +646,12 @@
 
 		_setImageBackground: function() {
 			if (this.image && this.options.buttonColorize) {
-				this.image.css('background-color', this.color_none? '' : this.color.toCSS());
+				this.image.css('background-color', this.color.set? this.color.toCSS() : '');
 			}
 		},
 
 		close: function () {
 			var self = this;
-
-			// update colors
-			//this.element.val(self.color_none ? '' : this.color.toHex());
-			//this._setImageBackground();
-			//this._setAltField();
 
 			this.currentColor	= $.extend({}, this.color);
 			this.changed		= false;
@@ -663,33 +670,23 @@
 			});
 		},
 
-		setColor: function(c) {
-			var rgb = this._parseColor(c);
-			if (rgb !== false) {
-				this.color = new this.Color(rgb[0], rgb[1], rgb[2], rgb[3]);
-				this.color_none = false;
-				this.currentColor = $.extend({}, this.color);
-				this._change();
-			}
-		},
-
-		_callback: function (f) {
+		_callback: function (callback) {
 			var self = this;
 
-			if (f instanceof Function) {
-				if (self.color_none) {
-					f('', {
-						r: 0,
-						g: 0,
-						b: 0,
-						a: 0
-					}, self);
-				} else {
-					f(self.color.toCSS(), {
+			if (callback instanceof Function) {
+				if (self.color.set) {
+					callback(self.color.toCSS(), {	//@todo set output format from options
 						r: self.color.r,
 						g: self.color.g,
 						b: self.color.b,
 						a: self.color.a
+					}, self);
+				} else {
+					callback('', {
+						r: 0,
+						g: 0,
+						b: 0,
+						a: 0
 					}, self);
 				}
 			}
@@ -709,22 +706,22 @@
 
 		_limit: function() {
 			switch (this.options.limit) {
-			case 'websafe':
-				this.color.limit(6);
-				break;
+				case 'websafe':
+					this.color.limit(6);
+					break;
 
-			case 'nibble':
-				this.color.limit(16);
-				break;
+				case 'nibble':
+					this.color.limit(16);
+					break;
 
-			case 'binary':
-				this.color.limit(2);
-				break;
+				case 'binary':
+					this.color.limit(2);
+					break;
 			}
 		},
 
-		_change: function (no_color) {
-			this.color_none = no_color === true;
+		_change: function (set /* = true */) {
+			this.color.set = (set !== false);
 
 			this.changed = true;
 
@@ -732,7 +729,7 @@
 
 			// update colors
 			if (!this.inline) {
-				if (this.color_none) {
+				if (!this.color.set) {
 					this.element.val('');
 				} else if(!this.color.equals(this._parseHex(this.element.val()))) {
 					this.element.val(this.color.toHex());
@@ -1262,35 +1259,25 @@
 				};
 			},
 
-			inputs: function (inst) {
+			hsv: function (inst) {
 				var self = this,
 					e = null,
 					_html;
 
 				_html = function () {
-					var html = '<div id="ui-colorpicker-inputs">';
+					var html = '';
 
 					if (inst.options.hsv) {
-						html +=	'<div id="ui-colorpicker-h"><input class="ui-colorpicker-mode" type="radio" value="h"/><label>' + inst._getRegional('hueShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="360" size="10"/><span class="ui-colorpicker-unit">&deg;</span></div>'
-							+ '<div id="ui-colorpicker-s"><input class="ui-colorpicker-mode" type="radio" value="s"/><label>' + inst._getRegional('saturationShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>'
-							+ '<div id="ui-colorpicker-v"><input class="ui-colorpicker-mode" type="radio" value="v"/><label>' + inst._getRegional('valueShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-hsv" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
+						html +=	'<div id="ui-colorpicker-h"><input class="ui-colorpicker-mode" type="radio" value="h"/><label>' + inst._getRegional('hueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="360" size="10"/><span class="ui-colorpicker-unit">&deg;</span></div>'
+							+ '<div id="ui-colorpicker-s"><input class="ui-colorpicker-mode" type="radio" value="s"/><label>' + inst._getRegional('saturationShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>'
+							+ '<div id="ui-colorpicker-v"><input class="ui-colorpicker-mode" type="radio" value="v"/><label>' + inst._getRegional('valueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
 					}
 
-					if (inst.options.rgb) {
-						html += '<div id="ui-colorpicker-r"><input class="ui-colorpicker-mode" type="radio" value="r"/><label>' + inst._getRegional('redShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
-							+ '<div id="ui-colorpicker-g"><input class="ui-colorpicker-mode" type="radio" value="g"/><label>' + inst._getRegional('greenShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
-							+ '<div id="ui-colorpicker-b"><input class="ui-colorpicker-mode" type="radio" value="b"/><label>' + inst._getRegional('blueShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-rgb" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>';
-					}
-
-					if (inst.options.alpha) {
-						html += '<div id="ui-colorpicker-a"><input class="ui-colorpicker-mode" name="mode" type="radio" value="a"/><label>' + inst._getRegional('alphaShort') + '</label><input class="ui-colorpicker-number ui-colorpicker-number-a" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
-					}
-
-					return html + '</div>';
+					return '<div id="ui-colorpicker-hsv">' + html + '</div>';
 				};
 
 				this.init = function () {
-					e = $(_html()).appendTo($('#ui-colorpicker-inputs-container', inst.dialog));
+					e = $(_html()).appendTo($('#ui-colorpicker-hsv-container', inst.dialog));
 
 					$('.ui-colorpicker-mode', e).click(function () {
 						inst.mode = $(this).val();
@@ -1298,19 +1285,11 @@
 					});
 
 					$('.ui-colorpicker-number', e).bind('change input keyup', function () {
-						inst.color.r = $('#ui-colorpicker-r .ui-colorpicker-number', e).val() / 255;
-						inst.color.g = $('#ui-colorpicker-g .ui-colorpicker-number', e).val() / 255;
-						inst.color.b = $('#ui-colorpicker-b .ui-colorpicker-number', e).val() / 255;
-						inst.color.a = $('#ui-colorpicker-a .ui-colorpicker-number', e).val() / 100;
 						inst.color.h = $('#ui-colorpicker-h .ui-colorpicker-number', e).val() / 360;
 						inst.color.s = $('#ui-colorpicker-s .ui-colorpicker-number', e).val() / 100;
 						inst.color.v = $('#ui-colorpicker-v .ui-colorpicker-number', e).val() / 100;
 
-						if ($(this).hasClass('ui-colorpicker-number-hsv')) {
-							inst.color.updateRGB();
-						} else if ($(this).hasClass('ui-colorpicker-number-rgb')) {
-							inst.color.updateHSV();
-						}
+						inst.color.updateRGB();
 
 						inst._change();
 					});
@@ -1321,9 +1300,116 @@
 					c.h *= 360;
 					c.s *= 100;
 					c.v *= 100;
+
+					$.each(c, function (index, value) {
+						var v = Math.round(value);
+						if (!$('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
+								&& $('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
+							$('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
+						}
+					});
+				};
+
+				this.generate = function () {
+					$('.ui-colorpicker-mode', e).each(function () {
+						$(this).attr('checked', $(this).val() === inst.mode);
+					});
+					this.repaint();
+				};
+			},
+
+			rgb: function (inst) {
+				var self = this,
+					e = null,
+					_html;
+
+				_html = function () {
+					var html = '';
+
+					if (inst.options.rgb) {
+						html += '<div id="ui-colorpicker-r"><input class="ui-colorpicker-mode" type="radio" value="r"/><label>' + inst._getRegional('redShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
+							+ '<div id="ui-colorpicker-g"><input class="ui-colorpicker-mode" type="radio" value="g"/><label>' + inst._getRegional('greenShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
+							+ '<div id="ui-colorpicker-b"><input class="ui-colorpicker-mode" type="radio" value="b"/><label>' + inst._getRegional('blueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>';
+					}
+
+					return '<div id="ui-colorpicker-rgb">' + html + '</div>';
+				};
+
+				this.init = function () {
+					e = $(_html()).appendTo($('#ui-colorpicker-rgb-container', inst.dialog));
+
+					$('.ui-colorpicker-mode', e).click(function () {
+						inst.mode = $(this).val();
+						inst._generateAllParts();
+					});
+
+					$('.ui-colorpicker-number', e).bind('change input keyup', function () {
+						inst.color.r = $('#ui-colorpicker-r .ui-colorpicker-number', e).val() / 255;
+						inst.color.g = $('#ui-colorpicker-g .ui-colorpicker-number', e).val() / 255;
+						inst.color.b = $('#ui-colorpicker-b .ui-colorpicker-number', e).val() / 255;
+
+						inst.color.updateHSV();
+
+						inst._change();
+					});
+				};
+
+				this.repaint = function () {
+					var c = $.extend(inst.color);
 					c.r *= 255;
 					c.g *= 255;
 					c.b *= 255;
+
+					$.each(c, function (index, value) {
+						var v = Math.round(value);
+						if (!$('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
+								&& $('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
+							$('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
+						}
+					});
+				};
+
+				this.generate = function () {
+					$('.ui-colorpicker-mode', e).each(function () {
+						$(this).attr('checked', $(this).val() === inst.mode);
+					});
+					this.repaint();
+				};
+			},
+
+
+			alpha: function (inst) {
+				var self = this,
+					e = null,
+					_html;
+
+				_html = function () {
+					var html = '';
+
+					if (inst.options.alpha) {
+						html += '<div id="ui-colorpicker-a"><input class="ui-colorpicker-mode" name="mode" type="radio" value="a"/><label>' + inst._getRegional('alphaShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
+					}
+
+					return '<div id="ui-colorpicker-alpha">' + html + '</div>';
+				};
+
+				this.init = function () {
+					e = $(_html()).appendTo($('#ui-colorpicker-alpha-container', inst.dialog));
+
+					$('.ui-colorpicker-mode', e).click(function () {
+						inst.mode = $(this).val();
+						inst._generateAllParts();
+					});
+
+					$('.ui-colorpicker-number', e).bind('change input keyup', function () {
+						inst.color.a = $('#ui-colorpicker-a .ui-colorpicker-number', e).val() / 100;
+
+						inst._change();
+					});
+				};
+
+				this.repaint = function () {
+					var c = $.extend(inst.color);
 					c.a *= 100;
 
 					$.each(c, function (index, value) {
@@ -1477,41 +1563,70 @@
 					_none_button_text;
 
 				_html = function () {
-					return '<div class="ui-dialog-buttonpane ui-widget-content">'
-						+ (inst.options.alpha ? '<button class="ui-colorpicker-transparent">' + inst._getRegional('transparent') + '</button>' : '')
-						+ (inst.inline ? '' : '<div class="ui-dialog-buttonset">'
-							+ (inst.options.showNoneButton ? '<button class="ui-colorpicker-none">' + inst._getRegional('none') + '</button>' : '')
-							+ '<button class="ui-colorpicker-close">' + inst._getRegional('done') + '</button>'
-							+ '</div>')
-						+ '</div>';
-				};
+					var html = '';
 
-				_none_button_text = function (e) {
-					$('.ui-colorpicker-none .ui-button-text', e).text(inst._getRegional(inst.color_none ? 'revert' : 'none'));
+					if (inst.options.alpha || (!inst.inline && inst.options.showNoneButton)) {
+						html += '<div class="ui-colorpicker-buttonset">';
+
+						if (inst.options.alpha) {
+							html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-transparent"/><label for="ui-colorpicker-special-transparent">' + inst._getRegional('transparent') + '</label>';
+						}
+						if (!inst.inline && inst.options.showNoneButton) {
+							html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-none"><label for="ui-colorpicker-special-none">' + inst._getRegional('none') + '</label>';
+						}
+						html += '</div>';
+					}
+
+					if (!inst.inline) {
+						html += '<div class="ui-dialog-buttonset">';
+						html += '<button class="ui-colorpicker-cancel">' + inst._getRegional('cancel') + '</button>';
+						html += '<button class="ui-colorpicker-ok">' + inst._getRegional('ok') + '</button>';
+						html += '</div>';
+					}
+
+					return '<div class="ui-dialog-buttonpane ui-widget-content">' + html + '</div>';
 				};
 
 				this.init = function () {
 					e = $(_html()).appendTo(inst.dialog);
 
-					$('.ui-colorpicker-close', e).button().click(function () {
+					$('.ui-colorpicker-ok', e).button().click(function () {
 						inst.close();
 					});
 
-					$('.ui-colorpicker-none', e).button().click(function () {
-						inst._change(!inst.color_none);
-						_none_button_text(e);
+					$('.ui-colorpicker-cancel', e).button().click(function () {
+						inst.color = $.extend({}, inst.currentColor);
+						inst._change(inst.color.set);
+						inst.close();
 					});
-					_none_button_text(e);
 
-					if (inst.options.alpha) {
-						$('.ui-colorpicker-transparent', e).button().click(function () {
-							inst.color.a = 0;
-							inst._change();
-						});
-					}
+					$('.ui-colorpicker-buttonset', e).buttonset();
+
+					$('#ui-colorpicker-special-color', e).click(function () {
+						inst._change();
+					});
+
+					$('#ui-colorpicker-special-none', e).click(function () {
+						inst._change(false);
+					});
+
+					$('#ui-colorpicker-special-transparent', e).click(function () {
+						inst.color.a = 0;
+						inst._change();
+					});
 				};
 
-				this.repaint = function () {};
+				this.repaint = function () {
+					if (!inst.color.set) {
+						$('#ui-colorpicker-special-none', e).attr('checked', true).button( "refresh" );
+					} else if (inst.color.a == 0) {
+						$('#ui-colorpicker-special-transparent', e).attr('checked', true).button( "refresh" );
+					} else {
+						$('input', e).attr('checked', false).button( "refresh" );
+					}
+
+					$('.ui-colorpicker-cancel', e).button(inst.changed ? 'enable' : 'disable');
+				};
 
 				this.generate = function () {};
 			}
@@ -1528,17 +1643,23 @@
 			}
 
 			// {#}rrggbb
-			m = /^#?([a-fA-F0-9]{0,6})/.exec(color);
+			m = /^#?([a-fA-F0-9]{1,6})/.exec(color);
 			if (m) {
 				c = parseInt(m[1], 16);
 				return [((c >> 16) & 0xFF) / 255,
 						((c >>  8) & 0xFF) / 255,
 						(c & 0xFF) / 255];
 			}
+
+			return false;
 		},
 
 		_parseColor: function (color) {
 			var m;
+
+			if (color == '') {
+				return false;
+			}
 
 			// rgba(r,g,b,a)
 			m = /rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/.exec(color);
@@ -1586,7 +1707,8 @@
 		},
 
 		Color: function () {
-			var a, args = arguments;
+			var arg,
+				args = arguments;
 
 			this.updateRGB = function () {
 				this.h = Math.max(0, Math.min(this.h, 1));
@@ -1698,7 +1820,7 @@
 				return rgb[0] === this.r
 					&& rgb[1] === this.g
 					&& rgb[2] === this.b;
-			};
+			};	// not really color,move outside!
 
 			this.limit = function (steps) {
 				steps -= 1;
@@ -1708,20 +1830,30 @@
 				this.updateHSV();
 			};
 
-			for (a = 0; a < args.length; a += 1) {
-				args[a] = Math.max(0, Math.min(args[a], 1));
+			this.set = false;
+			this.r = 0;
+			this.g = 0;
+			this.b = 0;
+			this.a = 1;
+			this.h = 0;
+			this.s = 0;
+			this.v = 0;
+
+			if (args.length > 0) {
+				for (arg = 0; arg < args.length; arg += 1) {
+					args[arg] = Math.max(0, Math.min(args[arg], 1));
+				}
+
+				this.set = true;
+				this.r = args[0] || 0;
+				this.g = args[1] || 0;
+				this.b = args[2] || 0;
+				this.a = args[3] === 0 ? 0 : args[3] || 1;
+				this.h = args[4] || 0;
+				this.s = args[5] || 0;
+				this.v = args[6] || 0;
+				this.updateHSV();
 			}
-
-			this.no_color = false;
-
-			this.r = args[0] || 0;
-			this.g = args[1] || 0;
-			this.b = args[2] || 0;
-			this.a = args[3] === 0 ? 0 : args[3] || 1;
-			this.h = args[4] || 0;
-			this.s = args[5] || 0;
-			this.v = args[6] || 0;
-			this.updateHSV();
 		}
 	});
 

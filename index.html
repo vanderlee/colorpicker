@@ -41,6 +41,7 @@
 					limit: 'websafe',
 					parts: 'full',
 					regional: 'nl',
+					alpha: true,
 					altProperties: 'background-color,color'
 				});
 
@@ -48,6 +49,8 @@
 					alpha: true,
 					showButtonPanel: true
 				});
+
+				//
 
                 var cpb = $('#cp-buttons').colorpicker({
 					showOn: '',
@@ -64,6 +67,13 @@
 				});
 				$('#cp-button-setcolor').click( function() {
 					cpb.colorpicker('setColor', '#99ff00');
+				});
+
+				//
+
+				$('#cp-none').colorpicker({
+					alpha: true,
+					showNoneButton: true
 				});
             });
         </script>
@@ -87,5 +97,9 @@
 		<br/><button id="cp-button-close">Close</button>
 		<br/><button id="cp-button-disable">Disable</button>
 		<br/><button id="cp-button-setcolor">Set to limegreen</button>
+
+		<hr/>
+
+		Start with no color: <input type="color" id="cp-none"/>
     </body>
 </html>

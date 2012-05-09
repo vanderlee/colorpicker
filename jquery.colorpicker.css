@@ -7,9 +7,37 @@
     position: static;
 }
 
-.ui-colorpicker .ui-colorpicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
-.ui-colorpicker .ui-colorpicker-buttonpane button { float: right; margin: .5em .2em .4em; cursor: pointer; padding: .2em .6em .3em .6em; width:auto; overflow:visible; }
-.ui-colorpicker .ui-colorpicker-buttonpane button.ui-colorpicker-current { float:left; }
+.ui-colorpicker-buttonset {
+	float: left;
+	margin-left: .4em;
+}
+
+.ui-colorpicker-buttonset .ui-button {
+	margin: .5em 0 .5em 0;
+	cursor: pointer;
+}
+
+.ui-colorpicker-buttonpane {
+	background-image: none;
+	margin:			.7em 0 0 0;
+	padding:		0 .2em;
+	border-left:	0;
+	border-right:	0;
+	border-bottom:	0;
+}
+
+.ui-colorpicker-buttonpane button {
+	float: right;
+	margin: .5em .2em .4em;
+	cursor: pointer;
+	padding: .2em .6em .3em .6em;
+	width:auto;
+	overflow:visible;
+}
+
+.ui-colorpicker-buttonpane button.ui-colorpicker-current {
+	float:left;
+}
 
 .ui-colorpicker table {
     font-size: 100%; /* Reset browser table font-size */
@@ -53,9 +81,20 @@
 }
 
 #ui-colorpicker-map-layer-1,
-#ui-colorpicker-map-layer-2 { background: url(images/map.png) no-repeat; }
-#ui-colorpicker-map-layer-alpha { background: url(images/map-opacity.png); }
-#ui-colorpicker-map-pointer { display: inline-block; width: 15px; height: 15px; background: url(images/map-pointer.png) no-repeat; }
+#ui-colorpicker-map-layer-2 {
+	background: url(images/map.png) no-repeat;
+}
+
+#ui-colorpicker-map-layer-alpha {
+	background: url(images/map-opacity.png);
+}
+
+#ui-colorpicker-map-pointer {
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	background: url(images/map-pointer.png) no-repeat;
+}
 
 
 /* Bar */
@@ -71,10 +110,24 @@
 #ui-colorpicker-bar-layer-1,
 #ui-colorpicker-bar-layer-2,
 #ui-colorpicker-bar-layer-3,
-#ui-colorpicker-bar-layer-4 { background: url(images/bar.png) repeat-x; }
-#ui-colorpicker-bar-layer-alpha { background: url(images/bar-opacity.png); }
-#ui-colorpicker-bar-layer-alphabar { background: url(images/bar-alpha.png); }
-#ui-colorpicker-bar-pointer { display: inline-block; width: 20px; height: 7px; background: url(images/bar-pointer.png) no-repeat; }
+#ui-colorpicker-bar-layer-4 {
+	background: url(images/bar.png) repeat-x;
+}
+
+#ui-colorpicker-bar-layer-alpha {
+	background: url(images/bar-opacity.png);
+}
+
+#ui-colorpicker-bar-layer-alphabar {
+	background: url(images/bar-alpha.png);
+}
+
+#ui-colorpicker-bar-pointer {
+	display: inline-block;
+	width: 20px;
+	height: 7px;
+	background: url(images/bar-pointer.png) no-repeat;
+}
 
 /* Preview */
 #ui-colorpicker-preview {
@@ -101,9 +154,16 @@
 }
 
 /* Inputs */
-#ui-colorpicker-inputs label {
+#ui-colorpicker-inputs label,
+#ui-colorpicker-hsv label,
+#ui-colorpicker-rgb label,
+#ui-colorpicker-a label {
     width: 1.5em;
     display: inline-block;
+}
+
+.ui-colorpicker-number {
+	margin: .1em;
 }
 
 /* Hex */
