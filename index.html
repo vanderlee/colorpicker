@@ -28,10 +28,10 @@
 
                 $('#cp1').colorpicker({
 					onClose: function(hex, rgba, inst) {
-								console.log('onClose: '+hex+', ('+rgba.r+','+rgba.g+','+rgba.b+','+rgba.a+')');
+								console.log('onClose: '+hex+', (RGB:'+rgba.r+','+rgba.g+','+rgba.b+', A:'+rgba.a+', HSV:'+rgba.h+','+rgba.s+','+rgba.v+')');
 							},
 					onSelect: function(hex, rgba, inst) {
-								console.log('onSelect: '+hex+', ('+rgba.r+','+rgba.g+','+rgba.b+','+rgba.a+')');
+								console.log('onSelect: '+hex+', (RGB:'+rgba.r+','+rgba.g+','+rgba.b+', A:'+rgba.a+', HSV:'+rgba.h+','+rgba.s+','+rgba.v+')');
 							},
 					showOn: 'both',
 					showSwatches: true,

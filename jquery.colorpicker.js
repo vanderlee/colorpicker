@@ -56,6 +56,68 @@
 			'inline':	['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
 		},
 
+		_intToHex = function (dec) {
+			var result = Math.round(dec).toString(16);
+			if (result.length === 1) {
+				result = ('0' + result);
+			}
+			return result.toLowerCase();
+		},
+
+		_formats = {
+			'HEX':		function(color) {
+							return _formatColor('#rxgxbx', color);
+						}
+		,	'HEX3':		function(color) {
+							var r = Math.round(color.r * 16);
+							var g = Math.round(color.g * 16);
+							var b = Math.round(color.b * 16);
+							return '#'+r.toString(16)+g.toString(16)+b.toString(16);
+						}
+		,	'RGBA':		function(color) {
+							return _formatColor(color.a >= 1
+									? 'rgb(rd,gd,bd)'
+									: 'rgba(rd,gd,bd,af)', color);
+						}
+		,	'RGBA%':	function(color) {
+							return _formatColor(color.a >= 1
+									? 'rgb(rp%,gp%,bp%)'
+									: 'rgba(rp%,gp%,bp%,af)', color);
+						}
+		,	'HSLA':		function(color) {
+							return _formatColor(color.a >= 1
+									? 'hsl(hd,sd,vd)'
+									: 'hsla(hd,sd,vd,af)', color);
+						}
+		,	'HSLA%':	function(color) {
+							return _formatColor(color.a >= 1
+									? 'hsl(hp%,sp%,vp%)'
+									: 'hsla(hp%,sp%,vp%,af)', color);
+						}
+		},
+
+		_formatColor = function (format, color) {
+			var that = this;
+
+			var types = {
+				'x':	function(v) { return _intToHex(v * 255); }
+			,	'd':	function(v) { return Math.round(v * 255); }
+			,	'f':	function(v) { return v; }
+			,	'p':	function(v) { return v * 100; }
+			};
+
+			if (_formats[format]) {
+				return _formats[format](color);
+			}
+
+			return format.replace(/\\?[rgbhsva][xdfp]/g, function(m) {
+				if (m.match(/^\\/)) {
+					return m.slice(1);
+				}
+				return types[m[1]](color[m[0]]);
+			});
+		},
+
 		_colors = {
 			'black': [0x00, 0x00, 0x00],
 			'dimgray': [0x69, 0x69, 0x69],
@@ -197,6 +259,96 @@
 			'crimson': [0xdc, 0x14, 0x3c],
 			'pink': [0xff, 0xc0, 0xcb],
 			'lightpink': [0xff, 0xb6, 0xc1]
+		},
+
+		_layoutTable = function(layout, callback) {
+			var layout = layout.sort(function(a, b) {
+					if (a.pos[1] == b.pos[1]) {
+						return a.pos[0] - b.pos[0];
+					}
+					return a.pos[1] - b.pos[1];
+				}),
+				bitmap,
+				x,
+				y,
+				width, height,
+				columns, rows,
+				index,
+				cell,
+				html;
+
+			// Determine dimensions of the table
+			width = 0;
+			height = 0;
+			for (index in layout) {
+				width = Math.max(width, layout[index].pos[0] + layout[index].pos[2]);
+				height = Math.max(height, layout[index].pos[1] + layout[index].pos[3]);
+			}
+
+			// Initialize bitmap
+			bitmap = [];
+			for (x = 0; x < width; ++x) {
+				bitmap.push(new Array(height));
+			}
+
+			// Mark rows and columns which have layout assigned
+			rows	= new Array(height);
+			columns = new Array(width);
+			for (index in layout) {
+				// mark columns
+				for (x = 0; x < layout[index].pos[2]; x += 1) {
+					columns[layout[index].pos[0] + x] = true;
+				}
+				for (y = 0; y < layout[index].pos[3]; y += 1) {
+					rows[layout[index].pos[1] + y] = true;
+				}
+			}
+
+			// Generate the table
+			html = '';
+			cell = layout[index = 0];
+			for (y = 0; y < height; ++y) {
+				html += '<tr>';
+				for (x = 0; x < width;) {
+					if (cell !== undefined && x == cell.pos[0] && y == cell.pos[1]) {
+						// Create a "real" cell
+						var w,
+							h;
+
+						html += callback(cell, x, y);
+
+						for (h = 0; h < cell.pos[3]; h +=1) {
+							for (w = 0; w < cell.pos[2]; w +=1) {
+								bitmap[x + w][y + h] = true;
+							}
+						}
+
+						x += cell.pos[2];
+						cell = layout[++index];
+					} else {
+						// Fill in the gaps
+						var colspan = 0;
+						var walked = false;
+
+						while (x < width && bitmap[x][y] === undefined && (cell === undefined || y < cell.pos[1] || (y == cell.pos[1] && x < cell.pos[0]))) {
+							if (columns[x] === true) {
+								colspan += 1;
+							}
+							walked = true;
+							x += 1;
+						}
+
+						if (colspan > 0) {
+							html += '<td colspan="'+colspan+'"></td>';
+						} else if (!walked) {
+							x += 1;
+						}
+					}
+				}
+				html += '</tr>';
+			}
+
+			return '<table cellspacing="0" cellpadding="0" border="0"><tbody>' + html + '</tbody></table>';
 		};
 
 	$.widget("vanderlee.colorpicker", {
@@ -214,6 +366,7 @@
 			closeOnEscape:		true,		// Close the dialog when the escape key is pressed.
 			closeOnOutside:		true,		// Close the dialog when clicking outside the dialog (not for inline)
 			color:				'#00FF00',	// Initial color (for inline only)
+			colorFormat:		'RGBA',		// Format string for output color format
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
 			regional:			'',
@@ -377,19 +530,19 @@
 		},
 
 		_setOption: function(key, value){
-			var self = this;
+			var that = this;
 
 			switch (key) {
 			case "disabled":
 				if (value) {
-					self.dialog.addClass('ui-colorpicker-disabled');
+					that.dialog.addClass('ui-colorpicker-disabled');
 				} else {
-					self.dialog.removeClass('ui-colorpicker-disabled');
+					that.dialog.removeClass('ui-colorpicker-disabled');
 				}
 				break;
 			}
 
-			$.Widget.prototype._setOption.apply(self, arguments);
+			$.Widget.prototype._setOption.apply(that, arguments);
 		},
 
 		/**
@@ -476,7 +629,7 @@
 					}
 				}
 
-				$(that._layoutTable(layout_parts, function(cell, x, y) {
+				$(_layoutTable(layout_parts, function(cell, x, y) {
 					var classes = [];
 
 					if (x > 0) {
@@ -500,108 +653,18 @@
 			}
 		},
 
-		_layoutTable: function(layout, callback) {
-			var layout = layout.sort(function(a, b) {
-					if (a.pos[1] == b.pos[1]) {
-						return a.pos[0] - b.pos[0];
-					}
-					return a.pos[1] - b.pos[1];
-				}),
-				bitmap,
-				x,
-				y,
-				width, height,
-				columns, rows,
-				index,
-				cell,
-				html;
-
-			// Determine dimensions of the table
-			width = 0;
-			height = 0;
-			for (index in layout) {
-				width = Math.max(width, layout[index].pos[0] + layout[index].pos[2]);
-				height = Math.max(height, layout[index].pos[1] + layout[index].pos[3]);
-			}
-
-			// Initialize bitmap
-			bitmap = [];
-			for (x = 0; x < width; ++x) {
-				bitmap.push(new Array(height));
-			}
-
-			// Mark rows and columns which have layout assigned
-			rows	= new Array(height);
-			columns = new Array(width);
-			for (index in layout) {
-				// mark columns
-				for (x = 0; x < layout[index].pos[2]; x += 1) {
-					columns[layout[index].pos[0] + x] = true;
-				}
-				for (y = 0; y < layout[index].pos[3]; y += 1) {
-					rows[layout[index].pos[1] + y] = true;
-				}
-			}
-
-			// Generate the table
-			html = '';
-			cell = layout[index = 0];
-			for (y = 0; y < height; ++y) {
-				html += '<tr>';
-				for (x = 0; x < width;) {
-					if (cell !== undefined && x == cell.pos[0] && y == cell.pos[1]) {
-						// Create a "real" cell
-						var w,
-							h;
-
-						html += callback(cell, x, y);
-
-						for (h = 0; h < cell.pos[3]; h +=1) {
-							for (w = 0; w < cell.pos[2]; w +=1) {
-								bitmap[x + w][y + h] = true;
-							}
-						}
-
-						x += cell.pos[2];
-						cell = layout[++index];
-					} else {
-						// Fill in the gaps
-						var colspan = 0;
-						var walked = false;
-
-						while (x < width && bitmap[x][y] === undefined && (cell === undefined || y < cell.pos[1] || (y == cell.pos[1] && x < cell.pos[0]))) {
-							if (columns[x] === true) {
-								colspan += 1;
-							}
-							walked = true;
-							x += 1;
-						}
-
-						if (colspan > 0) {
-							html += '<td colspan="'+colspan+'"></td>';
-						} else if (!walked) {
-							x += 1;
-						}
-					}
-				}
-				html += '</tr>';
-			}
-
-			return '<table cellspacing="0" cellpadding="0" border="0"><tbody>' + html + '</tbody></table>';
-		},
-
 		_effectGeneric: function (show, slide, fade, callback) {
-			var self = this;
+			var that = this;
 
-			if ($.effects && $.effects[self.options.showAnim]) {
-				self.dialog[show](self.options.showAnim, self.options.showOptions, self.options.duration, callback);
+			if ($.effects && $.effects[that.options.showAnim]) {
+				that.dialog[show](that.options.showAnim, that.options.showOptions, that.options.duration, callback);
 			} else {
-				self.dialog[(self.options.showAnim === 'slideDown' ?
+				that.dialog[(that.options.showAnim === 'slideDown' ?
 								slide
-							:	(self.options.showAnim === 'fadeIn' ?
+							:	(that.options.showAnim === 'fadeIn' ?
 									fade
-								:	show))]((self.options.showAnim ? self.options.duration : null), callback);
-				if (!self.options.showAnim || !self.options.duration) {
+								:	show))]((that.options.showAnim ? that.options.duration : null), callback);
+				if (!that.options.showAnim || !that.options.duration) {
 					callback();
 				}
 			}
@@ -633,11 +696,11 @@
 				this._effectShow();
 				this.opened = true;
 
-				var self = this;
+				var that = this;
 				// Without waiting for domready the width of the map is 0 and we
 				// wind up with the cursor stuck in the upper left corner
 				$(function() {
-					$.each(self.parts, function (index, part) {
+					$.each(that.parts, function (index, part) {
 						part.repaint();
 					});
 				});
@@ -651,43 +714,41 @@
 		},
 
 		close: function () {
-			var self = this;
+			var that = this;
 
 			this.currentColor	= $.extend({}, this.color);
 			this.changed		= false;
 
 			// tear down the interface
 			this._effectHide(function () {
-				if (self.options.zIndex) {
-					self.dialog.css('z-index', '');
+				if (that.options.zIndex) {
+					that.dialog.css('z-index', '');
 				}
 
-				self.dialog.empty();
-				self.generated	= false;
+				that.dialog.empty();
+				that.generated	= false;
 
-				self.opened		= false;
-				self._callback(self.options.onClose);
+				that.opened		= false;
+				that._callback(that.options.onClose);
 			});
 		},
 
 		_callback: function (callback) {
-			var self = this;
+			var that = this;
 
 			if (callback instanceof Function) {
-				if (self.color.set) {
-					callback(self.color.toCSS(), {	//@todo set output format from options
-						r: self.color.r,
-						g: self.color.g,
-						b: self.color.b,
-						a: self.color.a
-					}, self);
+				if (that.color.set) {
+					callback(_formatColor(that.options.colorFormat, that.color), {	//@todo set output format from options
+						r: that.color.r
+					,	g: that.color.g
+					,	b: that.color.b
+					,	a: that.color.a
+					,	h: that.color.h
+					,	s: that.color.s
+					,	v: that.color.v
+					}, that);
 				} else {
-					callback('', {
-						r: 0,
-						g: 0,
-						b: 0,
-						a: 0
-					}, self);
+					callback(null, {}, that);
 				}
 			}
 		},
@@ -749,14 +810,6 @@
 			this._callback(this.options.onSelect);
 		},
 
-		_intToHex: function (dec) {
-			var result = Math.round(dec).toString(16);
-			if (result.length === 1) {
-				result = ('0' + result);
-			}
-			return result.toLowerCase();
-		},
-
 		// This will be deprecated by jQueryUI 1.9 widget
 		_hoverable: function (e) {
 			e.hover(function () {
@@ -782,7 +835,7 @@
 
 		_parts: {
 			header: function (inst) {
-				var self = this,
+				var that = this,
 					e = null,
 					_html;
 
@@ -815,7 +868,7 @@
 			},
 
 			map: function (inst) {
-				var self	= this,
+				var that	= this,
 					e		= null,
 					_mousedown, _mouseup, _mousemove, _html;
 
@@ -853,11 +906,11 @@
 					event.stopImmediatePropagation();
 					event.preventDefault();
 
-					if (event.pageX === self.x && event.pageY === self.y) {
+					if (event.pageX === that.x && event.pageY === that.y) {
 						return;
 					}
-					self.x = event.pageX;
-					self.y = event.pageY;
+					that.x = event.pageX;
+					that.y = event.pageY;
 
 					var div = $('#ui-colorpicker-map-layer-pointer', e),
 						offset = div.offset(),
@@ -925,7 +978,7 @@
 					switch (inst.mode) {
 					case 'h':
 						$('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
-						$('#ui-colorcasepicker-map-layer-2', e).hide();
+						$('#ui-colorpicker-map-layer-2', e).hide();
 						break;
 
 					case 's':
@@ -955,7 +1008,7 @@
 						$('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
 						break;
 					}
-					self.repaint();
+					that.repaint();
 				};
 
 				this.repaint = function () {
@@ -1020,7 +1073,7 @@
 			},
 
 			bar: function (inst) {
-				var self		= this,
+				var that		= this,
 					e			= null,
 					_mousedown, _mouseup, _mousemove, _html;
 
@@ -1058,10 +1111,10 @@
 					event.stopImmediatePropagation();
 					event.preventDefault();
 
-					if (event.pageY === self.y) {
+					if (event.pageY === that.y) {
 						return;
 					}
-					self.y = event.pageY;
+					that.y = event.pageY;
 
 					var div = $('#ui-colorpicker-bar-layer-pointer', e),
 						offset  = div.offset(),
@@ -1195,7 +1248,7 @@
 						$('#ui-colorpicker-bar-layer-4', e).hide();
 						break;
 					}
-					self.repaint();
+					that.repaint();
 				};
 
 				this.repaint = function () {
@@ -1260,7 +1313,7 @@
 			},
 
 			hsv: function (inst) {
-				var self = this,
+				var that = this,
 					e = null,
 					_html;
 
@@ -1319,7 +1372,7 @@
 			},
 
 			rgb: function (inst) {
-				var self = this,
+				var that = this,
 					e = null,
 					_html;
 
@@ -1379,7 +1432,7 @@
 
 
 			alpha: function (inst) {
-				var self = this,
+				var that = this,
 					e = null,
 					_html;
 
@@ -1430,7 +1483,7 @@
 			},
 
 			preview: function (inst) {
-				var self = this,
+				var that = this,
 					e = null,
 					_html;
 
@@ -1472,7 +1525,7 @@
 			},
 
 			hex: function (inst) {
-				var self = this,
+				var that = this,
 					e = null,
 					_html;
 
@@ -1512,7 +1565,7 @@
 					}
 
 					if (!$('#ui-colorpicker-hex-alpha', e).is(':focus')) {
-						$('#ui-colorpicker-hex-alpha', e).val(inst._intToHex(inst.color.a * 255));
+						$('#ui-colorpicker-hex-alpha', e).val(_intToHex(inst.color.a * 255));
 					}
 				};
 
@@ -1522,7 +1575,7 @@
 			},
 
 			swatches: function (inst) {
-				var self = this,
+				var that = this,
 					e = null,
 					_html;
 
@@ -1530,7 +1583,7 @@
 					var html = '';
 
 					$.each(inst.options.swatches, function (name, color) {
-						var hex = inst._intToHex(color[0]) + inst._intToHex(color[1]) + inst._intToHex(color[2]);
+						var hex = _intToHex(color[0]) + _intToHex(color[1]) + _intToHex(color[2]);	// @todo use formatter
 						html += '<div class="ui-colorpicker-swatch" style="background-color: #' + hex + '" title="' + name + '"></div>';
 					});
 
@@ -1557,7 +1610,7 @@
 			},
 
 			footer: function (inst) {
-				var self = this,
+				var that = this,
 					e = null,
 					_html,
 					_none_button_text;

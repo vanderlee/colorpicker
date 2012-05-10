@@ -65,6 +65,29 @@ Options:
 			rgba(rrr%,ggg%,bbb%,aaa%)
 			w3c-defined color name
 
+	colorFormat:		'HEX'
+		Specifies the format of the color string returned in callbacks.
+		You can either specify one of the predefined formats:
+			HEX		#123456
+			HEX3	#135 (rounds colors)
+			RGBA	rgb(123,45,67) or rgba(123,45,67,0.123%)
+			RGBA%	rgb(12%,34%,56%) or rgba(12%,34%,56%,0.123%)
+			HSLA	hsl(123,45,67) or hsla(123,45,67,0.123%)
+			HSLA%	hsl(12%,34%,56%) or hsla(12%,34%,56%,0.123%)
+		or specify your own format...
+		Each color channel is specified as a pair of two characters.
+		The first character determines the color channel:
+			r, g, b, a, h, s or v.
+		The second character specifies the data type:
+			x			Two-digit hexadecimal notation.
+			d			Decimal (0-255) notation.
+			f			Floating point (0-1) notation, not rounded.
+			p			Percentage (0-100) notation, not rounded.
+		If you prefix a valid pair with a backslash, it won't be replaced.
+		All patterns are case sensitive.
+		For example, to create the common hex color format, use "#rxgxbx".
+		For an rgba() format, use "rgba(rd,gd,bd,af)"
+
 	duration:			'fast'
 		Same as jQueryUI DatePicker.
 
