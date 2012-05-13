@@ -1,14 +1,18 @@
-Make simple blog page + demo
-
-Post to...
-	http://wiki.jqueryui.com/w/page/12137750/ColorPicker
-		- screenshot
-		- link(s)
-		- check specs/requirements and add/fix them
-
-Colorwheel
-Triangle/wheel
-Related-colors swatching
-Configurable swatch layout
-	container-width/height, swatch-width/height
-	Autoscaling (table?)
+Color output format
+Output set, h, s and v as well (use FALSE/NULL) for !set?
+Undo/redo memory?
+Small size variant (128x128)
+Shared swatches; cookies/session/global/data
+isRTL? What to RTL, besides button?
+Modal popup mode
+Special rendering mode for color_none? Use [X] images?
+Fix parsing from input with websafe colors
+Make _parts, Color, _parseHex and _parseColor static.
+Color.refresh instead of the updateXXX's.
+Recognize "transparent" color name.
+Limit to named colors (dynamic?)
+Enabled/disabled
+Output format "NAME" if possible.
+Output format array for fallbacks? ie. NAME, HEX, RGBA
+Unique ID's for radio's.
+Use less class/ID's overall; integrate _html in the parts.

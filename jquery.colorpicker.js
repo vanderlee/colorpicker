@@ -2,7 +2,7 @@
 /*globals jQuery */
 
 /*
- * ColorPicker v0.7
+ * ColorPicker
  *
  * Copyright (c) 2011-2012 Martijn W. van der Lee
  * Licensed under the MIT.
@@ -10,17 +10,6 @@
  * Full-featured colorpicker for jQueryUI with full theming support.
  * Most images from jPicker by Christopher T. Tillman.
  * Sourcecode created from scratch by Martijn W. van der Lee.
- *
- * @todo Color output format
- * @todo Output set, h, s and v as well (use FALSE/NULL) for !set?
- * @todo Undo/redo memory?
- * @todo Small size variant (128x128)
- * @todo Shared swatches; cookies/session/global/data
- * @todo isRTL? What to RTL, besides button?
- * @todo Implement 'disabled'/'enabled' options
- * @todo Modal popup mode
- * @todo Special rendering mode for color_none? Use [X] images?
- * @todo Fix parsing from input with websafe colors
  */
 
 (function ($) {
@@ -100,10 +89,10 @@
 			var that = this;
 
 			var types = {
-				'x':	function(v) { return _intToHex(v * 255); }
-			,	'd':	function(v) { return Math.round(v * 255); }
-			,	'f':	function(v) { return v; }
-			,	'p':	function(v) { return v * 100; }
+				'x':	function(v) {return _intToHex(v * 255);}
+			,	'd':	function(v) {return Math.round(v * 255);}
+			,	'f':	function(v) {return v;}
+			,	'p':	function(v) {return v * 100;}
 			};
 
 			if (_formats[format]) {
@@ -366,7 +355,7 @@
 			closeOnEscape:		true,		// Close the dialog when the escape key is pressed.
 			closeOnOutside:		true,		// Close the dialog when clicking outside the dialog (not for inline)
 			color:				'#00FF00',	// Initial color (for inline only)
-			colorFormat:		'RGBA',		// Format string for output color format
+			colorFormat:		'HEX',		// Format string for output color format
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
 			regional:			'',
@@ -392,12 +381,14 @@
 			title:				null,
 			zIndex:				null,
 
-			onClose:			null,
-			onSelect:			null
+			close:			null,
+			select:			null
 		},
 
 		_create: function () {
 			var that = this;
+
+			that.widgetEventPrefix = 'color';
 
 			that.opened		= false;
 			that.generated	= false;
@@ -729,27 +720,28 @@
 				that.generated	= false;
 
 				that.opened		= false;
-				that._callback(that.options.onClose);
+				that._callback('close');
 			});
 		},
 
 		_callback: function (callback) {
 			var that = this;
 
-			if (callback instanceof Function) {
-				if (that.color.set) {
-					callback(_formatColor(that.options.colorFormat, that.color), {	//@todo set output format from options
-						r: that.color.r
-					,	g: that.color.g
-					,	b: that.color.b
-					,	a: that.color.a
-					,	h: that.color.h
-					,	s: that.color.s
-					,	v: that.color.v
-					}, that);
-				} else {
-					callback(null, {}, that);
-				}
+			if (that.color.set) {
+				that._trigger(callback, null, {
+					formatted: _formatColor(that.options.colorFormat, that.color),
+					r: that.color.r
+				,	g: that.color.g
+				,	b: that.color.b
+				,	a: that.color.a
+				,	h: that.color.h
+				,	s: that.color.s
+				,	v: that.color.v
+				});
+			} else {
+				that._trigger(callback, null, {
+					formatted: ''
+				});
 			}
 		},
 
@@ -765,7 +757,12 @@
 			});
 		},
 
-		_limit: function() {
+		_change: function (set /* = true */) {
+			this.color.set = (set !== false);
+
+			this.changed = true;
+
+			// Limit color palette
 			switch (this.options.limit) {
 				case 'websafe':
 					this.color.limit(6);
@@ -779,14 +776,6 @@
 					this.color.limit(2);
 					break;
 			}
-		},
-
-		_change: function (set /* = true */) {
-			this.color.set = (set !== false);
-
-			this.changed = true;
-
-			this._limit();
 
 			// update colors
 			if (!this.inline) {
@@ -807,7 +796,7 @@
 			}
 
 			// callback
-			this._callback(this.options.onSelect);
+			this._callback('select');
 		},
 
 		// This will be deprecated by jQueryUI 1.9 widget
@@ -1020,7 +1009,7 @@
 					case 'h':
 						x = inst.color.s * div.width();
 						y = (1 - inst.color.v) * div.width();
-						$(e).css('background-color', inst.color.normClone().toCSS());
+						$(e).css('background-color', inst.color.copy().normalize().toCSS());
 						break;
 
 					case 's':
@@ -1263,12 +1252,12 @@
 					case 's':
 						y = (1 - inst.color.s) * div.height();
 						$('#ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.v);
-						$(e).css('background-color', inst.color.normClone().toCSS());
+						$(e).css('background-color', inst.color.copy().normalize().toCSS());
 						break;
 
 					case 'v':
 						y = (1 - inst.color.v) * div.height();
-						$(e).css('background-color', inst.color.normClone().toCSS());
+						$(e).css('background-color', inst.color.copy().normalize().toCSS());
 						break;
 
 					case 'r':
@@ -1294,7 +1283,7 @@
 
 					case 'a':
 						y = (1 - inst.color.a) * div.height();
-						$(e).css('background-color', inst.color.normClone().toCSS());
+						$(e).css('background-color', inst.color.copy().normalize().toCSS());
 						break;
 					}
 
@@ -1612,8 +1601,7 @@
 			footer: function (inst) {
 				var that = this,
 					e = null,
-					_html,
-					_none_button_text;
+					_html;
 
 				_html = function () {
 					var html = '';
@@ -1622,7 +1610,8 @@
 						html += '<div class="ui-colorpicker-buttonset">';
 
 						if (inst.options.alpha) {
-							html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-transparent"/><label for="ui-colorpicker-special-transparent">' + inst._getRegional('transparent') + '</label>';
+//							html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-transparent"/><label for="ui-colorpicker-special-transparent">' + inst._getRegional('transparent') + '</label>';
+							html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-transparent"/>';
 						}
 						if (!inst.inline && inst.options.showNoneButton) {
 							html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-none"><label for="ui-colorpicker-special-none">' + inst._getRegional('none') + '</label>';
@@ -1653,6 +1642,11 @@
 						inst.close();
 					});
 
+					$('#ui-colorpicker-special-transparent', e).button({
+						label: inst._getRegional('transparent')
+					});
+
+					//inst._getRegional('transparent')
 					$('.ui-colorpicker-buttonset', e).buttonset();
 
 					$('#ui-colorpicker-special-color', e).click(function () {
@@ -1865,8 +1859,15 @@
 				return this._hexify(this.a * 255);
 			};
 
-			this.normClone = function () {
-				return $.extend({}, this, {s: 1, v: 1}).updateRGB();
+			this.copy = function () {
+				return $.extend({}, this);
+			};
+
+			this.normalize = function() {
+				this.s = 1;
+				this.v = 1;
+				this.updateRGB();
+				return this;
 			};
 
 			this.equals = function (rgb) {

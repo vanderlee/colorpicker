@@ -27,11 +27,11 @@
 				$('#switcher').themeswitcher();
 
                 $('#cp1').colorpicker({
-					onClose: function(hex, rgba, inst) {
-								console.log('onClose: '+hex+', (RGB:'+rgba.r+','+rgba.g+','+rgba.b+', A:'+rgba.a+', HSV:'+rgba.h+','+rgba.s+','+rgba.v+')');
+					close: function(event, color) {
+								console.log('close: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
 							},
-					onSelect: function(hex, rgba, inst) {
-								console.log('onSelect: '+hex+', (RGB:'+rgba.r+','+rgba.g+','+rgba.b+', A:'+rgba.a+', HSV:'+rgba.h+','+rgba.s+','+rgba.v+')');
+					select: function(event, color) {
+								console.log('select: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
 							},
 					showOn: 'both',
 					showSwatches: true,
@@ -42,12 +42,15 @@
 					parts: 'full',
 					regional: 'nl',
 					alpha: true,
-					altProperties: 'background-color,color'
+					altProperties: 'background-color,color',
+					colorFormat: 'RGBA'
 				});
 
                 $('#cp2').colorpicker({
 					alpha: true,
 					showButtonPanel: true
+				}).on('colorselect', function(e, c) {
+					console.log('CP2 color: ' + c.formatted);
 				});
 
 				//
