@@ -24,9 +24,11 @@
 		<script src="i18n/jquery.ui.colorpicker-nl.js"></script>
         <script>
            	$( function() {
+				var cps = [];
+
 				$('#switcher').themeswitcher();
 
-                $('#cp1').colorpicker({
+                var cp = $('#cp1').colorpicker({
 					close: function(event, color) {
 								console.log('close: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
 							},
@@ -45,13 +47,15 @@
 					altProperties: 'background-color,color',
 					colorFormat: 'RGBA'
 				});
+				cps.push(cp);
 
-                $('#cp2').colorpicker({
+                cp = $('#cp2').colorpicker({
 					alpha: true,
 					showButtonPanel: true
 				}).on('colorselect', function(e, c) {
 					console.log('CP2 color: ' + c.formatted);
 				});
+				cps.push(cp);
 
 				//
 
@@ -65,24 +69,36 @@
 				$('#cp-button-close').click( function() {
 					cpb.colorpicker('close');
 				});
-				$('#cp-button-disable').click( function() {
-					cpb.colorpicker('disable');
-				});
 				$('#cp-button-setcolor').click( function() {
 					cpb.colorpicker('setColor', '#99ff00');
 				});
+				cps.push(cpb);
 
 				//
 
-				$('#cp-none').colorpicker({
+				cp = $('#cp-none').colorpicker({
 					alpha: true,
 					showNoneButton: true
+				});
+				cps.push(cp);
+
+				$('#cp-button-disable').click( function() {
+					$.each(cps, function() {
+						this.colorpicker('disable');
+					});
+				});
+				$('#cp-button-enable').click( function() {
+					$.each(cps, function() {
+						this.colorpicker('enable');
+					});
 				});
             });
         </script>
     </head>
     <body>
         <div id="switcher"></div>
+		<button id="cp-button-disable">Disable</button><button id="cp-button-enable">Enable</button>
+		<hr/>
 
         Color: <input type="color" id="cp1" value="fe9810"/>
 		<div class="cp1-alt" style="border: 1px inset; width: 180px; height: 60px;">
@@ -98,7 +114,6 @@
 		Activated by buttons: <input type="color" id="cp-buttons" value="927abc"/>
 		<br/><button id="cp-button-open">Open</button>
 		<br/><button id="cp-button-close">Close</button>
-		<br/><button id="cp-button-disable">Disable</button>
 		<br/><button id="cp-button-setcolor">Set to limegreen</button>
 
 		<hr/>
