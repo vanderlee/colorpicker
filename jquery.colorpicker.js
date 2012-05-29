@@ -21,7 +21,6 @@
 			ok:				'OK',
 			cancel:			'Cancel',
 			none:			'None',
-			revert:			'Color',
 			button:			'Color',
 			title:			'Pick a color',
 			transparent:	'Transparent',

@@ -3,7 +3,6 @@ jQuery(function($) {
 		ok:					'OK',
 		cancel:				'Annuler',
 		none:				'Aucune couleur',
-		revert:				'Couleur',
 		button:				'Couleur',
 		title:				'Choisir une couleur',
 		transparent:		'Transparent',
