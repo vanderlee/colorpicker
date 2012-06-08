@@ -34,7 +34,9 @@
 		};
 	};
 
-	var _container_popup = '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
+	var _colorpicker_index = 0,
+
+		_container_popup = '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
 
 		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
 
@@ -248,7 +250,7 @@
 			'pink': [0xff, 0xc0, 0xcb],
 			'lightpink': [0xff, 0xb6, 0xc1]
 		},
-        
+
         _parseHex = function (color) {
             var name = $.trim(color).toLowerCase(),
                 c,
@@ -321,7 +323,7 @@
             }
 
             return _parseHex(color);
-        },        
+        },
 
 		_layoutTable = function(layout, callback) {
 			var layout = layout.sort(function(a, b) {
@@ -412,7 +414,7 @@
 
 			return '<table cellspacing="0" cellpadding="0" border="0"><tbody>' + html + '</tbody></table>';
 		},
-                
+
         _parts = {
             header: function (inst) {
                 var that = this,
@@ -457,7 +459,7 @@
                         return;
                     }
 
-                    var div		= $('#ui-colorpicker-map-layer-pointer', e),
+                    var div		= $('.ui-colorpicker-map-layer-pointer', e),
                         offset	= div.offset(),
                         width	= div.width(),
                         height	= div.height(),
@@ -492,7 +494,7 @@
                     that.x = event.pageX;
                     that.y = event.pageY;
 
-                    var div = $('#ui-colorpicker-map-layer-pointer', e),
+                    var div = $('.ui-colorpicker-map-layer-pointer', e),
                         offset = div.offset(),
                         width = div.width(),
                         height = div.height(),
@@ -546,53 +548,53 @@
                 };
 
                 _html = function () {
-                    var html = '<div id="ui-colorpicker-map" class="ui-colorpicker-border">'
-                            + '<span id="ui-colorpicker-map-layer-1">&nbsp;</span>'
-                            + '<span id="ui-colorpicker-map-layer-2">&nbsp;</span>'
-                            + (inst.options.alpha ? '<span id="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
-                            + '<span id="ui-colorpicker-map-layer-pointer"><span id="ui-colorpicker-map-pointer"></span></span></div>';
+                    var html = '<div class="ui-colorpicker-map" class="ui-colorpicker-border">'
+                            + '<span class="ui-colorpicker-map-layer-1">&nbsp;</span>'
+                            + '<span class="ui-colorpicker-map-layer-2">&nbsp;</span>'
+                            + (inst.options.alpha ? '<span class="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
+                            + '<span class="ui-colorpicker-map-layer-pointer"><span class="ui-colorpicker-map-pointer"></span></span></div>';
                     return html;
                 };
 
                 this.generate = function () {
                     switch (inst.mode) {
                     case 'h':
-                        $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
-                        $('#ui-colorpicker-map-layer-2', e).hide();
+                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-2', e).hide();
                         break;
 
                     case 's':
                     case 'a':
-                        $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
                         break;
 
                     case 'v':
                         $(e).css('background-color', 'black');
-                        $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-map-layer-2', e).hide();
+                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-2', e).hide();
                         break;
 
                     case 'r':
-                        $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
                         break;
 
                     case 'g':
-                        $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
                         break;
 
                     case 'b':
-                        $('#ui-colorpicker-map-layer-1', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-map-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
                         break;
                     }
                     that.repaint();
                 };
 
                 this.repaint = function () {
-                    var div = $('#ui-colorpicker-map-layer-pointer', e),
+                    var div = $('.ui-colorpicker-map-layer-pointer', e),
                         x = 0,
                         y = 0;
 
@@ -607,46 +609,46 @@
                     case 'a':
                         x = inst.color.h * div.width();
                         y = (1 - inst.color.v) * div.width();
-                        $('#ui-colorpicker-map-layer-2', e).css('opacity', 1 - inst.color.s);
+                        $('.ui-colorpicker-map-layer-2', e).css('opacity', 1 - inst.color.s);
                         break;
 
                     case 'v':
                         x = inst.color.h * div.width();
                         y = (1 - inst.color.s) * div.width();
-                        $('#ui-colorpicker-map-layer-1', e).css('opacity', inst.color.v);
+                        $('.ui-colorpicker-map-layer-1', e).css('opacity', inst.color.v);
                         break;
 
                     case 'r':
                         x = inst.color.b * div.width();
                         y = (1 - inst.color.g) * div.width();
-                        $('#ui-colorpicker-map-layer-2', e).css('opacity', inst.color.r);
+                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.r);
                         break;
 
                     case 'g':
                         x = inst.color.b * div.width();
                         y = (1 - inst.color.r) * div.width();
-                        $('#ui-colorpicker-map-layer-2', e).css('opacity', inst.color.g);
+                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.g);
                         break;
 
                     case 'b':
                         x = inst.color.r * div.width();
                         y = (1 - inst.color.g) * div.width();
-                        $('#ui-colorpicker-map-layer-2', e).css('opacity', inst.color.b);
+                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.b);
                         break;
                     }
 
                     if (inst.options.alpha) {
-                        $('#ui-colorpicker-map-layer-alpha', e).css('opacity', 1 - inst.color.a);
+                        $('.ui-colorpicker-map-layer-alpha', e).css('opacity', 1 - inst.color.a);
                     }
 
-                    $('#ui-colorpicker-map-pointer', e).css({
+                    $('.ui-colorpicker-map-pointer', e).css({
                         'left': x - 7,
                         'top': y - 7
                     });
                 };
 
                 this.init = function () {
-                    e = $(_html()).appendTo($('#ui-colorpicker-map-container', inst.dialog));
+                    e = $(_html()).appendTo($('.ui-colorpicker-map-container', inst.dialog));
 
                     e.bind('mousedown', _mousedown);
                 };
@@ -662,7 +664,7 @@
                         return;
                     }
 
-                    var div		= $('#ui-colorpicker-bar-layer-pointer', e),
+                    var div		= $('.ui-colorpicker-bar-layer-pointer', e),
                         offset	= div.offset(),
                         width	= div.width(),
                         height	= div.height(),
@@ -696,7 +698,7 @@
                     }
                     that.y = event.pageY;
 
-                    var div = $('#ui-colorpicker-bar-layer-pointer', e),
+                    var div = $('.ui-colorpicker-bar-layer-pointer', e),
                         offset  = div.offset(),
                         height  = div.height(),
                         y = event.pageY - offset.top;
@@ -744,18 +746,18 @@
                 };
 
                 _html = function () {
-                    var html = '<div id="ui-colorpicker-bar" class="ui-colorpicker-border">'
-                            + '<span id="ui-colorpicker-bar-layer-1">&nbsp;</span>'
-                            + '<span id="ui-colorpicker-bar-layer-2">&nbsp;</span>'
-                            + '<span id="ui-colorpicker-bar-layer-3">&nbsp;</span>'
-                            + '<span id="ui-colorpicker-bar-layer-4">&nbsp;</span>';
+                    var html = '<div class="ui-colorpicker-bar" class="ui-colorpicker-border">'
+                            + '<span class="ui-colorpicker-bar-layer-1">&nbsp;</span>'
+                            + '<span class="ui-colorpicker-bar-layer-2">&nbsp;</span>'
+                            + '<span class="ui-colorpicker-bar-layer-3">&nbsp;</span>'
+                            + '<span class="ui-colorpicker-bar-layer-4">&nbsp;</span>';
 
                     if (inst.options.alpha) {
-                        html += '<span id="ui-colorpicker-bar-layer-alpha">&nbsp;</span>'
-                            + '<span id="ui-colorpicker-bar-layer-alphabar">&nbsp;</span>';
+                        html += '<span class="ui-colorpicker-bar-layer-alpha">&nbsp;</span>'
+                            + '<span class="ui-colorpicker-bar-layer-alphabar">&nbsp;</span>';
                     }
 
-                    html += '<span id="ui-colorpicker-bar-layer-pointer"><span id="ui-colorpicker-bar-pointer"></span></span></div>';
+                    html += '<span class="ui-colorpicker-bar-layer-pointer"><span class="ui-colorpicker-bar-pointer"></span></span></div>';
 
                     return html;
                 };
@@ -768,71 +770,71 @@
                     case 'r':
                     case 'g':
                     case 'b':
-                        $('#ui-colorpicker-bar-layer-alpha', e).show();
-                        $('#ui-colorpicker-bar-layer-alphabar', e).hide();
+                        $('.ui-colorpicker-bar-layer-alpha', e).show();
+                        $('.ui-colorpicker-bar-layer-alphabar', e).hide();
                         break;
 
                     case 'a':
-                        $('#ui-colorpicker-bar-layer-alpha', e).hide();
-                        $('#ui-colorpicker-bar-layer-alphabar', e).show();
+                        $('.ui-colorpicker-bar-layer-alpha', e).hide();
+                        $('.ui-colorpicker-bar-layer-alphabar', e).show();
                         break;
                     }
 
                     switch (inst.mode) {
                     case 'h':
-                        $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-2', e).hide();
-                        $('#ui-colorpicker-bar-layer-3', e).hide();
-                        $('#ui-colorpicker-bar-layer-4', e).hide();
+                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-2', e).hide();
+                        $('.ui-colorpicker-bar-layer-3', e).hide();
+                        $('.ui-colorpicker-bar-layer-4', e).hide();
                         break;
 
                     case 's':
-                        $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-3', e).hide();
-                        $('#ui-colorpicker-bar-layer-4', e).hide();
+                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-3', e).hide();
+                        $('.ui-colorpicker-bar-layer-4', e).hide();
                         break;
 
                     case 'v':
-                        $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-2', e).hide();
-                        $('#ui-colorpicker-bar-layer-3', e).hide();
-                        $('#ui-colorpicker-bar-layer-4', e).hide();
+                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-2', e).hide();
+                        $('.ui-colorpicker-bar-layer-3', e).hide();
+                        $('.ui-colorpicker-bar-layer-4', e).hide();
                         break;
 
                     case 'r':
-                        $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
                         break;
 
                     case 'g':
-                        $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -2600px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -2600px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
                         break;
 
                     case 'b':
-                        $('#ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -3640px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -3380px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -2860px', 'opacity': ''}).show();
-                        $('#ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -3120px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -3640px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -3380px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -2860px', 'opacity': ''}).show();
+                        $('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -3120px', 'opacity': ''}).show();
                         break;
 
                     case 'a':
-                        $('#ui-colorpicker-bar-layer-1', e).hide();
-                        $('#ui-colorpicker-bar-layer-2', e).hide();
-                        $('#ui-colorpicker-bar-layer-3', e).hide();
-                        $('#ui-colorpicker-bar-layer-4', e).hide();
+                        $('.ui-colorpicker-bar-layer-1', e).hide();
+                        $('.ui-colorpicker-bar-layer-2', e).hide();
+                        $('.ui-colorpicker-bar-layer-3', e).hide();
+                        $('.ui-colorpicker-bar-layer-4', e).hide();
                         break;
                     }
                     that.repaint();
                 };
 
                 this.repaint = function () {
-                    var div = $('#ui-colorpicker-bar-layer-pointer', e),
+                    var div = $('.ui-colorpicker-bar-layer-pointer', e),
                         y = 0;
 
                     switch (inst.mode) {
@@ -842,7 +844,7 @@
 
                     case 's':
                         y = (1 - inst.color.s) * div.height();
-                        $('#ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.v);
+                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.v);
                         $(e).css('background-color', inst.color.copy().normalize().toCSS());
                         break;
 
@@ -853,23 +855,23 @@
 
                     case 'r':
                         y = (1 - inst.color.r) * div.height();
-                        $('#ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.b - inst.color.g)));
-                        $('#ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.g - inst.color.b)));
-                        $('#ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.b, inst.color.g));
+                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.b - inst.color.g)));
+                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.g - inst.color.b)));
+                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.b, inst.color.g));
                         break;
 
                     case 'g':
                         y = (1 - inst.color.g) * div.height();
-                        $('#ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.b - inst.color.r)));
-                        $('#ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.r - inst.color.b)));
-                        $('#ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.r, inst.color.b));
+                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.b - inst.color.r)));
+                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.r - inst.color.b)));
+                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.r, inst.color.b));
                         break;
 
                     case 'b':
                         y = (1 - inst.color.b) * div.height();
-                        $('#ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.r - inst.color.g)));
-                        $('#ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.g - inst.color.r)));
-                        $('#ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.r, inst.color.g));
+                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.r - inst.color.g)));
+                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.g - inst.color.r)));
+                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.r, inst.color.g));
                         break;
 
                     case 'a':
@@ -879,14 +881,14 @@
                     }
 
                     if (inst.mode !== 'a') {
-                        $('#ui-colorpicker-bar-layer-alpha', e).css('opacity', 1 - inst.color.a);
+                        $('.ui-colorpicker-bar-layer-alpha', e).css('opacity', 1 - inst.color.a);
                     }
 
-                    $('#ui-colorpicker-bar-pointer', e).css('top', y - 3);
+                    $('.ui-colorpicker-bar-pointer', e).css('top', y - 3);
                 };
 
                 this.init = function () {
-                    e = $(_html()).appendTo($('#ui-colorpicker-bar-container', inst.dialog));
+                    e = $(_html()).appendTo($('.ui-colorpicker-bar-container', inst.dialog));
 
                     e.bind('mousedown', _mousedown);
                 };
@@ -901,16 +903,16 @@
                     var html = '';
 
                     if (inst.options.hsv) {
-                        html +=	'<div id="ui-colorpicker-h"><input class="ui-colorpicker-mode" type="radio" value="h"/><label>' + inst._getRegional('hueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="360" size="10"/><span class="ui-colorpicker-unit">&deg;</span></div>'
-                            + '<div id="ui-colorpicker-s"><input class="ui-colorpicker-mode" type="radio" value="s"/><label>' + inst._getRegional('saturationShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>'
-                            + '<div id="ui-colorpicker-v"><input class="ui-colorpicker-mode" type="radio" value="v"/><label>' + inst._getRegional('valueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
+                        html +=	'<div class="ui-colorpicker-h"><input class="ui-colorpicker-mode" type="radio" value="h"/><label>' + inst._getRegional('hueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="360" size="10"/><span class="ui-colorpicker-unit">&deg;</span></div>'
+                            + '<div class="ui-colorpicker-s"><input class="ui-colorpicker-mode" type="radio" value="s"/><label>' + inst._getRegional('saturationShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>'
+                            + '<div class="ui-colorpicker-v"><input class="ui-colorpicker-mode" type="radio" value="v"/><label>' + inst._getRegional('valueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
                     }
 
-                    return '<div id="ui-colorpicker-hsv">' + html + '</div>';
+                    return '<div class="ui-colorpicker-hsv">' + html + '</div>';
                 };
 
                 this.init = function () {
-                    e = $(_html()).appendTo($('#ui-colorpicker-hsv-container', inst.dialog));
+                    e = $(_html()).appendTo($('.ui-colorpicker-hsv-container', inst.dialog));
 
                     $('.ui-colorpicker-mode', e).click(function () {
                         inst.mode = $(this).val();
@@ -918,9 +920,9 @@
                     });
 
                     $('.ui-colorpicker-number', e).bind('change input keyup', function () {
-                        inst.color.h = $('#ui-colorpicker-h .ui-colorpicker-number', e).val() / 360;
-                        inst.color.s = $('#ui-colorpicker-s .ui-colorpicker-number', e).val() / 100;
-                        inst.color.v = $('#ui-colorpicker-v .ui-colorpicker-number', e).val() / 100;
+                        inst.color.h = $('.ui-colorpicker-h .ui-colorpicker-number', e).val() / 360;
+                        inst.color.s = $('.ui-colorpicker-s .ui-colorpicker-number', e).val() / 100;
+                        inst.color.v = $('.ui-colorpicker-v .ui-colorpicker-number', e).val() / 100;
 
                         inst.color.updateRGB();
 
@@ -936,9 +938,9 @@
 
                     $.each(c, function (index, value) {
                         var v = Math.round(value);
-                        if (!$('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
-                                && $('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
-                            $('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
+                        if (!$('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
+                                && $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
+                            $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
                         }
                     });
                 };
@@ -960,16 +962,16 @@
                     var html = '';
 
                     if (inst.options.rgb) {
-                        html += '<div id="ui-colorpicker-r"><input class="ui-colorpicker-mode" type="radio" value="r"/><label>' + inst._getRegional('redShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
-                            + '<div id="ui-colorpicker-g"><input class="ui-colorpicker-mode" type="radio" value="g"/><label>' + inst._getRegional('greenShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
-                            + '<div id="ui-colorpicker-b"><input class="ui-colorpicker-mode" type="radio" value="b"/><label>' + inst._getRegional('blueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>';
+                        html += '<div class="ui-colorpicker-r"><input class="ui-colorpicker-mode" type="radio" value="r"/><label>' + inst._getRegional('redShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
+                            + '<div class="ui-colorpicker-g"><input class="ui-colorpicker-mode" type="radio" value="g"/><label>' + inst._getRegional('greenShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>'
+                            + '<div class="ui-colorpicker-b"><input class="ui-colorpicker-mode" type="radio" value="b"/><label>' + inst._getRegional('blueShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255" size="10"/><span class="ui-colorpicker-unit"></span></div>';
                     }
 
-                    return '<div id="ui-colorpicker-rgb">' + html + '</div>';
+                    return '<div class="ui-colorpicker-rgb">' + html + '</div>';
                 };
 
                 this.init = function () {
-                    e = $(_html()).appendTo($('#ui-colorpicker-rgb-container', inst.dialog));
+                    e = $(_html()).appendTo($('.ui-colorpicker-rgb-container', inst.dialog));
 
                     $('.ui-colorpicker-mode', e).click(function () {
                         inst.mode = $(this).val();
@@ -977,9 +979,9 @@
                     });
 
                     $('.ui-colorpicker-number', e).bind('change input keyup', function () {
-                        inst.color.r = $('#ui-colorpicker-r .ui-colorpicker-number', e).val() / 255;
-                        inst.color.g = $('#ui-colorpicker-g .ui-colorpicker-number', e).val() / 255;
-                        inst.color.b = $('#ui-colorpicker-b .ui-colorpicker-number', e).val() / 255;
+                        inst.color.r = $('.ui-colorpicker-r .ui-colorpicker-number', e).val() / 255;
+                        inst.color.g = $('.ui-colorpicker-g .ui-colorpicker-number', e).val() / 255;
+                        inst.color.b = $('.ui-colorpicker-b .ui-colorpicker-number', e).val() / 255;
 
                         inst.color.updateHSV();
 
@@ -995,9 +997,9 @@
 
                     $.each(c, function (index, value) {
                         var v = Math.round(value);
-                        if (!$('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
-                                && $('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
-                            $('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
+                        if (!$('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
+                                && $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
+                            $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
                         }
                     });
                 };
@@ -1019,14 +1021,14 @@
                     var html = '';
 
                     if (inst.options.alpha) {
-                        html += '<div id="ui-colorpicker-a"><input class="ui-colorpicker-mode" name="mode" type="radio" value="a"/><label>' + inst._getRegional('alphaShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
+                        html += '<div class="ui-colorpicker-a"><input class="ui-colorpicker-mode" name="mode" type="radio" value="a"/><label>' + inst._getRegional('alphaShort') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
                     }
 
-                    return '<div id="ui-colorpicker-alpha">' + html + '</div>';
+                    return '<div class="ui-colorpicker-alpha">' + html + '</div>';
                 };
 
                 this.init = function () {
-                    e = $(_html()).appendTo($('#ui-colorpicker-alpha-container', inst.dialog));
+                    e = $(_html()).appendTo($('.ui-colorpicker-alpha-container', inst.dialog));
 
                     $('.ui-colorpicker-mode', e).click(function () {
                         inst.mode = $(this).val();
@@ -1034,7 +1036,7 @@
                     });
 
                     $('.ui-colorpicker-number', e).bind('change input keyup', function () {
-                        inst.color.a = $('#ui-colorpicker-a .ui-colorpicker-number', e).val() / 100;
+                        inst.color.a = $('.ui-colorpicker-a .ui-colorpicker-number', e).val() / 100;
 
                         inst._change();
                     });
@@ -1046,9 +1048,9 @@
 
                     $.each(c, function (index, value) {
                         var v = Math.round(value);
-                        if (!$('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
-                                && $('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
-                            $('#ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
+                        if (!$('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
+                                && $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
+                            $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
                         }
                     });
                 };
@@ -1067,18 +1069,18 @@
                     _html;
 
                 _html = function () {
-                    return '<div id="ui-colorpicker-preview">'
+                    return '<div class="ui-colorpicker-preview">'
                         + '<span class="ui-colorpicker-border">'
-                        + '<div id="ui-colorpicker-preview-initial"><div id="ui-colorpicker-preview-initial-alpha"></div></div>'
-                        + '<div id="ui-colorpicker-preview-current"><div id="ui-colorpicker-preview-current-alpha"></div></div>'
+                        + '<div class="ui-colorpicker-preview-initial"><div class="ui-colorpicker-preview-initial-alpha"></div></div>'
+                        + '<div class="ui-colorpicker-preview-current"><div class="ui-colorpicker-preview-current-alpha"></div></div>'
                         + '</span>'
                         + '</div>';
                 };
 
                 this.init = function () {
-                    e = $(_html()).appendTo($('#ui-colorpicker-preview-container', inst.dialog));
+                    e = $(_html()).appendTo($('.ui-colorpicker-preview-container', inst.dialog));
 
-                    $('#ui-colorpicker-preview-initial', e).click(function () {
+                    $('.ui-colorpicker-preview-initial', e).click(function () {
                         inst.color = $.extend({}, inst.currentColor);
                         inst._change();
                     });
@@ -1086,17 +1088,17 @@
                 };
 
                 this.repaint = function () {
-                    $('#ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.toCSS()).attr('title', inst.currentColor.toHex());
-                    $('#ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.a);
-                    $('#ui-colorpicker-preview-current', e).css('background-color', inst.color.toCSS()).attr('title', inst.color.toHex());
-                    $('#ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.a);
+                    $('.ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.toCSS()).attr('title', inst.currentColor.toHex());
+                    $('.ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.a);
+                    $('.ui-colorpicker-preview-current', e).css('background-color', inst.color.toCSS()).attr('title', inst.color.toHex());
+                    $('.ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.a);
                 };
 
                 this.generate = function () {
                     if (inst.options.alpha) {
-                        $('#ui-colorpicker-preview-initial-alpha, #ui-colorpicker-preview-current-alpha', e).show();
+                        $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).show();
                     } else {
-                        $('#ui-colorpicker-preview-initial-alpha, #ui-colorpicker-preview-current-alpha', e).hide();
+                        $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).hide();
                     }
 
                     this.repaint();
@@ -1112,18 +1114,18 @@
                     var html = '';
 
                     if (inst.options.alpha) {
-                        html += '<input id="ui-colorpicker-hex-alpha" maxlength="2" size="2"/>';
+                        html += '<input class="ui-colorpicker-hex-alpha" maxlength="2" size="2"/>';
                     }
 
-                    html += '<input id="ui-colorpicker-hex-input" maxlength="6" size="6"/>';
+                    html += '<input class="ui-colorpicker-hex-input" maxlength="6" size="6"/>';
 
-                    return '<div id="ui-colorpicker-hex"><label for="ui-colorpicker-hex-input">#: </label>' + html + '</div>';
+                    return '<div class="ui-colorpicker-hex"><label>#: </label>' + html + '</div>';
                 };
 
                 this.init = function () {
-                    e = $(_html()).appendTo($('#ui-colorpicker-hex-container', inst.dialog));
+                    e = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
 
-                    $('#ui-colorpicker-hex-input', e).bind('change keyup', function () {
+                    $('.ui-colorpicker-hex-input', e).bind('change keyup', function () {
                         var rgb = _parseHex($(this).val());
                         inst.color.r = rgb[0];
                         inst.color.g = rgb[1];
@@ -1132,19 +1134,19 @@
                         inst._change();
                     });
 
-                    $('#ui-colorpicker-hex-alpha', e).bind('change keyup', function () {
-                        inst.color.a = parseInt($('#ui-colorpicker-hex-alpha', e).val(), 16);
+                    $('.ui-colorpicker-hex-alpha', e).bind('change keyup', function () {
+                        inst.color.a = parseInt($('.ui-colorpicker-hex-alpha', e).val(), 16);
                         inst._change();
                     });
                 };
 
                 this.repaint = function () {
-                    if (!$('#ui-colorpicker-hex-input', e).is(':focus')) {
-                        $('#ui-colorpicker-hex-input', e).val(inst.color.toHex(true));
+                    if (!$('.ui-colorpicker-hex-input', e).is(':focus')) {
+                        $('.ui-colorpicker-hex-input', e).val(inst.color.toHex(true));
                     }
 
-                    if (!$('#ui-colorpicker-hex-alpha', e).is(':focus')) {
-                        $('#ui-colorpicker-hex-alpha', e).val(_intToHex(inst.color.a * 255));
+                    if (!$('.ui-colorpicker-hex-alpha', e).is(':focus')) {
+                        $('.ui-colorpicker-hex-alpha', e).val(_intToHex(inst.color.a * 255));
                     }
                 };
 
@@ -1166,11 +1168,11 @@
                         html += '<div class="ui-colorpicker-swatch" style="background-color: #' + hex + '" title="' + name + '"></div>';
                     });
 
-                    return '<div id="ui-colorpicker-swatches" class="ui-colorpicker-border">' + html + '</div>';
+                    return '<div class="ui-colorpicker-swatches" class="ui-colorpicker-border">' + html + '</div>';
                 };
 
                 this.init = function () {
-                    e = $(_html()).appendTo($('#ui-colorpicker-swatches-container', inst.dialog));
+                    e = $(_html()).appendTo($('.ui-colorpicker-swatches-container', inst.dialog));
 
                     $('.ui-colorpicker-swatch', e).click(function () {
                         var rgb		= _parseColor($(this).css('background-color'));
@@ -1190,8 +1192,11 @@
 
             footer: function (inst) {
                 var that = this,
-                    e = null,
-                    _html;
+					e = null,
+					id_transparent = 'ui-colorpicker-special-transparent-'+_colorpicker_index,
+					id_none = 'ui-colorpicker-special-none-'+_colorpicker_index,
+                    _html
+					;
 
                 _html = function () {
                     var html = '';
@@ -1200,11 +1205,10 @@
                         html += '<div class="ui-colorpicker-buttonset">';
 
                         if (inst.options.alpha) {
-//							html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-transparent"/><label for="ui-colorpicker-special-transparent">' + inst._getRegional('transparent') + '</label>';
-                            html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-transparent"/>';
+							html += '<input type="radio" name="ui-colorpicker-special" id="'+id_transparent+'" class="ui-colorpicker-special-transparent"/><label for="'+id_transparent+'">' + inst._getRegional('transparent') + '</label>';
                         }
                         if (!inst.inline && inst.options.showNoneButton) {
-                            html += '<input type="radio" name="ui-colorpicker-special" id="ui-colorpicker-special-none"><label for="ui-colorpicker-special-none">' + inst._getRegional('none') + '</label>';
+                            html += '<input type="radio" name="ui-colorpicker-special" id="'+id_none+'" class="ui-colorpicker-special-none"><label for="'+id_none+'">' + inst._getRegional('none') + '</label>';
                         }
                         html += '</div>';
                     }
@@ -1232,22 +1236,18 @@
                         inst.close();
                     });
 
-                    $('#ui-colorpicker-special-transparent', e).button({
-                        label: inst._getRegional('transparent')
-                    });
-
                     //inst._getRegional('transparent')
                     $('.ui-colorpicker-buttonset', e).buttonset();
 
-                    $('#ui-colorpicker-special-color', e).click(function () {
+                    $('.ui-colorpicker-special-color', e).click(function () {
                         inst._change();
                     });
 
-                    $('#ui-colorpicker-special-none', e).click(function () {
+                    $('#'+id_none, e).click(function () {
                         inst._change(false);
                     });
 
-                    $('#ui-colorpicker-special-transparent', e).click(function () {
+                    $('#'+id_transparent, e).click(function () {
                         inst.color.a = 0;
                         inst._change();
                     });
@@ -1255,9 +1255,9 @@
 
                 this.repaint = function () {
                     if (!inst.color.set) {
-                        $('#ui-colorpicker-special-none', e).attr('checked', true).button( "refresh" );
+                        $('.ui-colorpicker-special-none', e).attr('checked', true).button( "refresh" );
                     } else if (inst.color.a == 0) {
-                        $('#ui-colorpicker-special-transparent', e).attr('checked', true).button( "refresh" );
+                        $('.ui-colorpicker-special-transparent', e).attr('checked', true).button( "refresh" );
                     } else {
                         $('input', e).attr('checked', false).button( "refresh" );
                     }
@@ -1268,7 +1268,7 @@
                 this.generate = function () {};
             }
         },
-            
+
         Color = function () {
 			var arg,
 				args = arguments;
@@ -1314,7 +1314,7 @@
 					}
 				}
 				return this;
-			};           
+			};
 
 			this.updateHSV = function () {
 				var minVal, maxVal, delta, del_R, del_G, del_B;
@@ -1473,6 +1473,8 @@
 
 		_create: function () {
 			var that = this;
+
+			++_colorpicker_index;
 
 			that.widgetEventPrefix = 'color';
 
@@ -1707,7 +1709,7 @@
 				}
 
 				$(_layoutTable(layout_parts, function(cell, x, y) {
-					var classes = [];
+					var classes = ['ui-colorpicker-' + cell.part + '-container'];
 
 					if (x > 0) {
 						classes.push('ui-colorpicker-padding-left');
@@ -1717,10 +1719,9 @@
 						classes.push('ui-colorpicker-padding-top');
 					}
 
-					return '<td id="ui-colorpicker-' + cell.part + '-container"'
+					return '<td  class="' + classes.join(' ') + '"'
 						+ (cell.pos[2] > 1 ? ' colspan="' + cell.pos[2] + '"' : '')
 						+ (cell.pos[3] > 1 ? ' rowspan="' + cell.pos[3] + '"' : '')
-						+ (classes.length > 0 ? ' class="' + classes.join(' ') + '"' : '')
 						+ ' valign="top"></td>';
 				})).appendTo(that.dialog).addClass('ui-dialog-content ui-widget-content');
 

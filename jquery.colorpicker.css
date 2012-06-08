@@ -62,35 +62,35 @@
 }
 
 /* Bar & map */
-#ui-colorpicker-map > *,
-#ui-colorpicker-bar > * {
+.ui-colorpicker-map > *,
+.ui-colorpicker-bar > * {
     position: absolute;
 	cursor: crosshair;
 }
 
-#ui-colorpicker-map-pointer,
-#ui-colorpicker-bar-pointer {
+.ui-colorpicker-map-pointer,
+.ui-colorpicker-bar-pointer {
     position: absolute;
 }
 /* Map */
-#ui-colorpicker-map,
-#ui-colorpicker-map > * {
+.ui-colorpicker-map,
+.ui-colorpicker-map > * {
     display: block;
 	width: 256px;
 	height: 256px;
 	overflow: hidden;
 }
 
-#ui-colorpicker-map-layer-1,
-#ui-colorpicker-map-layer-2 {
+.ui-colorpicker-map-layer-1,
+.ui-colorpicker-map-layer-2 {
 	background: url(images/map.png) no-repeat;
 }
 
-#ui-colorpicker-map-layer-alpha {
+.ui-colorpicker-map-layer-alpha {
 	background: url(images/map-opacity.png);
 }
 
-#ui-colorpicker-map-pointer {
+.ui-colorpicker-map-pointer {
 	display: inline-block;
 	width: 15px;
 	height: 15px;
@@ -99,8 +99,8 @@
 
 
 /* Bar */
-#ui-colorpicker-bar,
-#ui-colorpicker-bar > * {
+.ui-colorpicker-bar,
+.ui-colorpicker-bar > * {
     display: block;
     width: 20px;
     height: 256px;
@@ -108,22 +108,22 @@
     background-repeat: repeat-x;
 }
 
-#ui-colorpicker-bar-layer-1,
-#ui-colorpicker-bar-layer-2,
-#ui-colorpicker-bar-layer-3,
-#ui-colorpicker-bar-layer-4 {
+.ui-colorpicker-bar-layer-1,
+.ui-colorpicker-bar-layer-2,
+.ui-colorpicker-bar-layer-3,
+.ui-colorpicker-bar-layer-4 {
 	background: url(images/bar.png) repeat-x;
 }
 
-#ui-colorpicker-bar-layer-alpha {
+.ui-colorpicker-bar-layer-alpha {
 	background: url(images/bar-opacity.png);
 }
 
-#ui-colorpicker-bar-layer-alphabar {
+.ui-colorpicker-bar-layer-alphabar {
 	background: url(images/bar-alpha.png);
 }
 
-#ui-colorpicker-bar-pointer {
+.ui-colorpicker-bar-pointer {
 	display: inline-block;
 	width: 20px;
 	height: 7px;
@@ -131,23 +131,23 @@
 }
 
 /* Preview */
-#ui-colorpicker-preview {
+.ui-colorpicker-preview {
 	text-align: center;
 }
 
-#ui-colorpicker-preview-initial {
+.ui-colorpicker-preview-initial {
     cursor: pointer;
 }
 
-#ui-colorpicker-preview-initial,
-#ui-colorpicker-preview-current {
+.ui-colorpicker-preview-initial,
+.ui-colorpicker-preview-current {
     width: 50px;
     height: 20px;
     display: inline-block;
 }
 
-#ui-colorpicker-preview-initial-alpha,
-#ui-colorpicker-preview-current-alpha {
+.ui-colorpicker-preview-initial-alpha,
+.ui-colorpicker-preview-current-alpha {
     width: 50px;
     height: 20px;
     display: inline-block;
@@ -155,10 +155,10 @@
 }
 
 /* Inputs */
-#ui-colorpicker-inputs label,
-#ui-colorpicker-hsv label,
-#ui-colorpicker-rgb label,
-#ui-colorpicker-a label {
+.ui-colorpicker-inputs label,
+.ui-colorpicker-hsv label,
+.ui-colorpicker-rgb label,
+.ui-colorpicker-a label {
     width: 1.5em;
     display: inline-block;
 }
@@ -168,12 +168,12 @@
 }
 
 /* Hex */
-#ui-colorpicker-hex {
+.ui-colorpicker-hex {
 	text-align: center;
 }
 
 /* Swatches */
-#ui-colorpicker-swatches {
+.ui-colorpicker-swatches {
 	width: 84px;
 	height: 256px;
 	overflow: auto;
