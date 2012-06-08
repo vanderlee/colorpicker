@@ -1506,7 +1506,7 @@
 					}
 
 					// Check if clicked on any part of dialog
-					if ($(event.target).parents('.ui-colorpicker').length > 0) {
+					if ($(event.target).closest('.ui-colorpicker').length > 0) {
 						that.element.blur();	// inside window!
 						return;
 					}
