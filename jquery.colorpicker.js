@@ -326,13 +326,7 @@
         },
 
 		_layoutTable = function(layout, callback) {
-			var layout = layout.sort(function(a, b) {
-					if (a.pos[1] == b.pos[1]) {
-						return a.pos[0] - b.pos[0];
-					}
-					return a.pos[1] - b.pos[1];
-				}),
-				bitmap,
+			var bitmap,
 				x,
 				y,
 				width, height,
@@ -340,6 +334,13 @@
 				index,
 				cell,
 				html;
+
+			layout.sort(function(a, b) {
+					if (a.pos[1] == b.pos[1]) {
+						return a.pos[0] - b.pos[0];
+					}
+					return a.pos[1] - b.pos[1];
+				});
 
 			// Determine dimensions of the table
 			width = 0;
