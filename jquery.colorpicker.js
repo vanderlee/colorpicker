@@ -452,6 +452,7 @@
             map: function (inst) {
                 var that	= this,
                     e		= null,
+					mousemove_timeout = null,
                     _mousedown, _mouseup, _mousemove, _html;
 
                 _mousedown = function (event) {
@@ -931,16 +932,17 @@
                 };
 
                 this.repaint = function () {
-                    var c = $.extend(inst.color);
-                    c.h *= 360;
-                    c.s *= 100;
-                    c.v *= 100;
+					var c = {
+						h:	inst.color.h * 360
+					,	s:	inst.color.s * 100
+					,	v:	inst.color.v * 100
+					};
 
                     $.each(c, function (index, value) {
-                        var v = Math.round(value);
-                        if (!$('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
-                                && $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
-                            $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
+						var input = $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e);
+                        value = Math.round(value);
+                        if (!input.is(':focus') && input.val() !== value) {
+                            input.val(value);
                         }
                     });
                 };
@@ -990,16 +992,17 @@
                 };
 
                 this.repaint = function () {
-                    var c = $.extend(inst.color);
-                    c.r *= 255;
-                    c.g *= 255;
-                    c.b *= 255;
+					var c = {
+						r:	inst.color.r * 255
+					,	g:	inst.color.g * 255
+					,	b:	inst.color.b * 255
+					};
 
                     $.each(c, function (index, value) {
-                        var v = Math.round(value);
-                        if (!$('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
-                                && $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
-                            $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
+						var input = $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e);
+                        value = Math.round(value);
+                        if (!input.is(':focus') && input.val() !== value) {
+                            input.val(value);
                         }
                     });
                 };
@@ -1043,16 +1046,11 @@
                 };
 
                 this.repaint = function () {
-                    var c = $.extend(inst.color);
-                    c.a *= 100;
-
-                    $.each(c, function (index, value) {
-                        var v = Math.round(value);
-                        if (!$('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).is(':focus')
-                                && $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val() !== v) {
-                            $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e).val(v);
-                        }
-                    });
+					var input = $('.ui-colorpicker-a .ui-colorpicker-number', e);
+					var value = Math.round(inst.color.a * 100);
+					if (!input.is(':focus') && input.val() !== value) {
+						input.val(value);
+					}
                 };
 
                 this.generate = function () {
