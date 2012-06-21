@@ -161,13 +161,19 @@ Options:
 		zIndex must be 1002 or greater.
 
 Events:
+	init:			null
+		Triggered on initially setting the color. Called only once.
+		Callbacks recieve same data as select event.
+
 	close:			null
 		Triggered when the popup is closed.
+		Callbacks recieve same data as select event.
 
 	select:			null
 		Triggered on each change, confirmation (click on OK button) and
 		cancellation (click on Cancel, outside window or window close button)
 		respectively.
+
 		The event recieves a jQuery event object and a data object containing
 		the elements 'formatted' (with the color formatted according to
 		formatColor) and r, g, b, a, h, s and v all in floating point range\
