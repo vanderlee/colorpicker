@@ -7,7 +7,6 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
 		<script src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
 		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css"/>
-		<!--link href="aristo/Aristo.css" rel="stylesheet" type="text/css"/-->
         <style>
 			body {
 				font-family:	'Segoe UI', Verdana, Arial, Helvetica, sans-serif;
@@ -24,100 +23,179 @@
 		<script src="i18n/jquery.ui.colorpicker-nl.js"></script>
         <script>
            	$( function() {
-				var cps = [];
-
 				$('#switcher').themeswitcher();
+//
+//					close: function(event, color) {
+//								console.log('close: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
+//							},
+//					select: function(event, color) {
+//								console.log('select: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
+//							},
+//					showOn: 'both',
+//					showNoneButton: true,
+//					buttonColorize: true,
+//					limit: 'websafe',
+//					parts: 'full',
+//					regional: 'nl',
+//					alpha: true,
+//					colorFormat: 'RGBA'
+//				});
+//
+//                $('#cp2').colorpicker({
+//					alpha: true,
+//					showButtonPanel: true
+//				}).on('colorselect', function(e, c) {
+//					console.debug('CP2 color: ' + c.formatted);
+//				});
+//
+//				//
+//
+//                var cpb = $('#cp-buttons').colorpicker({
+//					showOn: '',
+//					parts: ['bar', 'map']
+//				});
+//				$('#cp-button-open').click( function() {
+//					cpb.colorpicker('open');
+//				});
+//				$('#cp-button-close').click( function() {
+//					cpb.colorpicker('close');
+//				});
+//				$('#cp-button-setcolor').click( function() {
+//					cpb.colorpicker('setColor', '#99ff00');
+//				});
+//
+//				$('#cp-none').colorpicker({
+//					alpha: true,
+//					showNoneButton: true
+//				});
+//
 
-                var cp = $('#cp1').colorpicker({
-					close: function(event, color) {
-								console.log('close: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
-							},
-					select: function(event, color) {
-								console.log('select: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
-							},
-					showOn: 'both',
-					showSwatches: true,
-					showNoneButton: true,
-					buttonColorize: true,
-					altField: '.cp1-alt',
-					limit: 'websafe',
-					parts: 'full',
-					regional: 'nl',
-					alpha: true,
-					altProperties: 'background-color,color',
-					colorFormat: 'RGBA'
-				});
-				cps.push(cp);
-
-                cp = $('#cp2').colorpicker({
-					alpha: true,
-					showButtonPanel: true
-				}).on('colorselect', function(e, c) {
-					console.log('CP2 color: ' + c.formatted);
-				});
-				cps.push(cp);
-
-				//
-
-                var cpb = $('#cp-buttons').colorpicker({
-					showOn: '',
-					parts: ['bar', 'map']
-				});
-				$('#cp-button-open').click( function() {
-					cpb.colorpicker('open');
-				});
-				$('#cp-button-close').click( function() {
-					cpb.colorpicker('close');
-				});
-				$('#cp-button-setcolor').click( function() {
-					cpb.colorpicker('setColor', '#99ff00');
-				});
-				cps.push(cpb);
-
-				//
-
-				cp = $('#cp-none').colorpicker({
-					alpha: true,
-					showNoneButton: true
-				});
-				cps.push(cp);
-
-				$('#cp-button-disable').click( function() {
-					$.each(cps, function() {
-						this.colorpicker('disable');
-					});
-				});
-				$('#cp-button-enable').click( function() {
-					$.each(cps, function() {
-						this.colorpicker('enable');
-					});
-				});
+//				$('#cp-button-disable').click( function() {
+//					$.each(cps, function() {
+//						this.colorpicker('disable');
+//					});
+//				});
+//				$('#cp-button-enable').click( function() {
+//					$.each(cps, function() {
+//						this.colorpicker('enable');
+//					});
+//				});
             });
         </script>
     </head>
     <body>
         <div id="switcher"></div>
-		<button id="cp-button-disable">Disable</button><button id="cp-button-enable">Enable</button>
-		<hr/>
 
-        Color: <input type="color" id="cp1" value="fe9810"/>
-		<div class="cp1-alt" style="border: 1px inset; width: 180px; height: 60px;">
-			<div style=" background-color: white; border: 1px solid black; margin: 5px; padding: 5px; font-size: 20px; font-weight: bold;">Text</div>
-		</div>
-
-		<hr/>
-
-		Inline:<div id="cp2"></div>
+        Basic &lt;input&gt; example, without any options: <input type="text" class="cp-basic" value="fe9810"/>
+		<br/>
+        Basic &lt;div&gt; example, without any options:<span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
+		<script>
+           	$( function() {
+                $('.cp-basic').colorpicker();
+			});
+		</script>
 
 		<hr/>
 
-		Activated by buttons: <input type="color" id="cp-buttons" value="927abc"/>
-		<br/><button id="cp-button-open">Open</button>
-		<br/><button id="cp-button-close">Close</button>
-		<br/><button id="cp-button-setcolor">Set to limegreen</button>
+        Fully-featured example: <input type="text" class="cp-full" value="186aa7"/>
+		<script>
+           	$( function() {
+                $('.cp-full').colorpicker({
+					parts: 'full',
+					showOn: 'both',
+					buttonColorize: true,
+					showNoneButton: true,
+					alpha: true
+				});
+			});
+		</script>
 
 		<hr/>
 
-		Start with no color: <input type="color" id="cp-none"/>
+        Localized to Dutch (nl): <input type="text" class="cp-nl" value="ccea73"/>
+		<script>
+           	$( function() {
+				$('.cp-nl').colorpicker({
+					regional: 'nl',
+					showNoneButton: true,
+					alpha: true
+				});
+			});
+		</script>
+
+		<hr/>
+
+        Limit to websafe colors: <input type="text" class="cp-websafe" value="0fa7c2"/>
+		<script>
+           	$( function() {
+                $('.cp-websafe').colorpicker({
+					limit: 'websafe'
+				});
+			});
+		</script>
+
+		<hr/>
+
+        Alternative field class: <input type="text" class="cp-alt" value="b762ae"/>
+		<span class="cp-alt-target" style="display: inline-block; border: thin solid black; padding: .5em 4em;">
+			<div style=" background-color: white; border: thin solid black; padding: .25em 2em; font-size: 1.25em; font-weight: bold;">Background-color on outside, text color here</div>
+		</span>
+		<script>
+           	$( function() {
+                $('.cp-alt').colorpicker({
+					altField: '.cp-alt-target',
+					altProperties: 'background-color,color',
+					altAlpha: true,
+					alpha: true
+				});
+			});
+		</script>
+
+		<hr/>
+
+        Events: <input type="text" class="cp-events" value="92b64a"/>
+		<div class="cp-events-log" style="vertical-align: top; display: inline-block; border: thin solid black; height: 10em; overflow-y: scroll; width: 40em;"></div>
+		<script>
+           	$( function() {
+				var count = 0;
+
+				function addToEventLog(label, message) {
+					var line = '<div>#'+(++count)+' '+label+': '+message+'</div>';
+					var log = $('.cp-events-log');
+					log.append(line).scrollTop(log[0].scrollHeight);
+				}
+
+                $('.cp-events').colorpicker({
+					init: function(event, color) {
+								addToEventLog('Init', color.formatted);
+							},
+					select: function(event, color) {
+								addToEventLog('Select', color.formatted);
+							},
+					close: function(event, color) {
+								addToEventLog('Close', color.formatted);
+							}
+				});
+			});
+		</script>
+
+		<hr/>
+
+        Output formatting HSLA: <input type="text" class="cp-format" value="918237"/>
+		<span class="cp-format-output"></span>
+		<script>
+           	$( function() {
+                $('.cp-format').colorpicker({
+					colorFormat: 'HSLA',
+					alpha: true,
+					init: function(event, color) {
+								$('.cp-format-output').text(color.formatted);
+							},
+					select: function(event, color) {
+								$('.cp-format-output').text(color.formatted);
+							}
+				});
+			});
+		</script>
     </body>
 </html>
