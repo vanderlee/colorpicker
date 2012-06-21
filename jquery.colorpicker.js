@@ -1466,6 +1466,7 @@
 			title:				null,
 			zIndex:				null,
 
+			init:				null,
 			close:              null,
 			select:             null
 		},
@@ -1494,6 +1495,8 @@
 
 			if (this.element[0].nodeName.toLowerCase() === 'input') {
 				that._setColor(that.element.val());
+
+				this._callback('init');
 
 				$('body').append(_container_popup);
 				that.dialog = $('.ui-colorpicker:last');
