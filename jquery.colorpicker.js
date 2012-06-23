@@ -511,38 +511,38 @@
                     case 'h':
                         inst.color.s = x;
                         inst.color.v = 1 - y;
-                        inst.color.updateRGB();
+                        inst.color.updateFromHSV();
                         break;
 
                     case 's':
                     case 'a':
                         inst.color.h = x;
                         inst.color.v = 1 - y;
-                        inst.color.updateRGB();
+                        inst.color.updateFromHSV();
                         break;
 
                     case 'v':
                         inst.color.h = x;
                         inst.color.s = 1 - y;
-                        inst.color.updateRGB();
+                        inst.color.updateFromHSV();
                         break;
 
                     case 'r':
                         inst.color.b = x;
                         inst.color.g = 1 - y;
-                        inst.color.updateHSV();
+                        inst.color.updateFromRGB();
                         break;
 
                     case 'g':
                         inst.color.b = x;
                         inst.color.r = 1 - y;
-                        inst.color.updateHSV();
+                        inst.color.updateFromRGB();
                         break;
 
                     case 'b':
                         inst.color.r = x;
                         inst.color.g = 1 - y;
-                        inst.color.updateHSV();
+                        inst.color.updateFromRGB();
                         break;
                     }
 
@@ -711,32 +711,32 @@
                     switch (inst.mode) {
                     case 'h':
                         inst.color.h = 1 - y;
-                        inst.color.updateRGB();
+                        inst.color.updateFromHSV();
                         break;
 
                     case 's':
                         inst.color.s = 1 - y;
-                        inst.color.updateRGB();
+                        inst.color.updateFromHSV();
                         break;
 
                     case 'v':
                         inst.color.v = 1 - y;
-                        inst.color.updateRGB();
+                        inst.color.updateFromHSV();
                         break;
 
                     case 'r':
                         inst.color.r = 1 - y;
-                        inst.color.updateHSV();
+                        inst.color.updateFromRGB();
                         break;
 
                     case 'g':
                         inst.color.g = 1 - y;
-                        inst.color.updateHSV();
+                        inst.color.updateFromRGB();
                         break;
 
                     case 'b':
                         inst.color.b = 1 - y;
-                        inst.color.updateHSV();
+                        inst.color.updateFromRGB();
                         break;
 
                     case 'a':
@@ -926,7 +926,7 @@
                         inst.color.s = $('.ui-colorpicker-s .ui-colorpicker-number', e).val() / 100;
                         inst.color.v = $('.ui-colorpicker-v .ui-colorpicker-number', e).val() / 100;
 
-                        inst.color.updateRGB();
+                        inst.color.updateFromHSV();
 
                         inst._change();
                     });
@@ -986,7 +986,7 @@
                         inst.color.g = $('.ui-colorpicker-g .ui-colorpicker-number', e).val() / 255;
                         inst.color.b = $('.ui-colorpicker-b .ui-colorpicker-number', e).val() / 255;
 
-                        inst.color.updateHSV();
+                        inst.color.updateFromRGB();
 
                         inst._change();
                     });
@@ -1129,7 +1129,7 @@
                         inst.color.r = rgb[0];
                         inst.color.g = rgb[1];
                         inst.color.b = rgb[2];
-                        inst.color.updateHSV();
+                        inst.color.updateFromRGB();
                         inst._change();
                     });
 
@@ -1272,84 +1272,305 @@
 			var arg,
 				args = arguments;
 
-			this.updateRGB = function () {
-				this.h = Math.max(0, Math.min(this.h, 1));
-				this.s = Math.max(0, Math.min(this.s, 1));
-				this.v = Math.max(0, Math.min(this.v, 1));
+			this._rgb_to_xyz = function(rgb) {
+				rgb.r = (rgb.r > 0.04045) ? ((rgb.r + 0.055) / 1.055) ^ 2.4 : rgb.r / 12.92;
+				rgb.g = (rgb.g > 0.04045) ? ((rgb.g + 0.055) / 1.055) ^ 2.4 : rgb.g / 12.92;
+				rgb.b = (rgb.b > 0.04045) ? ((rgb.b + 0.055) / 1.055) ^ 2.4 : rgb.b / 12.92;
 
-				if (this.s === 0) {
-					this.r = this.g = this.b = this.v;
+				rgb.r *= 100;
+				rgb.g *= 100;
+				rgb.b *= 100;
+
+				return {
+					x: rgb.r * 0.4124 + rgb.g * 0.3576 + rgb.b * 0.1805,
+					y: rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722,
+					z: rgb.r * 0.0193 + rgb.g * 0.1192 + rgb.b * 0.9505
+				};
+			};
+
+			this._xyz_to_rgb = function(xyz) {
+				xyz.x /= 100;
+				xyz.y /= 100;
+				xyz.z /= 100;
+
+				var rgb = {
+					r: xyz.x *  3.2406 + xyz.y * -1.5372 + xyz.z * -0.4986,
+					g: xyz.x * -0.9689 + xyz.y *  1.8758 + xyz.z *  0.0415,
+					b: xyz.x *  0.0557 + xyz.y * -0.2040 + xyz.z *  1.0570
+				};
+
+				rgb.r = (rgb.r > 0.0031308) ?  1.055 * (rgb.r ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.r;
+				rgb.g = (rgb.g > 0.0031308) ?  1.055 * (rgb.g ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.g;
+				rgb.b = (rgb.b > 0.0031308) ?  1.055 * (rgb.b ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.b;
+
+				return rgb;
+			};
+
+			this._rgb_to_hsv = function(rgb) {
+				var minVal = Math.min(rgb.r, rgb.g, rgb.b),
+					maxVal = Math.max(rgb.r, rgb.g, rgb.b),
+					delta = maxVal - minVal,
+					del_R, del_G, del_B;
+
+				var hsv = {
+					h: 0,
+					s: 0,
+					v: maxVal
+				};
+
+				if (delta === 0) {
+					hsv.h = 0;
+					hsv.s = 0;
 				} else {
-					var var_h = this.h === 1 ? 0 : this.h * 6,
-						var_i = Math.floor(var_h),
-						var_1 = this.v * (1 - this.s),
-						var_2 = this.v * (1 - this.s * (var_h - var_i)),
-						var_3 = this.v * (1 - this.s * (1 - (var_h - var_i)));
+					hsv.s = delta / maxVal;
 
-					if (var_i === 0) {
-						this.r = this.v;
-						this.g = var_3;
-						this.b = var_1;
-					} else if (var_i === 1) {
-						this.r = var_2;
-						this.g = this.v;
-						this.b = var_1;
-					} else if (var_i === 2) {
-						this.r = var_1;
-						this.g = this.v;
-						this.b = var_3;
-					} else if (var_i === 3) {
-						this.r = var_1;
-						this.g = var_2;
-						this.b = this.v;
-					} else if (var_i === 4) {
-						this.r = var_3;
-						this.g = var_1;
-						this.b = this.v;
-					} else {
-						this.r = this.v;
-						this.g = var_1;
-						this.b = var_2;
+					del_R = (((maxVal - rgb.r) / 6) + (delta / 2)) / delta;
+					del_G = (((maxVal - rgb.g) / 6) + (delta / 2)) / delta;
+					del_B = (((maxVal - rgb.b) / 6) + (delta / 2)) / delta;
+
+					if (rgb.r === maxVal) {
+						hsv.h = del_B - del_G;
+					} else if (rgb.g === maxVal) {
+						hsv.h = (1 / 3) + del_R - del_B;
+					} else if (rgb.b === maxVal) {
+						hsv.h = (2 / 3) + del_G - del_R;
+					}
+
+					if (hsv.h < 0) {
+						hsv.h += 1;
+					} else if (hsv.h > 1) {
+						hsv.h -= 1;
 					}
 				}
+
+				return hsv;
+			};
+
+			this._hsv_to_rgb = function(hsv) {
+				var rgb = {
+					r: 0,
+					g: 0,
+					b: 0
+				};
+
+				if (hsv.s === 0) {
+					rgb.r = rgb.g = rgb.b = hsv.v;
+				} else {
+					var var_h = hsv.h === 1 ? 0 : hsv.h * 6,
+						var_i = Math.floor(var_h),
+						var_1 = hsv.v * (1 - hsv.s),
+						var_2 = hsv.v * (1 - hsv.s * (var_h - var_i)),
+						var_3 = hsv.v * (1 - hsv.s * (1 - (var_h - var_i)));
+
+					if (var_i === 0) {
+						rgb.r = hsv.v;
+						rgb.g = var_3;
+						rgb.b = var_1;
+					} else if (var_i === 1) {
+						rgb.r = var_2;
+						rgb.g = hsv.v;
+						rgb.b = var_1;
+					} else if (var_i === 2) {
+						rgb.r = var_1;
+						rgb.g = hsv.v;
+						rgb.b = var_3;
+					} else if (var_i === 3) {
+						rgb.r = var_1;
+						rgb.g = var_2;
+						rgb.b = hsv.v;
+					} else if (var_i === 4) {
+						rgb.r = var_3;
+						rgb.g = var_1;
+						rgb.b = hsv.v;
+					} else {
+						rgb.r = hsv.v;
+						rgb.g = var_1;
+						rgb.b = var_2;
+					}
+				}
+
+				return rgb;
+			};
+
+			this._rgb_to_hsl = function(rgb) {
+				var minVal = Math.min(rgb.r, rgb.g, rgb.b),
+					maxVal = Math.max(rgb.r, rgb.g, rgb.b),
+					delta = maxVal - minVal,
+					del_R, del_G, del_B;
+
+				var hsl = {
+					h: 0,
+					s: 0,
+					l: (maxVal + minVal) / 2
+				};
+
+				if (delta === 0) {
+					hsl.h = 0;
+					hsl.s = 0;
+				} else {
+					hsl.s = hsl.l < 0.5 ? delta / (maxVal + minVal) : delta / (2 - maxVal - minVal);
+
+					del_R = (((maxVal - rgb.r) / 6) + (delta / 2)) / delta;
+					del_G = (((maxVal - rgb.g) / 6) + (delta / 2)) / delta;
+					del_B = (((maxVal - rgb.b) / 6) + (delta / 2)) / delta;
+
+					if (rgb.r === maxVal) {
+						hsl.h = del_B - del_G;
+					} else if (rgb.g === maxVal) {
+						hsl.h = (1 / 3) + del_R - del_B;
+					} else if (rgb.b === maxVal) {
+						hsl.h = (2 / 3) + del_G - del_R;
+					}
+
+					if (hsl.h < 0) {
+						hsl.h += 1;
+					} else if (hsl.h > 1) {
+						hsl.h -= 1;
+					}
+				}
+
+				return hsl;
+			};
+
+			this._hsl_to_rgb = function(hsl) {
+				var hue_to_rgb	= function(v1, v2, vH) {
+									if (vH < 0) vH += 1;
+									if (vH > 1) vH -= 1;
+									if ((6 * vH) < 1) return v1 + (v2 - v1) * 6 * vH;
+									if ((2 * vH) < 1) return v2;
+									if ((3 * vH) < 2) return v1 + (v2 - v1) * ((2 / 3) - vH) * 6;
+									return v1;
+								};
+
+				if (hsl.s === 0) {
+					return {
+						r: hsl.l,
+						g: hsl.l,
+						b: hsl.l
+					};
+				}
+
+				var var_2 = (hsl.l < 0.5) ? hsl.l * (1 + hsl.s) : (hsl.l + hsl.s) - (hsl.s * hsl.l),
+					var_1 = 2 * hsl.l - var_2;
+
+				return {
+					r: hue_to_rgb(var_1, var_2, hsl.h + (1 / 3)),
+					g: hue_to_rgb(var_1, var_2, hsl.h),
+					b: hue_to_rgb(var_1, var_2, hsl.h - (1 / 3))
+				};
+			};
+
+			this._xyz_to_lab = function(xyz) {
+				// CIE-L*ab
+				xyz.x /= 95.047;
+				xyz.y /= 100;
+				xyz.z /= 108.883;
+
+				xyz.x = (xyz.x > 0.008856) ? xyz.x ^ (1/3) : (7.787 * xyz.x) + (16 / 116);
+				xyz.y = (xyz.y > 0.008856) ? xyz.y ^ (1/3) : (7.787 * xyz.y) + (16 / 116);
+				xyz.z = (xyz.z > 0.008856) ? xyz.z ^ (1/3) : (7.787 * xyz.z) + (16 / 116);
+
+				return {
+					l: (116 * xyz.y) - 16,
+					a: 500 * (xyz.x - xyz.y),
+					b: 200 * (xyz.y - xyz.z)
+				}
+			};
+
+			this._lab_to_rgb = function(lab) {
+				var xyz = {
+					x: 0,
+					y: (lab.l + 16) / 116,
+					z: 0
+				};
+
+				xyz.x = lab.a / 500 + xyz.y;
+				xyz.z = xyz.y - lab.b / 200;
+
+				xyz.x = (xyz.x ^ 3 > 0.008856) ? xyz.x ^ 3 : (xyz.x - 16 / 116) / 7.787;
+				xyz.y = (xyz.y ^ 3 > 0.008856) ? xyz.y ^ 3 : (xyz.y - 16 / 116) / 7.787;
+				xyz.z = (xyz.z ^ 3 > 0.008856) ? xyz.z ^ 3 : (xyz.z - 16 / 116) / 7.787;
+
+				xyz.x *= 95.047;
+				xyz.y *= 100;
+				xyz.z *= 108.883;
+
+				return xyz;
+			};
+
+			this._rgb_to_cmy = function(rgb) {
+				return {
+					c: 1 - (rgb.r),
+					m: 1 - (rgb.g),
+					y: 1 - (rgb.b)
+				}
+			};
+
+			this._cmy_to_rgb = function(cmy) {
+				return {
+					r: 1 - (cmy.c),
+					g: 1 - (cmy.m),
+					b: 1 - (cmy.y)
+				}
+			};
+
+			this._cmy_to_cmyk = function(cmy) {
+				var K = 1;
+
+				if (cmy.c < K )   K = cmy.c;
+				if (cmy.m < K )   K = cmy.m;
+				if (cmy.y < K )   K = cmy.y;
+
+				if (K == 1) {
+					return {
+						c: 0,
+						m: 0,
+						y: 0,
+						k: 1
+					};
+				}
+
+				return {
+					c: (cmy.c - K) / (1 - K),
+					m: (cmy.m - K) / (1 - K),
+					y: (cmy.y - K) / (1 - K),
+					k: K
+				};
+			};
+
+			this._cmyk_to_cmy = function(cmyk) {
+				return {
+					c: cmyk.c * (1 - cmyk.k) + cmyk.k,
+					m: cmyk.m * (1 - cmyk.k) + cmyk.k,
+					y: cmyk.y * (1 - cmyk.k) + cmyk.k
+				};
+			};
+
+			this.updateFromHSV = function () {
+				var rgb = this._hsv_to_rgb({
+					h: Math.max(0, Math.min(this.h, 1)),
+					s: Math.max(0, Math.min(this.s, 1)),
+					v: Math.max(0, Math.min(this.v, 1))
+				});
+
+				this.r = rgb.r;
+				this.g = rgb.g;
+				this.b = rgb.b;
+
 				return this;
 			};
 
-			this.updateHSV = function () {
-				var minVal, maxVal, delta, del_R, del_G, del_B;
-				this.r = Math.max(0, Math.min(this.r, 1));
-				this.g = Math.max(0, Math.min(this.g, 1));
-				this.b = Math.max(0, Math.min(this.b, 1));
+			this.updateFromRGB = function () {
+				var hsv = this._rgb_to_hsv({
+					r: Math.max(0, Math.min(this.r, 1)),
+					g: Math.max(0, Math.min(this.g, 1)),
+					b: Math.max(0, Math.min(this.b, 1))
+				});
 
-				minVal = Math.min(this.r, this.g, this.b);
-				maxVal = Math.max(this.r, this.g, this.b);
-				delta = maxVal - minVal;
+				this.h = hsv.h;
+				this.s = hsv.s;
+				this.v = hsv.v;
 
-				this.v = maxVal;
-
-				if (delta === 0) {
-					this.h = 0;
-					this.s = 0;
-				} else {
-					this.s = delta / maxVal;
-					del_R = (((maxVal - this.r) / 6) + (delta / 2)) / delta;
-					del_G = (((maxVal - this.g) / 6) + (delta / 2)) / delta;
-					del_B = (((maxVal - this.b) / 6) + (delta / 2)) / delta;
-
-					if (this.r === maxVal) {
-						this.h = del_B - del_G;
-					} else if (this.g === maxVal) {
-						this.h = (1 / 3) + del_R - del_B;
-					} else if (this.b === maxVal) {
-						this.h = (2 / 3) + del_G - del_R;
-					}
-
-					if (this.h < 0) {
-						this.h += 1;
-					} else if (this.h > 1) {
-						this.h -= 1;
-					}
-				}
 				return this;
 			};
 
@@ -1381,7 +1602,7 @@
 			this.normalize = function() {
 				this.s = 1;
 				this.v = 1;
-				this.updateRGB();
+				this.updateFromHSV();
 				return this;
 			};
 
@@ -1396,7 +1617,7 @@
 				this.r = Math.round(this.r * steps) / steps;
 				this.g = Math.round(this.g * steps) / steps;
 				this.b = Math.round(this.b * steps) / steps;
-				this.updateHSV();
+				this.updateFromRGB();
 			};
 
 			this.set = false;
@@ -1421,7 +1642,7 @@
 				this.h = args[4] || 0;
 				this.s = args[5] || 0;
 				this.v = args[6] || 0;
-				this.updateHSV();
+				this.updateFromRGB();
 			}
 		};
 
@@ -1819,13 +2040,13 @@
 			if (that.color.set) {
 				that._trigger(callback, null, {
 					formatted: _formatColor(that.options.colorFormat, that.color),
-					r: that.color.r
-				,	g: that.color.g
-				,	b: that.color.b
-				,	a: that.color.a
-				,	h: that.color.h
-				,	s: that.color.s
-				,	v: that.color.v
+					r: that.color.r,
+					g: that.color.g,
+					b: that.color.b,
+					a: that.color.a,
+					h: that.color.h,
+					s: that.color.s,
+					v: that.color.v
 				});
 			} else {
 				that._trigger(callback, null, {
