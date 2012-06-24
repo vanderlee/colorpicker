@@ -154,12 +154,6 @@ Options:
 	title:				null
 		Title to display in the header. If null, use language default.
 
-	zIndex:				null
-		If set to a number, set z-index to that number upon open.
-		Set this to make the colorpicker popup in front of other components.
-		In order to make colorpicker popup in front of a jQueryUI Dialog,
-		zIndex must be 1002 or greater.
-
 Events:
 	init:			null
 		Triggered on initially setting the color. Called only once.
