@@ -24,62 +24,6 @@
         <script>
            	$( function() {
 				$('#switcher').themeswitcher();
-//
-//					close: function(event, color) {
-//								console.log('close: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
-//							},
-//					select: function(event, color) {
-//								console.log('select: '+color.formatted+', (RGB:'+color.r+','+color.g+','+color.b+', A:'+color.a+', HSV:'+color.h+','+color.s+','+color.v+')');
-//							},
-//					showOn: 'both',
-//					showNoneButton: true,
-//					buttonColorize: true,
-//					limit: 'websafe',
-//					parts: 'full',
-//					regional: 'nl',
-//					alpha: true,
-//					colorFormat: 'RGBA'
-//				});
-//
-//                $('#cp2').colorpicker({
-//					alpha: true,
-//					showButtonPanel: true
-//				}).on('colorselect', function(e, c) {
-//					console.debug('CP2 color: ' + c.formatted);
-//				});
-//
-//				//
-//
-//                var cpb = $('#cp-buttons').colorpicker({
-//					showOn: '',
-//					parts: ['bar', 'map']
-//				});
-//				$('#cp-button-open').click( function() {
-//					cpb.colorpicker('open');
-//				});
-//				$('#cp-button-close').click( function() {
-//					cpb.colorpicker('close');
-//				});
-//				$('#cp-button-setcolor').click( function() {
-//					cpb.colorpicker('setColor', '#99ff00');
-//				});
-//
-//				$('#cp-none').colorpicker({
-//					alpha: true,
-//					showNoneButton: true
-//				});
-//
-
-//				$('#cp-button-disable').click( function() {
-//					$.each(cps, function() {
-//						this.colorpicker('disable');
-//					});
-//				});
-//				$('#cp-button-enable').click( function() {
-//					$.each(cps, function() {
-//						this.colorpicker('enable');
-//					});
-//				});
             });
         </script>
     </head>
@@ -88,7 +32,7 @@
 
         Basic &lt;input&gt; example, without any options: <input type="text" class="cp-basic" value="fe9810"/>
 		<br/>
-        Basic &lt;div&gt; example, without any options:<span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
+        Basic &lt;div&gt; example, without any options: <span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
 		<script>
            	$( function() {
                 $('.cp-basic').colorpicker();
@@ -194,6 +138,33 @@
 					select: function(event, color) {
 								$('.cp-format-output').text(color.formatted);
 							}
+				});
+			});
+		</script>
+
+		<hr/>
+
+		Dialog with Colorpicker popup (demonstrates z-index):
+		<button id="cp-dialog-open">Open dialog</button>
+		<div id="cp-dialog-modal" title="Basic modal dialog">
+			Basic &lt;input&gt; example, without any options: <input type="text" class="cp-basic" value="fe9810"/>
+			<br/>
+			Basic &lt;div&gt; example, without any options: <span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
+		</div>
+		<script>
+			$(function() {
+				var dialog = $('#cp-dialog-modal').dialog({
+					autoOpen:	false,
+					minWidth:	500,
+					modal:		true,
+					buttons:	{	'Close': function() {
+										$(this).dialog('close');
+									}
+								}
+				});
+
+				$('#cp-dialog-open').click(function() {
+					dialog.dialog('open');
 				});
 			});
 		</script>

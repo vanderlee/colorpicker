@@ -1685,7 +1685,6 @@
 			showOptions:		{},
 			swatches:			null,
 			title:				null,
-			zIndex:				null,
 
 			init:				null,
 			close:              null,
@@ -1980,24 +1979,30 @@
 		},
 
 		open: function () {
-			if (!this.opened) {
-				if (this.options.zIndex) {
-					this.dialog.css('z-index', this.options.zIndex);
-				}
+			var that = this;
 
-				this._generate();
+			if (!that.opened) {
+				// Automatically find highest z-index.
+				$(that.element[0]).parents().each(function() {
+					var zIndex = $(this).css('z-index');
+					if ((typeof(zIndex) === 'number' || typeof(zIndex) === 'string') && zIndex !== '' && !isNaN(zIndex)) {
+						that.dialog.css('z-index', zIndex + 1);
+						return false;
+					}
+				});
 
-				var offset = this.element.offset(),
+				that._generate();
+
+				var offset = that.element.offset(),
 					x = offset.left,
-					y = offset.top + this.element.outerHeight();
-				x -= Math.max(0, (x + this.dialog.width()) - $(window).width() + 20);
-				y -= Math.max(0, (y + this.dialog.height()) - $(window).height() + 20);
-				this.dialog.css({'left': x, 'top': y});
+					y = offset.top + that.element.outerHeight();
+				x -= Math.max(0, (x + that.dialog.width()) - $(window).width() + 20);
+				y -= Math.max(0, (y + that.dialog.height()) - $(window).height() + 20);
+				that.dialog.css({'left': x, 'top': y});
 
-				this._effectShow();
-				this.opened = true;
+				that._effectShow();
+				that.opened = true;
 
-				var that = this;
 				// Without waiting for domready the width of the map is 0 and we
 				// wind up with the cursor stuck in the upper left corner
 				$(function() {
@@ -2008,30 +2013,26 @@
 			}
 		},
 
-		_setImageBackground: function() {
-			if (this.image && this.options.buttonColorize) {
-				this.image.css('background-color', this.color.set? this.color.toCSS() : '');
-			}
-		},
-
 		close: function () {
 			var that = this;
 
-			this.currentColor	= $.extend({}, this.color);
-			this.changed		= false;
+			that.currentColor	= $.extend({}, that.color);
+			that.changed		= false;
 
 			// tear down the interface
-			this._effectHide(function () {
-				if (that.options.zIndex) {
-					that.dialog.css('z-index', '');
-				}
-
+			that._effectHide(function () {
 				that.dialog.empty();
 				that.generated	= false;
 
 				that.opened		= false;
 				that._callback('close');
 			});
+		},
+
+		_setImageBackground: function() {
+			if (this.image && this.options.buttonColorize) {
+				this.image.css('background-color', this.color.set? this.color.toCSS() : '');
+			}
 		},
 
 		_callback: function (callback) {
