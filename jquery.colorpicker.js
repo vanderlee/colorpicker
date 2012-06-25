@@ -1,4 +1,4 @@
-/*jslint devel: true, bitwise: true, regexp: true, browser: true, confusion: true, unparam: true, eqeq: true, white: true, nomen: true, plusplus: true, maxerr: 50, indent: 4 */
+rue, bitwise: true, regexp: true, browser: true, confusion: true, unparam: true, eqeq: true, white: true, nomen: true, plusplus: true, maxerr: 50, indent: 4 */
 /*globals jQuery */
 
 /*
@@ -59,28 +59,29 @@
 							return _formatColor('#rxgxbx', color);
 						}
 		,	'HEX3':		function(color) {
-							var r = Math.round(color.r * 16);
-							var g = Math.round(color.g * 16);
-							var b = Math.round(color.b * 16);
+							var rgb = color.getRGB();
+							var r = Math.round(rgb.r * 16);
+							var g = Math.round(rgb.g * 16);
+							var b = Math.round(rgb.b * 16);
 							return '#'+r.toString(16)+g.toString(16)+b.toString(16);
 						}
 		,	'RGBA':		function(color) {
-							return _formatColor(color.a >= 1
+							return _formatColor(color.getA() >= 1
 									? 'rgb(rd,gd,bd)'
 									: 'rgba(rd,gd,bd,af)', color);
 						}
 		,	'RGBA%':	function(color) {
-							return _formatColor(color.a >= 1
+							return _formatColor(color.getA() >= 1
 									? 'rgb(rp%,gp%,bp%)'
 									: 'rgba(rp%,gp%,bp%,af)', color);
 						}
 		,	'HSLA':		function(color) {
-							return _formatColor(color.a >= 1
+							return _formatColor(color.getA() >= 1
 									? 'hsl(hd,sd,vd)'
 									: 'hsla(hd,sd,vd,af)', color);
 						}
 		,	'HSLA%':	function(color) {
-							return _formatColor(color.a >= 1
+							return _formatColor(color.getA() >= 1
 									? 'hsl(hp%,sp%,vp%)'
 									: 'hsla(hp%,sp%,vp%,af)', color);
 						}
@@ -100,11 +101,13 @@
 				return _formats[format](color);
 			}
 
+			var channels = color.getChannels();
+
 			return format.replace(/\\?[rgbhsva][xdfp]/g, function(m) {
 				if (m.match(/^\\/)) {
 					return m.slice(1);
 				}
-				return types[m[1]](color[m[0]]);
+				return types[m[1]](channels[m[0]]);
 			});
 		},
 
@@ -441,13 +444,6 @@
                         inst.close()
                     });
                 };
-
-                this.repaint = function () {
-                };
-
-                this.generate = function () {
-                    this.repaint();
-                };
             },
 
             map: function (inst) {
@@ -509,40 +505,28 @@
                     // interpret values
                     switch (inst.mode) {
                     case 'h':
-                        inst.color.s = x;
-                        inst.color.v = 1 - y;
-                        inst.color.updateFromHSV();
+						inst.color.setHSV(null, x, 1 - y);
                         break;
 
                     case 's':
                     case 'a':
-                        inst.color.h = x;
-                        inst.color.v = 1 - y;
-                        inst.color.updateFromHSV();
+						inst.color.setHSV(x, null, 1 - y);
                         break;
 
                     case 'v':
-                        inst.color.h = x;
-                        inst.color.s = 1 - y;
-                        inst.color.updateFromHSV();
+						inst.color.setHSV(x, 1 - y, null);
                         break;
 
                     case 'r':
-                        inst.color.b = x;
-                        inst.color.g = 1 - y;
-                        inst.color.updateFromRGB();
+						inst.color.setRGB(null, 1 - y, x);
                         break;
 
                     case 'g':
-                        inst.color.b = x;
-                        inst.color.r = 1 - y;
-                        inst.color.updateFromRGB();
+						inst.color.setRGB(1 - y, null, x);
                         break;
 
                     case 'b':
-                        inst.color.r = x;
-                        inst.color.g = 1 - y;
-                        inst.color.updateFromRGB();
+						inst.color.setRGB(x, 1 - y, null);
                         break;
                     }
 
@@ -602,45 +586,45 @@
 
                     switch (inst.mode) {
                     case 'h':
-                        x = inst.color.s * div.width();
-                        y = (1 - inst.color.v) * div.width();
+                        x = inst.color.getHSV().s * div.width();
+                        y = (1 - inst.color.getHSV().v) * div.width();
                         $(e).css('background-color', inst.color.copy().normalize().toCSS());
                         break;
 
                     case 's':
                     case 'a':
-                        x = inst.color.h * div.width();
-                        y = (1 - inst.color.v) * div.width();
-                        $('.ui-colorpicker-map-layer-2', e).css('opacity', 1 - inst.color.s);
+                        x = inst.color.getHSV().h * div.width();
+                        y = (1 - inst.color.getHSV().v) * div.width();
+                        $('.ui-colorpicker-map-layer-2', e).css('opacity', 1 - inst.color.getHSV().s);
                         break;
 
                     case 'v':
-                        x = inst.color.h * div.width();
-                        y = (1 - inst.color.s) * div.width();
-                        $('.ui-colorpicker-map-layer-1', e).css('opacity', inst.color.v);
+                        x = inst.color.getHSV().h * div.width();
+                        y = (1 - inst.color.getHSV().s) * div.width();
+                        $('.ui-colorpicker-map-layer-1', e).css('opacity', inst.color.getHSV().v);
                         break;
 
                     case 'r':
-                        x = inst.color.b * div.width();
-                        y = (1 - inst.color.g) * div.width();
-                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.r);
+                        x = inst.color.getRGB().b * div.width();
+                        y = (1 - inst.color.getRGB().g) * div.width();
+                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().r);
                         break;
 
                     case 'g':
-                        x = inst.color.b * div.width();
-                        y = (1 - inst.color.r) * div.width();
-                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.g);
+                        x = inst.color.getRGB().b * div.width();
+                        y = (1 - inst.color.getRGB().r) * div.width();
+                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().g);
                         break;
 
                     case 'b':
-                        x = inst.color.r * div.width();
-                        y = (1 - inst.color.g) * div.width();
-                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.b);
+                        x = inst.color.getRGB().r * div.width();
+                        y = (1 - inst.color.getRGB().g) * div.width();
+                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().b);
                         break;
                     }
 
                     if (inst.options.alpha) {
-                        $('.ui-colorpicker-map-layer-alpha', e).css('opacity', 1 - inst.color.a);
+                        $('.ui-colorpicker-map-layer-alpha', e).css('opacity', 1 - inst.color.getA());
                     }
 
                     $('.ui-colorpicker-map-pointer', e).css({
@@ -710,37 +694,31 @@
                     // interpret values
                     switch (inst.mode) {
                     case 'h':
-                        inst.color.h = 1 - y;
-                        inst.color.updateFromHSV();
+                        inst.color.setHSV(1 - y, null, null);
                         break;
 
                     case 's':
-                        inst.color.s = 1 - y;
-                        inst.color.updateFromHSV();
+                        inst.color.setHSV(null, 1 - y, null);
                         break;
 
                     case 'v':
-                        inst.color.v = 1 - y;
-                        inst.color.updateFromHSV();
+                        inst.color.setHSV(null, null, 1 - y);
                         break;
 
                     case 'r':
-                        inst.color.r = 1 - y;
-                        inst.color.updateFromRGB();
+                        inst.color.setRGB(1 - y, null, null);
                         break;
 
                     case 'g':
-                        inst.color.g = 1 - y;
-                        inst.color.updateFromRGB();
+                        inst.color.setRGB(null, 1 - y, null);
                         break;
 
                     case 'b':
-                        inst.color.b = 1 - y;
-                        inst.color.updateFromRGB();
+                        inst.color.setRGB(null, null, 1 - y);
                         break;
 
                     case 'a':
-                        inst.color.a = 1 - y;
+                        inst.color.setA(1 - y);
                         break;
                     }
 
@@ -841,49 +819,49 @@
 
                     switch (inst.mode) {
                     case 'h':
-                        y = (1 - inst.color.h) * div.height();
+                        y = (1 - inst.color.getHSV().h) * div.height();
                         break;
 
                     case 's':
-                        y = (1 - inst.color.s) * div.height();
-                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.v);
+                        y = (1 - inst.color.getHSV().s) * div.height();
+                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.getHSV().v);
                         $(e).css('background-color', inst.color.copy().normalize().toCSS());
                         break;
 
                     case 'v':
-                        y = (1 - inst.color.v) * div.height();
+                        y = (1 - inst.color.getHSV().v) * div.height();
                         $(e).css('background-color', inst.color.copy().normalize().toCSS());
                         break;
 
                     case 'r':
-                        y = (1 - inst.color.r) * div.height();
-                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.b - inst.color.g)));
-                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.g - inst.color.b)));
-                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.b, inst.color.g));
+                        y = (1 - inst.color.getRGB().r) * div.height();
+                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().b - inst.color.getRGB().g)));
+                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().g - inst.color.getRGB().b)));
+                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().b, inst.color.getRGB().g));
                         break;
 
                     case 'g':
-                        y = (1 - inst.color.g) * div.height();
-                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.b - inst.color.r)));
-                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.r - inst.color.b)));
-                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.r, inst.color.b));
+                        y = (1 - inst.color.getRGB().g) * div.height();
+                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().b - inst.color.getRGB().r)));
+                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().r - inst.color.getRGB().b)));
+                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().r, inst.color.getRGB().b));
                         break;
 
                     case 'b':
-                        y = (1 - inst.color.b) * div.height();
-                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.r - inst.color.g)));
-                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.g - inst.color.r)));
-                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.r, inst.color.g));
+                        y = (1 - inst.color.getRGB().b) * div.height();
+                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().r - inst.color.getRGB().g)));
+                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().g - inst.color.getRGB().r)));
+                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().r, inst.color.getRGB().g));
                         break;
 
                     case 'a':
-                        y = (1 - inst.color.a) * div.height();
+                        y = (1 - inst.color.getA()) * div.height();
                         $(e).css('background-color', inst.color.copy().normalize().toCSS());
                         break;
                     }
 
                     if (inst.mode !== 'a') {
-                        $('.ui-colorpicker-bar-layer-alpha', e).css('opacity', 1 - inst.color.a);
+                        $('.ui-colorpicker-bar-layer-alpha', e).css('opacity', 1 - inst.color.getA());
                     }
 
                     $('.ui-colorpicker-bar-pointer', e).css('top', y - 3);
@@ -893,6 +871,48 @@
                     e = $(_html()).appendTo($('.ui-colorpicker-bar-container', inst.dialog));
 
                     e.bind('mousedown', _mousedown);
+                };
+            },
+
+            preview: function (inst) {
+                var that = this,
+                    e = null,
+                    _html;
+
+                _html = function () {
+                    return '<div class="ui-colorpicker-preview">'
+                        + '<span class="ui-colorpicker-border">'
+                        + '<div class="ui-colorpicker-preview-initial"><div class="ui-colorpicker-preview-initial-alpha"></div></div>'
+                        + '<div class="ui-colorpicker-preview-current"><div class="ui-colorpicker-preview-current-alpha"></div></div>'
+                        + '</span>'
+                        + '</div>';
+                };
+
+                this.init = function () {
+                    e = $(_html()).appendTo($('.ui-colorpicker-preview-container', inst.dialog));
+
+                    $('.ui-colorpicker-preview-initial', e).click(function () {
+                        inst.color = inst.currentColor.copy();
+                        inst._change();
+                    });
+
+                };
+
+                this.generate = function () {
+                    if (inst.options.alpha) {
+                        $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).show();
+                    } else {
+                        $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).hide();
+                    }
+
+                    this.repaint();
+                };
+
+                this.repaint = function () {
+                    $('.ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.toCSS()).attr('title', inst.currentColor.toHex());
+                    $('.ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.getA());
+                    $('.ui-colorpicker-preview-current', e).css('background-color', inst.color.toCSS()).attr('title', inst.color.toHex());
+                    $('.ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.getA());
                 };
             },
 
@@ -922,24 +942,22 @@
                     });
 
                     $('.ui-colorpicker-number', e).bind('change input keyup', function () {
-                        inst.color.h = $('.ui-colorpicker-h .ui-colorpicker-number', e).val() / 360;
-                        inst.color.s = $('.ui-colorpicker-s .ui-colorpicker-number', e).val() / 100;
-                        inst.color.v = $('.ui-colorpicker-v .ui-colorpicker-number', e).val() / 100;
-
-                        inst.color.updateFromHSV();
-
+                        inst.color.setHSV(
+							$('.ui-colorpicker-h .ui-colorpicker-number', e).val() / 360,
+							$('.ui-colorpicker-s .ui-colorpicker-number', e).val() / 100,
+							$('.ui-colorpicker-v .ui-colorpicker-number', e).val() / 100
+						);
                         inst._change();
                     });
                 };
 
                 this.repaint = function () {
-					var c = {
-						h:	inst.color.h * 360
-					,	s:	inst.color.s * 100
-					,	v:	inst.color.v * 100
-					};
+					var hsv = inst.color.getHSV();
+					hsv.h *= 360;
+					hsv.s *= 100;
+					hsv.v *= 100;
 
-                    $.each(c, function (index, value) {
+                    $.each(hsv, function (index, value) {
 						var input = $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e);
                         value = Math.round(value);
                         if (!input.is(':focus') && input.val() !== value) {
@@ -982,26 +1000,20 @@
                     });
 
                     $('.ui-colorpicker-number', e).bind('change input keyup', function () {
-                        inst.color.r = $('.ui-colorpicker-r .ui-colorpicker-number', e).val() / 255;
-                        inst.color.g = $('.ui-colorpicker-g .ui-colorpicker-number', e).val() / 255;
-                        inst.color.b = $('.ui-colorpicker-b .ui-colorpicker-number', e).val() / 255;
-
-                        inst.color.updateFromRGB();
+                        inst.color.setRGB(
+							$('.ui-colorpicker-r .ui-colorpicker-number', e).val() / 255,
+							$('.ui-colorpicker-g .ui-colorpicker-number', e).val() / 255,
+							$('.ui-colorpicker-b .ui-colorpicker-number', e).val() / 255
+						);
 
                         inst._change();
                     });
                 };
 
                 this.repaint = function () {
-					var c = {
-						r:	inst.color.r * 255
-					,	g:	inst.color.g * 255
-					,	b:	inst.color.b * 255
-					};
-
-                    $.each(c, function (index, value) {
+                    $.each(inst.color.getRGB(), function (index, value) {
 						var input = $('.ui-colorpicker-' + index + ' .ui-colorpicker-number', e);
-                        value = Math.round(value);
+                        value = Math.round(value * 255);
                         if (!input.is(':focus') && input.val() !== value) {
                             input.val(value);
                         }
@@ -1040,18 +1052,9 @@
                     });
 
                     $('.ui-colorpicker-number', e).bind('change input keyup', function () {
-                        inst.color.a = $('.ui-colorpicker-a .ui-colorpicker-number', e).val() / 100;
-
+                        inst.color.setA($('.ui-colorpicker-a .ui-colorpicker-number', e).val() / 100);
                         inst._change();
                     });
-                };
-
-                this.repaint = function () {
-					var input = $('.ui-colorpicker-a .ui-colorpicker-number', e);
-					var value = Math.round(inst.color.a * 100);
-					if (!input.is(':focus') && input.val() !== value) {
-						input.val(value);
-					}
                 };
 
                 this.generate = function () {
@@ -1060,47 +1063,13 @@
                     });
                     this.repaint();
                 };
-            },
-
-            preview: function (inst) {
-                var that = this,
-                    e = null,
-                    _html;
-
-                _html = function () {
-                    return '<div class="ui-colorpicker-preview">'
-                        + '<span class="ui-colorpicker-border">'
-                        + '<div class="ui-colorpicker-preview-initial"><div class="ui-colorpicker-preview-initial-alpha"></div></div>'
-                        + '<div class="ui-colorpicker-preview-current"><div class="ui-colorpicker-preview-current-alpha"></div></div>'
-                        + '</span>'
-                        + '</div>';
-                };
-
-                this.init = function () {
-                    e = $(_html()).appendTo($('.ui-colorpicker-preview-container', inst.dialog));
-
-                    $('.ui-colorpicker-preview-initial', e).click(function () {
-                        inst.color = $.extend({}, inst.currentColor);
-                        inst._change();
-                    });
-
-                };
 
                 this.repaint = function () {
-                    $('.ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.toCSS()).attr('title', inst.currentColor.toHex());
-                    $('.ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.a);
-                    $('.ui-colorpicker-preview-current', e).css('background-color', inst.color.toCSS()).attr('title', inst.color.toHex());
-                    $('.ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.a);
-                };
-
-                this.generate = function () {
-                    if (inst.options.alpha) {
-                        $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).show();
-                    } else {
-                        $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).hide();
-                    }
-
-                    this.repaint();
+					var input = $('.ui-colorpicker-a .ui-colorpicker-number', e);
+					var value = Math.round(inst.color.getA() * 100);
+					if (!input.is(':focus') && input.val() !== value) {
+						input.val(value);
+					}
                 };
             },
 
@@ -1126,17 +1095,18 @@
 
                     $('.ui-colorpicker-hex-input', e).bind('change keyup', function () {
                         var rgb = _parseHex($(this).val());
-                        inst.color.r = rgb[0];
-                        inst.color.g = rgb[1];
-                        inst.color.b = rgb[2];
-                        inst.color.updateFromRGB();
+						inst.color.setRGB(rgb[0], rgb[1], rgb[2]);
                         inst._change();
                     });
 
                     $('.ui-colorpicker-hex-alpha', e).bind('change keyup', function () {
-                        inst.color.a = parseInt($('.ui-colorpicker-hex-alpha', e).val(), 16);
+                        inst.color.setA(parseInt($('.ui-colorpicker-hex-alpha', e).val(), 16) / 255);
                         inst._change();
                     });
+                };
+
+                this.generate = function () {
+                    this.repaint();
                 };
 
                 this.repaint = function () {
@@ -1145,12 +1115,8 @@
                     }
 
                     if (!$('.ui-colorpicker-hex-alpha', e).is(':focus')) {
-                        $('.ui-colorpicker-hex-alpha', e).val(_intToHex(inst.color.a * 255));
+                        $('.ui-colorpicker-hex-alpha', e).val(_intToHex(inst.color.getA() * 255));
                     }
-                };
-
-                this.generate = function () {
-                    this.repaint();
                 };
             },
 
@@ -1178,14 +1144,6 @@
                         inst.color	= (rgb === false ? new Color() : new Color(rgb[0], rgb[1], rgb[2], rgb[3]));
                         inst._change();
                     });
-                };
-
-                this.repaint = function () {
-                    // Not affected by changing color;
-                };
-
-                this.generate = function () {
-                    // Not affected by changing color;
                 };
             },
 
@@ -1230,7 +1188,7 @@
                     });
 
                     $('.ui-colorpicker-cancel', e).button().click(function () {
-                        inst.color = $.extend({}, inst.currentColor);
+                        inst.color = inst.currentColor.copy();
                         inst._change(inst.color.set);
                         inst.close();
                     });
@@ -1247,7 +1205,7 @@
                     });
 
                     $('#'+id_transparent, e).click(function () {
-                        inst.color.a = 0;
+                        inst.color.setA(0);
                         inst._change();
                     });
                 };
@@ -1255,7 +1213,7 @@
                 this.repaint = function () {
                     if (!inst.color.set) {
                         $('.ui-colorpicker-special-none', e).attr('checked', true).button( "refresh" );
-                    } else if (inst.color.a == 0) {
+                    } else if (inst.color.getA() == 0) {
                         $('.ui-colorpicker-special-transparent', e).attr('checked', true).button( "refresh" );
                     } else {
                         $('input', e).attr('checked', false).button( "refresh" );
@@ -1269,380 +1227,412 @@
         },
 
         Color = function () {
-			var arg,
-				args = arguments;
+			var models = {	rgb:	{r: 0, g: 0, b: 0},
+							hsv:	{h: 0, s: 0, v: 0},
+							hsl:	{h: 0, s: 0, l: 0},
+							lab:	{l: 0, a: 0, b: 0},
+							cmyk:	{c: 0, m: 0, y: 0, k: 1}
+						},
+				a = 1,
+				arg,
+				args = arguments,
+				_clip = function(v) {
+					return Math.max(0, Math.min(v, 1));
+				},
+				_hexify = function (number) {
+					var digits = '0123456789abcdef',
+						lsd = number % 16,
+						msd = (number - lsd) / 16,
+						hexified = digits.charAt(msd) + digits.charAt(lsd);
+					return hexified;
+				},
+				_rgb_to_xyz = function(rgb) {
+					rgb.r = (rgb.r > 0.04045) ? ((rgb.r + 0.055) / 1.055) ^ 2.4 : rgb.r / 12.92;
+					rgb.g = (rgb.g > 0.04045) ? ((rgb.g + 0.055) / 1.055) ^ 2.4 : rgb.g / 12.92;
+					rgb.b = (rgb.b > 0.04045) ? ((rgb.b + 0.055) / 1.055) ^ 2.4 : rgb.b / 12.92;
 
-			this._rgb_to_xyz = function(rgb) {
-				rgb.r = (rgb.r > 0.04045) ? ((rgb.r + 0.055) / 1.055) ^ 2.4 : rgb.r / 12.92;
-				rgb.g = (rgb.g > 0.04045) ? ((rgb.g + 0.055) / 1.055) ^ 2.4 : rgb.g / 12.92;
-				rgb.b = (rgb.b > 0.04045) ? ((rgb.b + 0.055) / 1.055) ^ 2.4 : rgb.b / 12.92;
+					rgb.r *= 100;
+					rgb.g *= 100;
+					rgb.b *= 100;
 
-				rgb.r *= 100;
-				rgb.g *= 100;
-				rgb.b *= 100;
+					return {
+						x: rgb.r * 0.4124 + rgb.g * 0.3576 + rgb.b * 0.1805,
+						y: rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722,
+						z: rgb.r * 0.0193 + rgb.g * 0.1192 + rgb.b * 0.9505
+					};
+				},
+				_xyz_to_rgb = function(xyz) {
+					xyz.x /= 100;
+					xyz.y /= 100;
+					xyz.z /= 100;
 
-				return {
-					x: rgb.r * 0.4124 + rgb.g * 0.3576 + rgb.b * 0.1805,
-					y: rgb.r * 0.2126 + rgb.g * 0.7152 + rgb.b * 0.0722,
-					z: rgb.r * 0.0193 + rgb.g * 0.1192 + rgb.b * 0.9505
-				};
-			};
+					var rgb = {
+						r: xyz.x *  3.2406 + xyz.y * -1.5372 + xyz.z * -0.4986,
+						g: xyz.x * -0.9689 + xyz.y *  1.8758 + xyz.z *  0.0415,
+						b: xyz.x *  0.0557 + xyz.y * -0.2040 + xyz.z *  1.0570
+					};
 
-			this._xyz_to_rgb = function(xyz) {
-				xyz.x /= 100;
-				xyz.y /= 100;
-				xyz.z /= 100;
+					rgb.r = (rgb.r > 0.0031308) ?  1.055 * (rgb.r ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.r;
+					rgb.g = (rgb.g > 0.0031308) ?  1.055 * (rgb.g ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.g;
+					rgb.b = (rgb.b > 0.0031308) ?  1.055 * (rgb.b ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.b;
 
-				var rgb = {
-					r: xyz.x *  3.2406 + xyz.y * -1.5372 + xyz.z * -0.4986,
-					g: xyz.x * -0.9689 + xyz.y *  1.8758 + xyz.z *  0.0415,
-					b: xyz.x *  0.0557 + xyz.y * -0.2040 + xyz.z *  1.0570
-				};
+					return rgb;
+				},
+				_rgb_to_hsv = function(rgb) {
+					var minVal = Math.min(rgb.r, rgb.g, rgb.b),
+						maxVal = Math.max(rgb.r, rgb.g, rgb.b),
+						delta = maxVal - minVal,
+						del_R, del_G, del_B;
 
-				rgb.r = (rgb.r > 0.0031308) ?  1.055 * (rgb.r ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.r;
-				rgb.g = (rgb.g > 0.0031308) ?  1.055 * (rgb.g ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.g;
-				rgb.b = (rgb.b > 0.0031308) ?  1.055 * (rgb.b ^ (1 / 2.4)) - 0.055 : 12.92 * rgb.b;
+					var hsv = {
+						h: 0,
+						s: 0,
+						v: maxVal
+					};
 
-				return rgb;
-			};
-
-			this._rgb_to_hsv = function(rgb) {
-				var minVal = Math.min(rgb.r, rgb.g, rgb.b),
-					maxVal = Math.max(rgb.r, rgb.g, rgb.b),
-					delta = maxVal - minVal,
-					del_R, del_G, del_B;
-
-				var hsv = {
-					h: 0,
-					s: 0,
-					v: maxVal
-				};
-
-				if (delta === 0) {
-					hsv.h = 0;
-					hsv.s = 0;
-				} else {
-					hsv.s = delta / maxVal;
-
-					del_R = (((maxVal - rgb.r) / 6) + (delta / 2)) / delta;
-					del_G = (((maxVal - rgb.g) / 6) + (delta / 2)) / delta;
-					del_B = (((maxVal - rgb.b) / 6) + (delta / 2)) / delta;
-
-					if (rgb.r === maxVal) {
-						hsv.h = del_B - del_G;
-					} else if (rgb.g === maxVal) {
-						hsv.h = (1 / 3) + del_R - del_B;
-					} else if (rgb.b === maxVal) {
-						hsv.h = (2 / 3) + del_G - del_R;
-					}
-
-					if (hsv.h < 0) {
-						hsv.h += 1;
-					} else if (hsv.h > 1) {
-						hsv.h -= 1;
-					}
-				}
-
-				return hsv;
-			};
-
-			this._hsv_to_rgb = function(hsv) {
-				var rgb = {
-					r: 0,
-					g: 0,
-					b: 0
-				};
-
-				if (hsv.s === 0) {
-					rgb.r = rgb.g = rgb.b = hsv.v;
-				} else {
-					var var_h = hsv.h === 1 ? 0 : hsv.h * 6,
-						var_i = Math.floor(var_h),
-						var_1 = hsv.v * (1 - hsv.s),
-						var_2 = hsv.v * (1 - hsv.s * (var_h - var_i)),
-						var_3 = hsv.v * (1 - hsv.s * (1 - (var_h - var_i)));
-
-					if (var_i === 0) {
-						rgb.r = hsv.v;
-						rgb.g = var_3;
-						rgb.b = var_1;
-					} else if (var_i === 1) {
-						rgb.r = var_2;
-						rgb.g = hsv.v;
-						rgb.b = var_1;
-					} else if (var_i === 2) {
-						rgb.r = var_1;
-						rgb.g = hsv.v;
-						rgb.b = var_3;
-					} else if (var_i === 3) {
-						rgb.r = var_1;
-						rgb.g = var_2;
-						rgb.b = hsv.v;
-					} else if (var_i === 4) {
-						rgb.r = var_3;
-						rgb.g = var_1;
-						rgb.b = hsv.v;
+					if (delta === 0) {
+						hsv.h = 0;
+						hsv.s = 0;
 					} else {
-						rgb.r = hsv.v;
-						rgb.g = var_1;
-						rgb.b = var_2;
-					}
-				}
+						hsv.s = delta / maxVal;
 
-				return rgb;
-			};
+						del_R = (((maxVal - rgb.r) / 6) + (delta / 2)) / delta;
+						del_G = (((maxVal - rgb.g) / 6) + (delta / 2)) / delta;
+						del_B = (((maxVal - rgb.b) / 6) + (delta / 2)) / delta;
 
-			this._rgb_to_hsl = function(rgb) {
-				var minVal = Math.min(rgb.r, rgb.g, rgb.b),
-					maxVal = Math.max(rgb.r, rgb.g, rgb.b),
-					delta = maxVal - minVal,
-					del_R, del_G, del_B;
+						if (rgb.r === maxVal) {
+							hsv.h = del_B - del_G;
+						} else if (rgb.g === maxVal) {
+							hsv.h = (1 / 3) + del_R - del_B;
+						} else if (rgb.b === maxVal) {
+							hsv.h = (2 / 3) + del_G - del_R;
+						}
 
-				var hsl = {
-					h: 0,
-					s: 0,
-					l: (maxVal + minVal) / 2
-				};
-
-				if (delta === 0) {
-					hsl.h = 0;
-					hsl.s = 0;
-				} else {
-					hsl.s = hsl.l < 0.5 ? delta / (maxVal + minVal) : delta / (2 - maxVal - minVal);
-
-					del_R = (((maxVal - rgb.r) / 6) + (delta / 2)) / delta;
-					del_G = (((maxVal - rgb.g) / 6) + (delta / 2)) / delta;
-					del_B = (((maxVal - rgb.b) / 6) + (delta / 2)) / delta;
-
-					if (rgb.r === maxVal) {
-						hsl.h = del_B - del_G;
-					} else if (rgb.g === maxVal) {
-						hsl.h = (1 / 3) + del_R - del_B;
-					} else if (rgb.b === maxVal) {
-						hsl.h = (2 / 3) + del_G - del_R;
+						if (hsv.h < 0) {
+							hsv.h += 1;
+						} else if (hsv.h > 1) {
+							hsv.h -= 1;
+						}
 					}
 
-					if (hsl.h < 0) {
-						hsl.h += 1;
-					} else if (hsl.h > 1) {
-						hsl.h -= 1;
-					}
-				}
-
-				return hsl;
-			};
-
-			this._hsl_to_rgb = function(hsl) {
-				var hue_to_rgb	= function(v1, v2, vH) {
-									if (vH < 0) vH += 1;
-									if (vH > 1) vH -= 1;
-									if ((6 * vH) < 1) return v1 + (v2 - v1) * 6 * vH;
-									if ((2 * vH) < 1) return v2;
-									if ((3 * vH) < 2) return v1 + (v2 - v1) * ((2 / 3) - vH) * 6;
-									return v1;
-								};
-
-				if (hsl.s === 0) {
-					return {
-						r: hsl.l,
-						g: hsl.l,
-						b: hsl.l
+					return hsv;
+				},
+				_hsv_to_rgb = function(hsv) {
+					var rgb = {
+						r: 0,
+						g: 0,
+						b: 0
 					};
-				}
 
-				var var_2 = (hsl.l < 0.5) ? hsl.l * (1 + hsl.s) : (hsl.l + hsl.s) - (hsl.s * hsl.l),
-					var_1 = 2 * hsl.l - var_2;
+					if (hsv.s === 0) {
+						rgb.r = rgb.g = rgb.b = hsv.v;
+					} else {
+						var var_h = hsv.h === 1 ? 0 : hsv.h * 6,
+							var_i = Math.floor(var_h),
+							var_1 = hsv.v * (1 - hsv.s),
+							var_2 = hsv.v * (1 - hsv.s * (var_h - var_i)),
+							var_3 = hsv.v * (1 - hsv.s * (1 - (var_h - var_i)));
 
-				return {
-					r: hue_to_rgb(var_1, var_2, hsl.h + (1 / 3)),
-					g: hue_to_rgb(var_1, var_2, hsl.h),
-					b: hue_to_rgb(var_1, var_2, hsl.h - (1 / 3))
-				};
-			};
+						if (var_i === 0) {
+							rgb.r = hsv.v;
+							rgb.g = var_3;
+							rgb.b = var_1;
+						} else if (var_i === 1) {
+							rgb.r = var_2;
+							rgb.g = hsv.v;
+							rgb.b = var_1;
+						} else if (var_i === 2) {
+							rgb.r = var_1;
+							rgb.g = hsv.v;
+							rgb.b = var_3;
+						} else if (var_i === 3) {
+							rgb.r = var_1;
+							rgb.g = var_2;
+							rgb.b = hsv.v;
+						} else if (var_i === 4) {
+							rgb.r = var_3;
+							rgb.g = var_1;
+							rgb.b = hsv.v;
+						} else {
+							rgb.r = hsv.v;
+							rgb.g = var_1;
+							rgb.b = var_2;
+						}
+					}
 
-			this._xyz_to_lab = function(xyz) {
-				// CIE-L*ab
-				xyz.x /= 95.047;
-				xyz.y /= 100;
-				xyz.z /= 108.883;
+					return rgb;
+				},
+				_rgb_to_hsl = function(rgb) {
+					var minVal = Math.min(rgb.r, rgb.g, rgb.b),
+						maxVal = Math.max(rgb.r, rgb.g, rgb.b),
+						delta = maxVal - minVal,
+						del_R, del_G, del_B;
 
-				xyz.x = (xyz.x > 0.008856) ? xyz.x ^ (1/3) : (7.787 * xyz.x) + (16 / 116);
-				xyz.y = (xyz.y > 0.008856) ? xyz.y ^ (1/3) : (7.787 * xyz.y) + (16 / 116);
-				xyz.z = (xyz.z > 0.008856) ? xyz.z ^ (1/3) : (7.787 * xyz.z) + (16 / 116);
-
-				return {
-					l: (116 * xyz.y) - 16,
-					a: 500 * (xyz.x - xyz.y),
-					b: 200 * (xyz.y - xyz.z)
-				}
-			};
-
-			this._lab_to_rgb = function(lab) {
-				var xyz = {
-					x: 0,
-					y: (lab.l + 16) / 116,
-					z: 0
-				};
-
-				xyz.x = lab.a / 500 + xyz.y;
-				xyz.z = xyz.y - lab.b / 200;
-
-				xyz.x = (xyz.x ^ 3 > 0.008856) ? xyz.x ^ 3 : (xyz.x - 16 / 116) / 7.787;
-				xyz.y = (xyz.y ^ 3 > 0.008856) ? xyz.y ^ 3 : (xyz.y - 16 / 116) / 7.787;
-				xyz.z = (xyz.z ^ 3 > 0.008856) ? xyz.z ^ 3 : (xyz.z - 16 / 116) / 7.787;
-
-				xyz.x *= 95.047;
-				xyz.y *= 100;
-				xyz.z *= 108.883;
-
-				return xyz;
-			};
-
-			this._rgb_to_cmy = function(rgb) {
-				return {
-					c: 1 - (rgb.r),
-					m: 1 - (rgb.g),
-					y: 1 - (rgb.b)
-				}
-			};
-
-			this._cmy_to_rgb = function(cmy) {
-				return {
-					r: 1 - (cmy.c),
-					g: 1 - (cmy.m),
-					b: 1 - (cmy.y)
-				}
-			};
-
-			this._cmy_to_cmyk = function(cmy) {
-				var K = 1;
-
-				if (cmy.c < K )   K = cmy.c;
-				if (cmy.m < K )   K = cmy.m;
-				if (cmy.y < K )   K = cmy.y;
-
-				if (K == 1) {
-					return {
-						c: 0,
-						m: 0,
-						y: 0,
-						k: 1
+					var hsl = {
+						h: 0,
+						s: 0,
+						l: (maxVal + minVal) / 2
 					};
+
+					if (delta === 0) {
+						hsl.h = 0;
+						hsl.s = 0;
+					} else {
+						hsl.s = hsl.l < 0.5 ? delta / (maxVal + minVal) : delta / (2 - maxVal - minVal);
+
+						del_R = (((maxVal - rgb.r) / 6) + (delta / 2)) / delta;
+						del_G = (((maxVal - rgb.g) / 6) + (delta / 2)) / delta;
+						del_B = (((maxVal - rgb.b) / 6) + (delta / 2)) / delta;
+
+						if (rgb.r === maxVal) {
+							hsl.h = del_B - del_G;
+						} else if (rgb.g === maxVal) {
+							hsl.h = (1 / 3) + del_R - del_B;
+						} else if (rgb.b === maxVal) {
+							hsl.h = (2 / 3) + del_G - del_R;
+						}
+
+						if (hsl.h < 0) {
+							hsl.h += 1;
+						} else if (hsl.h > 1) {
+							hsl.h -= 1;
+						}
+					}
+
+					return hsl;
+				},
+				_hsl_to_rgb = function(hsl) {
+					var hue_to_rgb	= function(v1, v2, vH) {
+										if (vH < 0) vH += 1;
+										if (vH > 1) vH -= 1;
+										if ((6 * vH) < 1) return v1 + (v2 - v1) * 6 * vH;
+										if ((2 * vH) < 1) return v2;
+										if ((3 * vH) < 2) return v1 + (v2 - v1) * ((2 / 3) - vH) * 6;
+										return v1;
+									};
+
+					if (hsl.s === 0) {
+						return {
+							r: hsl.l,
+							g: hsl.l,
+							b: hsl.l
+						};
+					}
+
+					var var_2 = (hsl.l < 0.5) ? hsl.l * (1 + hsl.s) : (hsl.l + hsl.s) - (hsl.s * hsl.l),
+						var_1 = 2 * hsl.l - var_2;
+
+					return {
+						r: hue_to_rgb(var_1, var_2, hsl.h + (1 / 3)),
+						g: hue_to_rgb(var_1, var_2, hsl.h),
+						b: hue_to_rgb(var_1, var_2, hsl.h - (1 / 3))
+					};
+				},
+				_xyz_to_lab = function(xyz) {
+					// CIE-L*ab
+					xyz.x /= 95.047;
+					xyz.y /= 100;
+					xyz.z /= 108.883;
+
+					xyz.x = (xyz.x > 0.008856) ? xyz.x ^ (1/3) : (7.787 * xyz.x) + (16 / 116);
+					xyz.y = (xyz.y > 0.008856) ? xyz.y ^ (1/3) : (7.787 * xyz.y) + (16 / 116);
+					xyz.z = (xyz.z > 0.008856) ? xyz.z ^ (1/3) : (7.787 * xyz.z) + (16 / 116);
+
+					return {
+						l: (116 * xyz.y) - 16,
+						a: 500 * (xyz.x - xyz.y),
+						b: 200 * (xyz.y - xyz.z)
+					}
+				},
+				_lab_to_xyz = function(lab) {
+					var xyz = {
+						x: 0,
+						y: (lab.l + 16) / 116,
+						z: 0
+					};
+
+					xyz.x = lab.a / 500 + xyz.y;
+					xyz.z = xyz.y - lab.b / 200;
+
+					xyz.x = (xyz.x ^ 3 > 0.008856) ? xyz.x ^ 3 : (xyz.x - 16 / 116) / 7.787;
+					xyz.y = (xyz.y ^ 3 > 0.008856) ? xyz.y ^ 3 : (xyz.y - 16 / 116) / 7.787;
+					xyz.z = (xyz.z ^ 3 > 0.008856) ? xyz.z ^ 3 : (xyz.z - 16 / 116) / 7.787;
+
+					xyz.x *= 95.047;
+					xyz.y *= 100;
+					xyz.z *= 108.883;
+
+					return xyz;
+				},
+				_rgb_to_cmy = function(rgb) {
+					return {
+						c: 1 - (rgb.r),
+						m: 1 - (rgb.g),
+						y: 1 - (rgb.b)
+					}
+				},
+				_cmy_to_rgb = function(cmy) {
+					return {
+						r: 1 - (cmy.c),
+						g: 1 - (cmy.m),
+						b: 1 - (cmy.y)
+					}
+				},
+				_cmy_to_cmyk = function(cmy) {
+					var K = 1;
+
+					if (cmy.c < K )   K = cmy.c;
+					if (cmy.m < K )   K = cmy.m;
+					if (cmy.y < K )   K = cmy.y;
+
+					if (K == 1) {
+						return {
+							c: 0,
+							m: 0,
+							y: 0,
+							k: 1
+						};
+					}
+
+					return {
+						c: (cmy.c - K) / (1 - K),
+						m: (cmy.m - K) / (1 - K),
+						y: (cmy.y - K) / (1 - K),
+						k: K
+					};
+				},
+				_cmyk_to_cmy = function(cmyk) {
+					return {
+						c: cmyk.c * (1 - cmyk.k) + cmyk.k,
+						m: cmyk.m * (1 - cmyk.k) + cmyk.k,
+						y: cmyk.y * (1 - cmyk.k) + cmyk.k
+					};
+				};
+
+			this.set = true;
+
+			this.setA = function(_a) {
+				if (_a !== null)	a = _clip(_a);
+			}
+
+			this.getA = function() {
+				return a;
+			}
+
+			this.setRGB = function(r, g, b) {
+				models = { rgb: this.getRGB() };
+				if (r !== null)		models.rgb.r = _clip(r);
+				if (g !== null)		models.rgb.g = _clip(g);
+				if (b !== null)		models.rgb.b = _clip(b);
+			}
+
+			this.setHSV = function(h, s, v) {
+				models = { hsv: this.getHSV() };
+				if (h !== null)		models.hsv.h = _clip(h);
+				if (s !== null)		models.hsv.s = _clip(s);
+				if (v !== null)		models.hsv.v = _clip(v);
+			}
+
+			this.setHSL = function(h, s, l) {
+				models = { hsl: this.getHSL() };
+				if (h !== null)		models.hsl.h = _clip(h);
+				if (s !== null)		models.hsl.s = _clip(s);
+				if (l !== null)		models.hsl.l = _clip(l);
+			}
+
+			this.setLAB = function(l, a, b) {
+				models = { lab: this.getLAB() };
+				if (l !== null)		models.lab.l = _clip(l);
+				if (a !== null)		models.lab.a = _clip(a);
+				if (b !== null)		models.lab.b = _clip(b);
+			}
+
+			this.setCMYK = function(c, m, y, k) {
+				models = { cmyk: this.getCMYK() };
+				if (c !== null)		models.cmyk.c = _clip(c);
+				if (m !== null)		models.cmyk.m = _clip(m);
+				if (y !== null)		models.cmyk.y = _clip(y);
+				if (k !== null)		models.cmyk.k = _clip(k);
+			}
+
+			this.getRGB = function() {
+				if (!models.rgb) {
+					models.rgb	= models.hsv ?	_hsv_to_rgb(models.hsv)
+								: models.hsl ?	_hsl_to_rgb(models.hsl)
+								: models.cmyk ?	_cmy_to_rgb(_cmyk_to_cmy(models.cmyk))
+								: models.lab ?	_xyz_to_rgb(_lab_to_xyz(models.lab))
+								: { r: 0, g: 0, b: 0 };
 				}
+				return $.extend({}, models.rgb);
+			};
 
+			this.getHSV = function() {
+				if (!models.hsv) {
+					models.hsv	= models.rgb ?	_rgb_to_hsv(models.rgb)
+								: models.hsl ?	_rgb_to_hsv(this.getRGB())
+								: models.cmyk ?	_rgb_to_hsv(this.getRGB())
+								: models.lab ?	_rgb_to_hsv(this.getRGB())
+								: { h: 0, s: 0, v: 0 };
+				}
+				return $.extend({}, models.hsv);
+			};
+
+			//@todo getHSL, getLAB, getCMYK
+
+			this.getChannels = function() {
 				return {
-					c: (cmy.c - K) / (1 - K),
-					m: (cmy.m - K) / (1 - K),
-					y: (cmy.y - K) / (1 - K),
-					k: K
+					r:	this.getRGB().r,
+					g:	this.getRGB().g,
+					b:	this.getRGB().b,
+					a:	this.getA(),
+					h:	this.getHSV().h,
+					s:	this.getHSV().s,
+					v:	this.getHSV().v
 				};
 			};
 
-			this._cmyk_to_cmy = function(cmyk) {
-				return {
-					c: cmyk.c * (1 - cmyk.k) + cmyk.k,
-					m: cmyk.m * (1 - cmyk.k) + cmyk.k,
-					y: cmyk.y * (1 - cmyk.k) + cmyk.k
-				};
+			this.equals = function (rgb) {
+				var model = this.getRGB();
+
+				return rgb[0] === model.r
+					&& rgb[1] === model.g
+					&& rgb[2] === model.b;
 			};
 
-			this.updateFromHSV = function () {
-				var rgb = this._hsv_to_rgb({
-					h: Math.max(0, Math.min(this.h, 1)),
-					s: Math.max(0, Math.min(this.s, 1)),
-					v: Math.max(0, Math.min(this.v, 1))
-				});
-
-				this.r = rgb.r;
-				this.g = rgb.g;
-				this.b = rgb.b;
-
-				return this;
-			};
-
-			this.updateFromRGB = function () {
-				var hsv = this._rgb_to_hsv({
-					r: Math.max(0, Math.min(this.r, 1)),
-					g: Math.max(0, Math.min(this.g, 1)),
-					b: Math.max(0, Math.min(this.b, 1))
-				});
-
-				this.h = hsv.h;
-				this.s = hsv.s;
-				this.v = hsv.v;
-
-				return this;
-			};
-
-			this._hexify = function (number) {
-			   // return Math.round(number).toString(16);
-				var digits = '0123456789abcdef',
-					lsd = number % 16,
-					msd = (number - lsd) / 16,
-					hexified = digits.charAt(msd) + digits.charAt(lsd);
-				return hexified;
+			this.limit = function (steps) {
+				steps -= 1;
+				var rgb = this.getRGB();
+				this.setRGB(
+					Math.round(rgb.r * steps) / steps,
+					Math.round(rgb.g * steps) / steps,
+					Math.round(rgb.b * steps) / steps
+				);
 			};
 
 			this.toHex = function () {
-				return this._hexify(this.r * 255) + this._hexify(this.g * 255) + this._hexify(this.b * 255);
+				var rgb = this.getRGB();
+				return _hexify(rgb.r * 255) + _hexify(rgb.g * 255) + _hexify(rgb.b * 255);
 			};
 
 			this.toCSS = function () {
 				return '#' + this.toHex();
 			};
 
-			this.toHexAlpha = function () {
-				return this._hexify(this.a * 255);
-			};
-
-			this.copy = function () {
-				return $.extend({}, this);
-			};
-
 			this.normalize = function() {
-				this.s = 1;
-				this.v = 1;
-				this.updateFromHSV();
+				this.setHSV(null, 1, 1);
 				return this;
 			};
 
-			this.equals = function (rgb) {
-				return rgb[0] === this.r
-					&& rgb[1] === this.g
-					&& rgb[2] === this.b;
-			};	// not really color,move outside!
-
-			this.limit = function (steps) {
-				steps -= 1;
-				this.r = Math.round(this.r * steps) / steps;
-				this.g = Math.round(this.g * steps) / steps;
-				this.b = Math.round(this.b * steps) / steps;
-				this.updateFromRGB();
+			this.copy = function () {
+				var rgb = this.getRGB();
+				var a = this.getA();
+				return new Color(rgb.r, rgb.g, rgb.b, a);
 			};
 
-			this.set = false;
-			this.r = 0;
-			this.g = 0;
-			this.b = 0;
-			this.a = 1;
-			this.h = 0;
-			this.s = 0;
-			this.v = 0;
-
+			// Construct
 			if (args.length > 0) {
-				for (arg = 0; arg < args.length; arg += 1) {
-					args[arg] = Math.max(0, Math.min(args[arg], 1));
-				}
-
-				this.set = true;
-				this.r = args[0] || 0;
-				this.g = args[1] || 0;
-				this.b = args[2] || 0;
-				this.a = args[3] === 0 ? 0 : args[3] || 1;
-				this.h = args[4] || 0;
-				this.s = args[5] || 0;
-				this.v = args[6] || 0;
-				this.updateFromRGB();
+				this.setRGB(args[0], args[1], args[2]);
+				this.setA(args[3] === 0 ? 0 : args[3] || 1);
 			}
 		};
 
@@ -1846,6 +1836,13 @@
 			$.Widget.prototype._setOption.apply(that, arguments);
 		},
 
+		/* setBackground */
+		_setImageBackground: function() {
+			if (this.image && this.options.buttonColorize) {
+				this.image.css('background-color', this.color.set? _formatColor('RGBA', this.color) : '');
+			}
+		},
+
 		/**
 		 * If an alternate field is specified, set it according to the current color.
 		 */
@@ -1868,7 +1865,7 @@
 				}
 
 				if (this.options.altAlpha) {
-					$(this.options.altField).css('opacity', this.color.set? this.color.a : '');
+					$(this.options.altField).css('opacity', this.color.set? this.color.getA() : '');
 				}
 			}
 		},
@@ -1876,9 +1873,8 @@
 		_setColor: function(text) {
 			var rgb = _parseColor(text);
 			this.color = (rgb === false ? new Color() : new Color(rgb[0], rgb[1], rgb[2], rgb[3]));
-			this.currentColor = $.extend({}, this.color);
+			this.currentColor = this.color.copy();
 
-			//@todo only on generate and create
 			this._setImageBackground();
 			this._setAltField();
 		},
@@ -2006,9 +2002,7 @@
 				// Without waiting for domready the width of the map is 0 and we
 				// wind up with the cursor stuck in the upper left corner
 				$(function() {
-					$.each(that.parts, function (index, part) {
-						part.repaint();
-					});
+					that._repaintAllParts();
 				});
 			}
 		},
@@ -2016,7 +2010,7 @@
 		close: function () {
 			var that = this;
 
-			that.currentColor	= $.extend({}, that.color);
+			that.currentColor	= that.color.copy();
 			that.changed		= false;
 
 			// tear down the interface
@@ -2029,25 +2023,19 @@
 			});
 		},
 
-		_setImageBackground: function() {
-			if (this.image && this.options.buttonColorize) {
-				this.image.css('background-color', this.color.set? this.color.toCSS() : '');
-			}
-		},
-
 		_callback: function (callback) {
 			var that = this;
 
 			if (that.color.set) {
 				that._trigger(callback, null, {
 					formatted: _formatColor(that.options.colorFormat, that.color),
-					r: that.color.r,
-					g: that.color.g,
-					b: that.color.b,
-					a: that.color.a,
-					h: that.color.h,
-					s: that.color.s,
-					v: that.color.v
+					r: that.color.getRGB().r,
+					g: that.color.getRGB().g,
+					b: that.color.getRGB().b,
+					a: that.color.getA(),
+					h: that.color.getHSV().h,
+					s: that.color.getHSV().s,
+					v: that.color.getHSV().v
 				});
 			} else {
 				that._trigger(callback, null, {
@@ -2056,15 +2044,27 @@
 			}
 		},
 
-		_generateAllParts: function () {
+		_initAllParts: function () {
 			$.each(this.parts, function (index, part) {
-				part.generate();
+				if (part.init) {
+					part.init();
+				}
 			});
 		},
 
-		_initAllParts: function () {
+		_generateAllParts: function () {
 			$.each(this.parts, function (index, part) {
-				part.init();
+				if (part.generate) {
+					part.generate();
+				}
+			});
+		},
+
+		_repaintAllParts: function () {
+			$.each(this.parts, function (index, part) {
+				if (part.repaint) {
+					part.repaint();
+				}
 			});
 		},
 
@@ -2101,9 +2101,7 @@
 			}
 
 			if (this.opened) {
-				$.each(this.parts, function (index, part) {
-					part.repaint();
-				});
+				this._repaintAllParts();
 			}
 
 			// callback
