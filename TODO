@@ -10,6 +10,7 @@ Fix parsing from input with websafe colors
 Color.refresh instead of the updateXXX's.
 Recognize "transparent" color name.
 Limit to named colors (dynamic?)
+Limit number of events triggered.
 Output format "NAME" if possible.
 Output format array for fallbacks? ie. NAME, HEX, RGBA.
 Add L*A*B (or CIELAB) and CMYK color spaces, and inputs.
