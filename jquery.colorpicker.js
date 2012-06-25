@@ -85,6 +85,9 @@
 									? 'hsl(hp%,sp%,vp%)'
 									: 'hsla(hp%,sp%,vp%,af)', color);
 						}
+		,	'NAME':		function(color) {
+							return _closestName(color);
+						}
 		},
 
 		_formatColor = function (format, color) {
@@ -252,6 +255,29 @@
 			'crimson': [0xdc, 0x14, 0x3c],
 			'pink': [0xff, 0xc0, 0xcb],
 			'lightpink': [0xff, 0xb6, 0xc1]
+		},
+
+		_closestName = function(color) {
+			var rgb			= color.getRGB();
+			var color_a		= [ rgb.r * 255, rgb.g * 255, rgb.b * 255 ];
+
+			var distance	= null;
+			var name		= '';
+
+			$.each(_colors, function(n, color_b) {
+				var d	= Math.pow(Math.abs(color_a[0] - color_b[0]), 2)
+						+ Math.pow(Math.abs(color_a[1] - color_b[1]), 2)
+						+ Math.pow(Math.abs(color_a[2] - color_b[2]), 2);
+				if (d < distance || distance === null) {
+					name = n;
+					if (d == 0) {
+						return false;	// can't get much closer than 0
+					}
+					distance = d;
+				}
+			});
+
+			return name;
 		},
 
         _parseHex = function (color) {
@@ -2086,6 +2112,11 @@
 				case 'binary':
 					this.color.limit(2);
 					break;
+
+				case 'name':
+					var name = _closestName(this.color);
+					this.color.setRGB(_colors[name][0] / 255, _colors[name][1] / 255, _colors[name][2] / 255);
+					break
 			}
 
 			// update colors

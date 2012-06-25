@@ -74,6 +74,7 @@ Options:
 			RGBA%	rgb(12%,34%,56%) or rgba(12%,34%,56%,0.123%)
 			HSLA	hsl(123,45,67) or hsla(123,45,67,0.123%)
 			HSLA%	hsl(12%,34%,56%) or hsla(12%,34%,56%,0.123%)
+			NAME	Closest color name
 		or specify your own format...
 		Each color channel is specified as a pair of two characters.
 		The first character determines the color channel:
@@ -112,6 +113,7 @@ Options:
 				'binary'	Allow only #00 or #ff as color channel values for
 							primary	colors only; only 8 colors are available
 							with this limit.
+				'name'		Limit to closest color name.
 
 	mode:				'h'
 		Determines the functionality of the map and bar components. Allowed

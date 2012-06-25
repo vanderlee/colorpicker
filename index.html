@@ -144,6 +144,26 @@
 
 		<hr/>
 
+        Output format/limit name: <input type="text" class="cp-name" value="a92fb4"/>
+		<span class="cp-name-output"></span>
+		<script>
+           	$( function() {
+                $('.cp-name').colorpicker({
+					parts: 'full',
+					limit: 'name',
+					colorFormat: 'NAME',
+					init: function(event, color) {
+								$('.cp-name-output').text(color.formatted);
+							},
+					select: function(event, color) {
+								$('.cp-name-output').text(color.formatted);
+							}
+				});
+			});
+		</script>
+
+		<hr/>
+
 		Dialog with Colorpicker popup (demonstrates z-index):
 		<button id="cp-dialog-open">Open dialog</button>
 		<div id="cp-dialog-modal" title="Basic modal dialog">
