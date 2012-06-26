@@ -118,156 +118,151 @@
 		},
 
 		_colors = {
-			'black': [0x00, 0x00, 0x00],
-			'dimgray': [0x69, 0x69, 0x69],
-			'gray': [0x80, 0x80, 0x80],
-			'darkgray': [0xa9, 0xa9, 0xa9],
-			'silver': [0xc0, 0xc0, 0xc0],
-			'lightgrey': [0xd3, 0xd3, 0xd3],
-			'gainsboro': [0xdc, 0xdc, 0xdc],
-			'whitesmoke': [0xf5, 0xf5, 0xf5],
-			'white': [0xff, 0xff, 0xff],
-			'rosybrown': [0xbc, 0x8f, 0x8f],
-			'indianred': [0xcd, 0x5c, 0x5c],
-			'brown': [0xa5, 0x2a, 0x2a],
-			'firebrick': [0xb2, 0x22, 0x22],
-			'lightcoral': [0xf0, 0x80, 0x80],
-			'maroon': [0x80, 0x00, 0x00],
-			'darkred': [0x8b, 0x00, 0x00],
-			'red': [0xff, 0x00, 0x00],
-			'snow': [0xff, 0xfa, 0xfa],
-			'salmon': [0xfa, 0x80, 0x72],
-			'mistyrose': [0xff, 0xe4, 0xe1],
-			'tomato': [0xff, 0x63, 0x47],
-			'darksalmon': [0xe9, 0x96, 0x7a],
-			'orangered': [0xff, 0x45, 0x00],
-			'coral': [0xff, 0x7f, 0x50],
-			'lightsalmon': [0xff, 0xa0, 0x7a],
-			'sienna': [0xa0, 0x52, 0x2d],
-			'seashell': [0xff, 0xf5, 0xee],
-			'chocolate': [0xd2, 0x69, 0x1e],
-			'saddlebrown': [0x8b, 0x45, 0x13],
-			'sandybrown': [0xf4, 0xa4, 0x60],
-			'peachpuff': [0xff, 0xda, 0xb9],
-			'peru': [0xcd, 0x85, 0x3f],
-			'linen': [0xfa, 0xf0, 0xe6],
-			'darkorange': [0xff, 0x8c, 0x00],
-			'bisque': [0xff, 0xe4, 0xc4],
-			'burlywood': [0xde, 0xb8, 0x87],
-			'tan': [0xd2, 0xb4, 0x8c],
-			'antiquewhite': [0xfa, 0xeb, 0xd7],
-			'navajowhite': [0xff, 0xde, 0xad],
-			'blanchedalmond': [0xff, 0xeb, 0xcd],
-			'papayawhip': [0xff, 0xef, 0xd5],
-			'orange': [0xff, 0xa5, 0x00],
-			'moccasin': [0xff, 0xe4, 0xb5],
-			'wheat': [0xf5, 0xde, 0xb3],
-			'oldlace': [0xfd, 0xf5, 0xe6],
-			'floralwhite': [0xff, 0xfa, 0xf0],
-			'goldenrod': [0xda, 0xa5, 0x20],
-			'darkgoldenrod': [0xb8, 0x86, 0x0b],
-			'cornsilk': [0xff, 0xf8, 0xdc],
-			'gold': [0xff, 0xd7, 0x00],
-			'palegoldenrod': [0xee, 0xe8, 0xaa],
-			'khaki': [0xf0, 0xe6, 0x8c],
-			'lemonchiffon': [0xff, 0xfa, 0xcd],
-			'darkkhaki': [0xbd, 0xb7, 0x6b],
-			'beige': [0xf5, 0xf5, 0xdc],
-			'lightgoldenrodyellow': [0xfa, 0xfa, 0xd2],
-			'olive': [0x80, 0x80, 0x00],
-			'yellow': [0xff, 0xff, 0x00],
-			'lightyellow': [0xff, 0xff, 0xe0],
-			'ivory': [0xff, 0xff, 0xf0],
-			'olivedrab': [0x6b, 0x8e, 0x23],
-			'yellowgreen': [0x9a, 0xcd, 0x32],
-			'darkolivegreen': [0x55, 0x6b, 0x2f],
-			'greenyellow': [0xad, 0xff, 0x2f],
-			'lawngreen': [0x7c, 0xfc, 0x00],
-			'chartreuse': [0x7f, 0xff, 0x00],
-			'darkseagreen': [0x8f, 0xbc, 0x8f],
-			'forestgreen': [0x22, 0x8b, 0x22],
-			'limegreen': [0x32, 0xcd, 0x32],
-			'lightgreen': [0x90, 0xee, 0x90],
-			'palegreen': [0x98, 0xfb, 0x98],
-			'darkgreen': [0x00, 0x64, 0x00],
-			'green': [0x00, 0x80, 0x00],
-			'lime': [0x00, 0xff, 0x00],
-			'honeydew': [0xf0, 0xff, 0xf0],
-			'mediumseagreen': [0x3c, 0xb3, 0x71],
-			'seagreen': [0x2e, 0x8b, 0x57],
-			'springgreen': [0x00, 0xff, 0x7f],
-			'mintcream': [0xf5, 0xff, 0xfa],
-			'mediumspringgreen': [0x00, 0xfa, 0x9a],
-			'mediumaquamarine': [0x66, 0xcd, 0xaa],
-			'aquamarine': [0x7f, 0xff, 0xd4],
-			'turquoise': [0x40, 0xe0, 0xd0],
-			'lightseagreen': [0x20, 0xb2, 0xaa],
-			'mediumturquoise': [0x48, 0xd1, 0xcc],
-			'darkslategray': [0x2f, 0x4f, 0x4f],
-			'paleturquoise': [0xaf, 0xee, 0xee],
-			'teal': [0x00, 0x80, 0x80],
-			'darkcyan': [0x00, 0x8b, 0x8b],
-			'darkturquoise': [0x00, 0xce, 0xd1],
-			'aqua': [0x00, 0xff, 0xff],
-			'cyan': [0x00, 0xff, 0xff],
-			'lightcyan': [0xe0, 0xff, 0xff],
-			'azure': [0xf0, 0xff, 0xff],
-			'cadetblue': [0x5f, 0x9e, 0xa0],
-			'powderblue': [0xb0, 0xe0, 0xe6],
-			'lightblue': [0xad, 0xd8, 0xe6],
-			'deepskyblue': [0x00, 0xbf, 0xff],
-			'skyblue': [0x87, 0xce, 0xeb],
-			'lightskyblue': [0x87, 0xce, 0xfa],
-			'steelblue': [0x46, 0x82, 0xb4],
-			'aliceblue': [0xf0, 0xf8, 0xff],
-			'dodgerblue': [0x1e, 0x90, 0xff],
-			'slategray': [0x70, 0x80, 0x90],
-			'lightslategray': [0x77, 0x88, 0x99],
-			'lightsteelblue': [0xb0, 0xc4, 0xde],
-			'cornflowerblue': [0x64, 0x95, 0xed],
-			'royalblue': [0x41, 0x69, 0xe1],
-			'midnightblue': [0x19, 0x19, 0x70],
-			'lavender': [0xe6, 0xe6, 0xfa],
-			'navy': [0x00, 0x00, 0x80],
-			'darkblue': [0x00, 0x00, 0x8b],
-			'mediumblue': [0x00, 0x00, 0xcd],
-			'blue': [0x00, 0x00, 0xff],
-			'ghostwhite': [0xf8, 0xf8, 0xff],
-			'darkslateblue': [0x48, 0x3d, 0x8b],
-			'slateblue': [0x6a, 0x5a, 0xcd],
-			'mediumslateblue': [0x7b, 0x68, 0xee],
-			'mediumpurple': [0x93, 0x70, 0xdb],
-			'blueviolet': [0x8a, 0x2b, 0xe2],
-			'indigo': [0x4b, 0x00, 0x82],
-			'darkorchid': [0x99, 0x32, 0xcc],
-			'darkviolet': [0x94, 0x00, 0xd3],
-			'mediumorchid': [0xba, 0x55, 0xd3],
-			'thistle': [0xd8, 0xbf, 0xd8],
-			'plum': [0xdd, 0xa0, 0xdd],
-			'violet': [0xee, 0x82, 0xee],
-			'purple': [0x80, 0x00, 0x80],
-			'darkmagenta': [0x8b, 0x00, 0x8b],
-			'magenta': [0xff, 0x00, 0xff],
-			'fuchsia': [0xff, 0x00, 0xff],
-			'orchid': [0xda, 0x70, 0xd6],
-			'mediumvioletred': [0xc7, 0x15, 0x85],
-			'deeppink': [0xff, 0x14, 0x93],
-			'hotpink': [0xff, 0x69, 0xb4],
-			'palevioletred': [0xdb, 0x70, 0x93],
-			'lavenderblush': [0xff, 0xf0, 0xf5],
-			'crimson': [0xdc, 0x14, 0x3c],
-			'pink': [0xff, 0xc0, 0xcb],
-			'lightpink': [0xff, 0xb6, 0xc1]
+			'black':				{ r: 0,g: 0, b: 0 },
+			'dimgray':				{ r: 0.4117647058823529,g: 0.4117647058823529, b: 0.4117647058823529 },
+			'gray':					{ r: 0.5019607843137255,g: 0.5019607843137255, b: 0.5019607843137255 },
+			'darkgray':				{ r: 0.6627450980392157,g: 0.6627450980392157, b: 0.6627450980392157 },
+			'silver':				{ r: 0.7529411764705882,g: 0.7529411764705882, b: 0.7529411764705882 },
+			'lightgrey':			{ r: 0.8274509803921568,g: 0.8274509803921568, b: 0.8274509803921568 },
+			'gainsboro':			{ r: 0.8627450980392157,g: 0.8627450980392157, b: 0.8627450980392157 },
+			'whitesmoke':			{ r: 0.9607843137254902,g: 0.9607843137254902, b: 0.9607843137254902 },
+			'white':				{ r: 1,g: 1, b: 1 },
+			'rosybrown':			{ r: 0.7372549019607844,g: 0.5607843137254902, b: 0.5607843137254902 },
+			'indianred':			{ r: 0.803921568627451,g: 0.3607843137254902, b: 0.3607843137254902 },
+			'brown':				{ r: 0.6470588235294118,g: 0.16470588235294117, b: 0.16470588235294117 },
+			'firebrick':			{ r: 0.6980392156862745,g: 0.13333333333333333, b: 0.13333333333333333 },
+			'lightcoral':			{ r: 0.9411764705882353,g: 0.5019607843137255, b: 0.5019607843137255 },
+			'maroon':				{ r: 0.5019607843137255,g: 0, b: 0 },
+			'darkred':				{ r: 0.5450980392156862,g: 0, b: 0 },
+			'red':					{ r: 1,g: 0, b: 0 },
+			'snow':					{ r: 1,g: 0.9803921568627451, b: 0.9803921568627451 },
+			'salmon':				{ r: 0.9803921568627451,g: 0.5019607843137255, b: 0.4470588235294118 },
+			'mistyrose':			{ r: 1,g: 0.8941176470588236, b: 0.8823529411764706 },
+			'tomato':				{ r: 1,g: 0.38823529411764707, b: 0.2784313725490196 },
+			'darksalmon':			{ r: 0.9137254901960784,g: 0.5882352941176471, b: 0.47843137254901963 },
+			'orangered':			{ r: 1,g: 0.27058823529411763, b: 0 },
+			'coral':				{ r: 1,g: 0.4980392156862745, b: 0.3137254901960784 },
+			'lightsalmon':			{ r: 1,g: 0.6274509803921569, b: 0.47843137254901963 },
+			'sienna':				{ r: 0.6274509803921569,g: 0.3215686274509804, b: 0.17647058823529413 },
+			'seashell':				{ r: 1,g: 0.9607843137254902, b: 0.9333333333333333 },
+			'chocolate':			{ r: 0.8235294117647058,g: 0.4117647058823529, b: 0.11764705882352941 },
+			'saddlebrown':			{ r: 0.5450980392156862,g: 0.27058823529411763, b: 0.07450980392156863 },
+			'sandybrown':			{ r: 0.9568627450980393,g: 0.6431372549019608, b: 0.3764705882352941 },
+			'peachpuff':			{ r: 1,g: 0.8549019607843137, b: 0.7254901960784313 },
+			'peru':					{ r: 0.803921568627451,g: 0.5215686274509804, b: 0.24705882352941178 },
+			'linen':				{ r: 0.9803921568627451,g: 0.9411764705882353, b: 0.9019607843137255 },
+			'darkorange':			{ r: 1,g: 0.5490196078431373, b: 0 },
+			'bisque':				{ r: 1,g: 0.8941176470588236, b: 0.7686274509803922 },
+			'burlywood':			{ r: 0.8705882352941177,g: 0.7215686274509804, b: 0.5294117647058824 },
+			'tan':					{ r: 0.8235294117647058,g: 0.7058823529411765, b: 0.5490196078431373 },
+			'antiquewhite':			{ r: 0.9803921568627451,g: 0.9215686274509803, b: 0.8431372549019608 },
+			'navajowhite':			{ r: 1,g: 0.8705882352941177, b: 0.6784313725490196 },
+			'blanchedalmond':		{ r: 1,g: 0.9215686274509803, b: 0.803921568627451 },
+			'papayawhip':			{ r: 1,g: 0.9372549019607843, b: 0.8352941176470589 },
+			'orange':				{ r: 1,g: 0.6470588235294118, b: 0 },
+			'moccasin':				{ r: 1,g: 0.8941176470588236, b: 0.7098039215686275 },
+			'wheat':				{ r: 0.9607843137254902,g: 0.8705882352941177, b: 0.7019607843137254 },
+			'oldlace':				{ r: 0.9921568627450981,g: 0.9607843137254902, b: 0.9019607843137255 },
+			'floralwhite':			{ r: 1,g: 0.9803921568627451, b: 0.9411764705882353 },
+			'goldenrod':			{ r: 0.8549019607843137,g: 0.6470588235294118, b: 0.12549019607843137 },
+			'darkgoldenrod':		{ r: 0.7215686274509804,g: 0.5254901960784314, b: 0.043137254901960784 },
+			'cornsilk':				{ r: 1,g: 0.9725490196078431, b: 0.8627450980392157 },
+			'gold':					{ r: 1,g: 0.8431372549019608, b: 0 },
+			'palegoldenrod':		{ r: 0.9333333333333333,g: 0.9098039215686274, b: 0.6666666666666666 },
+			'khaki':				{ r: 0.9411764705882353,g: 0.9019607843137255, b: 0.5490196078431373 },
+			'lemonchiffon':			{ r: 1,g: 0.9803921568627451, b: 0.803921568627451 },
+			'darkkhaki':			{ r: 0.7411764705882353,g: 0.7176470588235294, b: 0.4196078431372549 },
+			'beige':				{ r: 0.9607843137254902,g: 0.9607843137254902, b: 0.8627450980392157 },
+			'lightgoldenrodyellow':	{ r: 0.9803921568627451,g: 0.9803921568627451, b: 0.8235294117647058 },
+			'olive':				{ r: 0.5019607843137255,g: 0.5019607843137255, b: 0 },
+			'yellow':				{ r: 1,g: 1, b: 0 },
+			'lightyellow':			{ r: 1,g: 1, b: 0.8784313725490196 },
+			'ivory':				{ r: 1,g: 1, b: 0.9411764705882353 },
+			'olivedrab':			{ r: 0.4196078431372549,g: 0.5568627450980392, b: 0.13725490196078433 },
+			'yellowgreen':			{ r: 0.6039215686274509,g: 0.803921568627451, b: 0.19607843137254902 },
+			'darkolivegreen':		{ r: 0.3333333333333333,g: 0.4196078431372549, b: 0.1843137254901961 },
+			'greenyellow':			{ r: 0.6784313725490196,g: 1, b: 0.1843137254901961 },
+			'lawngreen':			{ r: 0.48627450980392156,g: 0.9882352941176471, b: 0 },
+			'chartreuse':			{ r: 0.4980392156862745,g: 1, b: 0 },
+			'darkseagreen':			{ r: 0.5607843137254902,g: 0.7372549019607844, b: 0.5607843137254902 },
+			'forestgreen':			{ r: 0.13333333333333333,g: 0.5450980392156862, b: 0.13333333333333333 },
+			'limegreen':			{ r: 0.19607843137254902,g: 0.803921568627451, b: 0.19607843137254902 },
+			'lightgreen':			{ r: 0.5647058823529412,g: 0.9333333333333333, b: 0.5647058823529412 },
+			'palegreen':			{ r: 0.596078431372549,g: 0.984313725490196, b: 0.596078431372549 },
+			'darkgreen':			{ r: 0,g: 0.39215686274509803, b: 0 },
+			'green':				{ r: 0,g: 0.5019607843137255, b: 0 },
+			'lime':					{ r: 0,g: 1, b: 0 },
+			'honeydew':				{ r: 0.9411764705882353,g: 1, b: 0.9411764705882353 },
+			'mediumseagreen':		{ r: 0.23529411764705882,g: 0.7019607843137254, b: 0.44313725490196076 },
+			'seagreen':				{ r: 0.1803921568627451,g: 0.5450980392156862, b: 0.3411764705882353 },
+			'springgreen':			{ r: 0,g: 1, b: 0.4980392156862745 },
+			'mintcream':			{ r: 0.9607843137254902,g: 1, b: 0.9803921568627451 },
+			'mediumspringgreen':	{ r: 0,g: 0.9803921568627451, b: 0.6039215686274509 },
+			'mediumaquamarine':		{ r: 0.4,g: 0.803921568627451, b: 0.6666666666666666 },
+			'aquamarine':			{ r: 0.4980392156862745,g: 1, b: 0.8313725490196079 },
+			'turquoise':			{ r: 0.25098039215686274,g: 0.8784313725490196, b: 0.8156862745098039 },
+			'lightseagreen':		{ r: 0.12549019607843137,g: 0.6980392156862745, b: 0.6666666666666666 },
+			'mediumturquoise':		{ r: 0.2823529411764706,g: 0.8196078431372549, b: 0.8 },
+			'darkslategray':		{ r: 0.1843137254901961,g: 0.30980392156862746, b: 0.30980392156862746 },
+			'paleturquoise':		{ r: 0.6862745098039216,g: 0.9333333333333333, b: 0.9333333333333333 },
+			'teal':					{ r: 0,g: 0.5019607843137255, b: 0.5019607843137255 },
+			'darkcyan':				{ r: 0,g: 0.5450980392156862, b: 0.5450980392156862 },
+			'darkturquoise':		{ r: 0,g: 0.807843137254902, b: 0.8196078431372549 },
+			'aqua':					{ r: 0,g: 1, b: 1 },
+			'cyan':					{ r: 0,g: 1, b: 1 },
+			'lightcyan':			{ r: 0.8784313725490196,g: 1, b: 1 },
+			'azure':				{ r: 0.9411764705882353,g: 1, b: 1 },
+			'cadetblue':			{ r: 0.37254901960784315,g: 0.6196078431372549, b: 0.6274509803921569 },
+			'powderblue':			{ r: 0.6901960784313725,g: 0.8784313725490196, b: 0.9019607843137255 },
+			'lightblue':			{ r: 0.6784313725490196,g: 0.8470588235294118, b: 0.9019607843137255 },
+			'deepskyblue':			{ r: 0,g: 0.7490196078431373, b: 1 },
+			'skyblue':				{ r: 0.5294117647058824,g: 0.807843137254902, b: 0.9215686274509803 },
+			'lightskyblue':			{ r: 0.5294117647058824,g: 0.807843137254902, b: 0.9803921568627451 },
+			'steelblue':			{ r: 0.27450980392156865,g: 0.5098039215686274, b: 0.7058823529411765 },
+			'aliceblue':			{ r: 0.9411764705882353,g: 0.9725490196078431, b: 1 },
+			'dodgerblue':			{ r: 0.11764705882352941,g: 0.5647058823529412, b: 1 },
+			'slategray':			{ r: 0.4392156862745098,g: 0.5019607843137255, b: 0.5647058823529412 },
+			'lightslategray':		{ r: 0.4666666666666667,g: 0.5333333333333333, b: 0.6 },
+			'lightsteelblue':		{ r: 0.6901960784313725,g: 0.7686274509803922, b: 0.8705882352941177 },
+			'cornflowerblue':		{ r: 0.39215686274509803,g: 0.5843137254901961, b: 0.9294117647058824 },
+			'royalblue':			{ r: 0.2549019607843137,g: 0.4117647058823529, b: 0.8823529411764706 },
+			'midnightblue':			{ r: 0.09803921568627451,g: 0.09803921568627451, b: 0.4392156862745098 },
+			'lavender':				{ r: 0.9019607843137255,g: 0.9019607843137255, b: 0.9803921568627451 },
+			'navy':					{ r: 0,g: 0, b: 0.5019607843137255 },
+			'darkblue':				{ r: 0,g: 0, b: 0.5450980392156862 },
+			'mediumblue':			{ r: 0,g: 0, b: 0.803921568627451 },
+			'blue':					{ r: 0,g: 0, b: 1 },
+			'ghostwhite':			{ r: 0.9725490196078431,g: 0.9725490196078431, b: 1 },
+			'darkslateblue':		{ r: 0.2823529411764706,g: 0.23921568627450981, b: 0.5450980392156862 },
+			'slateblue':			{ r: 0.41568627450980394,g: 0.35294117647058826, b: 0.803921568627451 },
+			'mediumslateblue':		{ r: 0.4823529411764706,g: 0.40784313725490196, b: 0.9333333333333333 },
+			'mediumpurple':			{ r: 0.5764705882352941,g: 0.4392156862745098, b: 0.8588235294117647 },
+			'blueviolet':			{ r: 0.5411764705882353,g: 0.16862745098039217, b: 0.8862745098039215 },
+			'indigo':				{ r: 0.29411764705882354,g: 0, b: 0.5098039215686274 },
+			'darkorchid':			{ r: 0.6,g: 0.19607843137254902, b: 0.8 },
+			'darkviolet':			{ r: 0.5803921568627451,g: 0, b: 0.8274509803921568 },
+			'mediumorchid':			{ r: 0.7294117647058823,g: 0.3333333333333333, b: 0.8274509803921568 },
+			'thistle':				{ r: 0.8470588235294118,g: 0.7490196078431373, b: 0.8470588235294118 },
+			'plum':					{ r: 0.8666666666666667,g: 0.6274509803921569, b: 0.8666666666666667 },
+			'violet':				{ r: 0.9333333333333333,g: 0.5098039215686274, b: 0.9333333333333333 },
+			'purple':				{ r: 0.5019607843137255,g: 0, b: 0.5019607843137255 },
+			'darkmagenta':			{ r: 0.5450980392156862,g: 0, b: 0.5450980392156862 },
+			'magenta':				{ r: 1,g: 0, b: 1 },
+			'fuchsia':				{ r: 1,g: 0, b: 1 },
+			'orchid':				{ r: 0.8549019607843137,g: 0.4392156862745098, b: 0.8392156862745098 },
+			'mediumvioletred':		{ r: 0.7803921568627451,g: 0.08235294117647059, b: 0.5215686274509804 },
+			'deeppink':				{ r: 1,g: 0.0784313725490196, b: 0.5764705882352941 },
+			'hotpink':				{ r: 1,g: 0.4117647058823529, b: 0.7058823529411765 },
+			'palevioletred':		{ r: 0.8588235294117647,g: 0.4392156862745098, b: 0.5764705882352941 },
+			'lavenderblush':		{ r: 1,g: 0.9411764705882353, b: 0.9607843137254902 },
+			'crimson':				{ r: 0.8627450980392157,g: 0.0784313725490196, b: 0.23529411764705882 },
+			'pink':					{ r: 1,g: 0.7529411764705882, b: 0.796078431372549 },
+			'lightpink':			{ r: 1,g: 0.7137254901960784, b: 0.7568627450980392 }
 		},
 
 		_exactName = function(color) {
-			var rgb			= color.getRGB();
-			var color_a		= [ rgb.r * 255, rgb.g * 255, rgb.b * 255 ];
-
 			$.each(_colors, function(name, color_b) {
-				if (color_a[0] === color_b[0]
-				 && color_a[1] === color_b[1]
-				 && color_a[2] === color_b[2]) {
+				if (color.equals(color_b)) {
 					return name;
 				}
 			});
@@ -277,15 +272,14 @@
 
 		_closestName = function(color) {
 			var rgb			= color.getRGB();
-			var color_a		= [ rgb.r * 255, rgb.g * 255, rgb.b * 255 ];
 
 			var distance	= null;
 			var name		= '';
 
 			$.each(_colors, function(n, color_b) {
-				var d	= Math.pow(Math.abs(color_a[0] - color_b[0]), 2)
-						+ Math.pow(Math.abs(color_a[1] - color_b[1]), 2)
-						+ Math.pow(Math.abs(color_a[2] - color_b[2]), 2);
+				var d	= Math.pow(Math.abs(rgb.r - color_b.r), 2)
+						+ Math.pow(Math.abs(rgb.g - color_b.g), 2)
+						+ Math.pow(Math.abs(rgb.b - color_b.b), 2);
 				if (d < distance || distance === null) {
 					name = n;
 					if (d == 0) {
@@ -298,75 +292,76 @@
 			return name;
 		},
 
-        _parseHex = function (color) {
+        _parseHex = function(color) {
             var name = $.trim(color).toLowerCase(),
                 c,
                 m;
 
             if (_colors[name]) {
-                c = _colors[name];
-                return [c[0] / 255, c[1] / 255, c[2] / 255];
+                return new Color(_colors[name].r, _colors[name].g, _colors[name].b);
             }
 
             // {#}rrggbb
             m = /^#?([a-fA-F0-9]{1,6})/.exec(color);
             if (m) {
                 c = parseInt(m[1], 16);
-                return [((c >> 16) & 0xFF) / 255,
-                        ((c >>  8) & 0xFF) / 255,
-                        (c & 0xFF) / 255];
+                return new Color(
+					((c >> 16) & 0xFF) / 255,
+                    ((c >>  8) & 0xFF) / 255,
+                    (c & 0xFF) / 255
+				);
             }
 
-            return false;
+            return new Color();
         },
 
-        _parseColor = function (color) {
+        _parseColor = function(color) {
             var m;
 
             if (color == '') {
-                return false;
+                return new Color();
             }
 
             // rgba(r,g,b,a)
             m = /rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/.exec(color);
             if (m) {
-                return [
+                return new Color(
                     m[1] / 255,
                     m[2] / 255,
                     m[3] / 255,
                     parseFloat(m[4])
-                ];
+                );
             }
 
             // rgba(r%,g%,b%,a%)
             m = /rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/.exec(color);
             if (m) {
-                return [
+                return new Color(
                     m[1] / 100,
                     m[2] / 100,
                     m[3] / 100,
                     m[4] / 100
-                ];
+                );
             }
 
             // #rrggbb
             m = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color);
             if (m) {
-                return [
+                return new Color(
                     parseInt(m[1], 16) / 255,
                     parseInt(m[2], 16) / 255,
                     parseInt(m[3], 16) / 255
-                ];
+                );
             }
 
             // #rgb
             m = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color);
             if (m) {
-                return [
-                    parseInt(m[1] + m[1], 16) / 255,
-                    parseInt(m[2] + m[2], 16) / 255,
-                    parseInt(m[3] + m[3], 16) / 255
-                ];
+                return new Color(
+                   parseInt(m[1] + m[1], 16) / 255,
+                   parseInt(m[2] + m[2], 16) / 255,
+                   parseInt(m[3] + m[3], 16) / 255
+                );
             }
 
             return _parseHex(color);
@@ -1138,8 +1133,7 @@
                     e = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
 
                     $('.ui-colorpicker-hex-input', e).bind('change keyup', function () {
-                        var rgb = _parseHex($(this).val());
-						inst.color.setRGB(rgb[0], rgb[1], rgb[2]);
+                        inst.color = _parseHex($(this).val());
                         inst._change();
                     });
 
@@ -1173,8 +1167,9 @@
                     var html = '';
 
                     $.each(inst.options.swatches, function (name, color) {
-                        var hex = _intToHex(color[0]) + _intToHex(color[1]) + _intToHex(color[2]);	// @todo use formatter
-                        html += '<div class="ui-colorpicker-swatch" style="background-color: #' + hex + '" title="' + name + '"></div>';
+						var c = new Color(color.r, color.g, color.b);
+                        var css = c.toCSS();
+                        html += '<div class="ui-colorpicker-swatch" style="background-color: ' + css + '" title="' + name + '"></div>';
                     });
 
                     return '<div class="ui-colorpicker-swatches" class="ui-colorpicker-border">' + html + '</div>';
@@ -1184,8 +1179,7 @@
                     e = $(_html()).appendTo($('.ui-colorpicker-swatches-container', inst.dialog));
 
                     $('.ui-colorpicker-swatch', e).click(function () {
-                        var rgb		= _parseColor($(this).css('background-color'));
-                        inst.color	= (rgb === false ? new Color() : new Color(rgb[0], rgb[1], rgb[2], rgb[3]));
+                        inst.color	= _parseColor($(this).css('background-color'));
                         inst._change();
                     });
                 };
@@ -1639,10 +1633,9 @@
 
 			this.equals = function (rgb) {
 				var model = this.getRGB();
-
-				return rgb[0] === model.r
-					&& rgb[1] === model.g
-					&& rgb[2] === model.b;
+				return rgb.r === model.r
+					&& rgb.g === model.g
+					&& rgb.b === model.b;
 			};
 
 			this.limit = function (steps) {
@@ -1925,8 +1918,7 @@
 		},
 
 		_setColor: function(text) {
-			var rgb = _parseColor(text);
-			this.color = (rgb === false ? new Color() : new Color(rgb[0], rgb[1], rgb[2], rgb[3]));
+			this.color = _parseColor(text);
 			this.currentColor = this.color.copy();
 
 			this._setImageBackground();
@@ -2051,7 +2043,9 @@
 					}
 				});
 
-				that.dialog.css('z-index', ++zIndex);
+				//@todo zIndexOffset option, to raise above other elements?
+
+				that.dialog.css('z-index', zIndex += 2);
 
 				that.overlay = that.options.modal ? new $.ui.dialog.overlay(that) : null;
 
@@ -2151,7 +2145,7 @@
 
 				case 'name':
 					var name = _closestName(this.color);
-					this.color.setRGB(_colors[name][0] / 255, _colors[name][1] / 255, _colors[name][2] / 255);
+					this.color.setRGB(_colors[name].r, _colors[name].g, _colors[name].b);
 					break
 			}
 

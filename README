@@ -1,4 +1,4 @@
-jQuery.colorpicker v0.8.1
+jQuery.colorpicker v0.8.2
 
 Copyright (c) 2011-2012 Martijn W. van der Lee
 Licensed under the MIT.
@@ -159,8 +159,8 @@ Options:
 
 	swatches:			null
 		'null' to show swatches of HTML colors or provide your own object
-		with colornames and [r,g,b] array.
-		For example { 'red': [ 255, 0, 0 ], 'blue': [0, 0, 255] }
+		with colornames and {r:1, g:1, b:1} array.
+		For example { 'red': {r:1, g:0, b:0}, 'blue': {r:0, g:0, b:1} }
 
 	title:				null
 		Title to display in the header. If null, use language default.
