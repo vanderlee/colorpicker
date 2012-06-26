@@ -1655,13 +1655,12 @@
 			};
 
 			this.distance = function(color) {
-				var space	= 'lab';
-				var getter	= 'get'+space.toUpperCase();
+				var space	= 'lab',
+					getter	= 'get'+space.toUpperCase(),
+					a = this[getter](),
+					b = color[getter](),
+					distance = 0;
 
-				var a = this[getter]();
-				var b = color[getter]();
-
-				var distance = 0;
 				for (var channel in a) {
 					distance += Math.pow(a[channel] - b[channel], 2);
 				}
@@ -1670,8 +1669,9 @@
 			}
 
 			this.equals = function(color) {
-				var a = this.getRGB();
-				var b = color.getRGB();
+				var a = this.getRGB(),
+					b = color.getRGB();
+
 				return a.r == b.r
 					&& a.g == b.g
 					&& a.b == b.b;
