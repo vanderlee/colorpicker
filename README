@@ -115,6 +115,12 @@ Options:
 							with this limit.
 				'name'		Limit to closest color name.
 
+	modal:
+		Ensures no other controls on screen can be used while the dialog is
+		opened.
+		Also look at showCancelButton and closeOnEscape to use in combination
+		with the modal option. closeOnOutside is redundant when used with modal.
+
 	mode:				'h'
 		Determines the functionality of the map and bar components. Allowed
 		values are; 'h', 's', 'l', 'r', 'g', 'b' or 'a', for hue, saturation,
@@ -138,6 +144,9 @@ Options:
 
 	showAnim:			'fadeIn'
 		Same as jQueryUI DatePicker.
+
+	showCancelButton:	true
+		Show the Cancel button if buttonpane is visible.
 
 	showNoneButton:		false
 		Show the None/Revert button if buttonpane is visible.
