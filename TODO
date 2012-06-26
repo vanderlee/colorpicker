@@ -1,6 +1,7 @@
 Disable selection in MSIE: this.dialog.on('selectstart', function(event) { return false; })
 LAB-based color distance.
 Completely destroy object when closed.
+Construct a Color object from {r:g:b:a:} array
 Enabled/disabled
 isRTL? What to RTL, besides button?
 Special rendering mode for color_none? Use [X] images?
