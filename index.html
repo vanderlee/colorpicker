@@ -110,15 +110,15 @@
 				}
 
                 $('.cp-events').colorpicker({
-					init: function(event, color) {
-								addToEventLog('Init', color.formatted);
-							},
-					select: function(event, color) {
-								addToEventLog('Select', color.formatted);
-							},
-					close: function(event, color) {
-								addToEventLog('Close', color.formatted);
-							}
+					init:			function(event, color) {
+										addToEventLog('Init', color.formatted);
+									},
+					select:			function(event, color) {
+										addToEventLog('Select', color.formatted);
+									},
+					close:			function(event, color) {
+										addToEventLog('Close', color.formatted);
+									}
 				});
 			});
 		</script>
@@ -185,6 +185,19 @@
 
 				$('#cp-dialog-open').click(function() {
 					dialog.dialog('open');
+				});
+			});
+		</script>
+
+		<hr/>
+
+        Modal (and showCancelButton, closeOnEscape): <input type="text" class="cp-modal" value="9ba73f"/>
+		<script>
+           	$( function() {
+                $('.cp-modal').colorpicker({
+					modal:				true,
+					showCancelButton:	false,
+					closeOnEscape:		false
 				});
 			});
 		</script>

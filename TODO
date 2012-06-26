@@ -1,8 +1,6 @@
-Disable selection (copy from Fontpicker CSS)
-Modal popup mode with overlay beneath popup
-Automatic z-index detection
-Example using jQUI/Dialog, to demonstrate z-index.
-Color output format
+Disable selection in MSIE: this.dialog.on('selectstart', function(event) { return false; })
+LAB-based color distance.
+Completely destroy object when closed.
 Enabled/disabled
 isRTL? What to RTL, besides button?
 Special rendering mode for color_none? Use [X] images?
@@ -11,8 +9,8 @@ Color.refresh instead of the updateXXX's.
 Recognize "transparent" color name.
 Limit to named colors (dynamic?)
 Limit number of events triggered.
-Output format "NAME" if possible.
 Output format array for fallbacks? ie. NAME, HEX, RGBA.
+Exact name match only for output.
 Add L*A*B (or CIELAB) and CMYK color spaces, and inputs.
 Movable dialog
 Small size variant (128x128)

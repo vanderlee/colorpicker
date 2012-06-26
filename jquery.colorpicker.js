@@ -88,6 +88,9 @@
 		,	'NAME':		function(color) {
 							return _closestName(color);
 						}
+		,	'_EXACT':	function(color) {		//@todo experimental. Implement a good fallback list
+							return _exactName(COLOR);
+						}
 		},
 
 		_formatColor = function (format, color) {
@@ -255,6 +258,21 @@
 			'crimson': [0xdc, 0x14, 0x3c],
 			'pink': [0xff, 0xc0, 0xcb],
 			'lightpink': [0xff, 0xb6, 0xc1]
+		},
+
+		_exactName = function(color) {
+			var rgb			= color.getRGB();
+			var color_a		= [ rgb.r * 255, rgb.g * 255, rgb.b * 255 ];
+
+			$.each(_colors, function(name, color_b) {
+				if (color_a[0] === color_b[0]
+				 && color_a[1] === color_b[1]
+				 && color_a[2] === color_b[2]) {
+					return name;
+				}
+			});
+
+			return false;
 		},
 
 		_closestName = function(color) {
@@ -1198,7 +1216,9 @@
 
                     if (!inst.inline) {
                         html += '<div class="ui-dialog-buttonset">';
-                        html += '<button class="ui-colorpicker-cancel">' + inst._getRegional('cancel') + '</button>';
+	                    if (inst.options.showCancelButton) {
+		                    html += '<button class="ui-colorpicker-cancel">' + inst._getRegional('cancel') + '</button>';
+						}
                         html += '<button class="ui-colorpicker-ok">' + inst._getRegional('ok') + '</button>';
                         html += '</div>';
                     }
@@ -1253,7 +1273,7 @@
         },
 
         Color = function () {
-			var models = {	rgb:	{r: 0, g: 0, b: 0},
+			var models = {rgb:	{r: 0, g: 0, b: 0},
 							hsv:	{h: 0, s: 0, v: 0},
 							hsl:	{h: 0, s: 0, l: 0},
 							lab:	{l: 0, a: 0, b: 0},
@@ -1546,35 +1566,35 @@
 			}
 
 			this.setRGB = function(r, g, b) {
-				models = { rgb: this.getRGB() };
+				models = {rgb: this.getRGB()};
 				if (r !== null)		models.rgb.r = _clip(r);
 				if (g !== null)		models.rgb.g = _clip(g);
 				if (b !== null)		models.rgb.b = _clip(b);
 			}
 
 			this.setHSV = function(h, s, v) {
-				models = { hsv: this.getHSV() };
+				models = {hsv: this.getHSV()};
 				if (h !== null)		models.hsv.h = _clip(h);
 				if (s !== null)		models.hsv.s = _clip(s);
 				if (v !== null)		models.hsv.v = _clip(v);
 			}
 
 			this.setHSL = function(h, s, l) {
-				models = { hsl: this.getHSL() };
+				models = {hsl: this.getHSL()};
 				if (h !== null)		models.hsl.h = _clip(h);
 				if (s !== null)		models.hsl.s = _clip(s);
 				if (l !== null)		models.hsl.l = _clip(l);
 			}
 
 			this.setLAB = function(l, a, b) {
-				models = { lab: this.getLAB() };
+				models = {lab: this.getLAB()};
 				if (l !== null)		models.lab.l = _clip(l);
 				if (a !== null)		models.lab.a = _clip(a);
 				if (b !== null)		models.lab.b = _clip(b);
 			}
 
 			this.setCMYK = function(c, m, y, k) {
-				models = { cmyk: this.getCMYK() };
+				models = {cmyk: this.getCMYK()};
 				if (c !== null)		models.cmyk.c = _clip(c);
 				if (m !== null)		models.cmyk.m = _clip(m);
 				if (y !== null)		models.cmyk.y = _clip(y);
@@ -1587,7 +1607,7 @@
 								: models.hsl ?	_hsl_to_rgb(models.hsl)
 								: models.cmyk ?	_cmy_to_rgb(_cmyk_to_cmy(models.cmyk))
 								: models.lab ?	_xyz_to_rgb(_lab_to_xyz(models.lab))
-								: { r: 0, g: 0, b: 0 };
+								: {r: 0, g: 0, b: 0};
 				}
 				return $.extend({}, models.rgb);
 			};
@@ -1598,7 +1618,7 @@
 								: models.hsl ?	_rgb_to_hsv(this.getRGB())
 								: models.cmyk ?	_rgb_to_hsv(this.getRGB())
 								: models.lab ?	_rgb_to_hsv(this.getRGB())
-								: { h: 0, s: 0, v: 0 };
+								: {h: 0, s: 0, v: 0};
 				}
 				return $.extend({}, models.hsv);
 			};
@@ -1691,19 +1711,21 @@
 				hex:		[2, 4, 1, 1],
 				swatches:	[3, 0, 1, 5]
 			},
-			limit:				'',			// Limit color "resolution": '', 'websafe', 'nibble', 'binary'
+			limit:				'',			// Limit color "resolution": '', 'websafe', 'nibble', 'binary', 'name'
+			modal:				false,		// Modal dialog?
 			mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
 			parts:				'',			// leave empty for automatic selection
 			rgb:				true,		// Show RGB controls and modes
 			showAnim:			'fadeIn',
+			showCancelButton:	true,
 			showNoneButton:		false,
 			showOn:				'focus',	// 'focus', 'button', 'both'
 			showOptions:		{},
 			swatches:			null,
 			title:				null,
 
-			init:				null,
 			close:              null,
+			init:				null,
 			select:             null
 		},
 
@@ -1722,6 +1744,7 @@
 			that.dialog		= null;
 			that.button		= null;
 			that.image		= null;
+			that.overlay	= null;
 
 			that.mode		= that.options.mode;
 
@@ -1739,7 +1762,7 @@
 
 				// Click outside/inside
 				$(document).mousedown(function (event) {
-					if (!that.opened || event.target === that.element[0]) {
+					if (!that.opened || event.target === that.element[0] || that.overlay) {
 						return;
 					}
 
@@ -1843,6 +1866,11 @@
 
 			if (this.dialog !== null) {
 				this.dialog.remove();
+
+			}
+
+			if (this.overlay) {
+				this.overlay.destroy();
 			}
 		},
 
@@ -1975,13 +2003,13 @@
 			}
 		},
 
-		_effectGeneric: function (show, slide, fade, callback) {
+		_effectGeneric: function (element, show, slide, fade, callback) {
 			var that = this;
 
 			if ($.effects && $.effects[that.options.showAnim]) {
-				that.dialog[show](that.options.showAnim, that.options.showOptions, that.options.duration, callback);
+				element[show](that.options.showAnim, that.options.showOptions, that.options.duration, callback);
 			} else {
-				that.dialog[(that.options.showAnim === 'slideDown' ?
+				element[(that.options.showAnim === 'slideDown' ?
 								slide
 							:	(that.options.showAnim === 'fadeIn' ?
 									fade
@@ -1992,27 +2020,18 @@
 			}
 		},
 
-		_effectShow: function (callback) {
-			this._effectGeneric('show', 'slideDown', 'fadeIn', callback);
+		_effectShow: function(element, callback) {
+			this._effectGeneric(element, 'show', 'slideDown', 'fadeIn', callback);
 		},
 
-		_effectHide: function (callback) {
-			this._effectGeneric('hide', 'slideUp', 'fadeOut', callback);
+		_effectHide: function(element, callback) {
+			this._effectGeneric(element, 'hide', 'slideUp', 'fadeOut', callback);
 		},
 
-		open: function () {
+		open: function() {
 			var that = this;
 
 			if (!that.opened) {
-				// Automatically find highest z-index.
-				$(that.element[0]).parents().each(function() {
-					var zIndex = $(this).css('z-index');
-					if ((typeof(zIndex) === 'number' || typeof(zIndex) === 'string') && zIndex !== '' && !isNaN(zIndex)) {
-						that.dialog.css('z-index', zIndex + 1);
-						return false;
-					}
-				});
-
 				that._generate();
 
 				var offset = that.element.offset(),
@@ -2022,7 +2041,21 @@
 				y -= Math.max(0, (y + that.dialog.height()) - $(window).height() + 20);
 				that.dialog.css({'left': x, 'top': y});
 
-				that._effectShow();
+				// Automatically find highest z-index.
+				var zIndex = 0;
+				$(that.element[0]).parents().each(function() {
+					var z = $(this).css('z-index');
+					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
+						zIndex = z;
+						return false;
+					}
+				});
+
+				that.dialog.css('z-index', ++zIndex);
+
+				that.overlay = that.options.modal ? new $.ui.dialog.overlay(that) : null;
+
+				that._effectShow(this.dialog);
 				that.opened = true;
 
 				// Without waiting for domready the width of the map is 0 and we
@@ -2040,20 +2073,23 @@
 			that.changed		= false;
 
 			// tear down the interface
-			that._effectHide(function () {
+			that._effectHide(that.dialog, function () {
 				that.dialog.empty();
 				that.generated	= false;
 
 				that.opened		= false;
 				that._callback('close');
 			});
+			if (that.overlay) {
+				that.overlay.destroy();
+			}
 		},
 
 		_callback: function (callback) {
 			var that = this;
 
 			if (that.color.set) {
-				that._trigger(callback, null, {
+				return that._trigger(callback, null, {
 					formatted: _formatColor(that.options.colorFormat, that.color),
 					r: that.color.getRGB().r,
 					g: that.color.getRGB().g,
@@ -2064,7 +2100,7 @@
 					v: that.color.getHSV().v
 				});
 			} else {
-				that._trigger(callback, null, {
+				return that._trigger(callback, null, {
 					formatted: ''
 				});
 			}
