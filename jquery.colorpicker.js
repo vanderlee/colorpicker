@@ -41,9 +41,10 @@
 		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
 
 		_parts_lists = {
-			'full':		['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'swatches', 'footer'],
-			'popup':	['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
-			'inline':	['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
+			'full':			['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'swatches', 'footer'],
+			'popup':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
+			'draggable':	['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
+			'inline':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
 		},
 
 		_intToHex = function (dec) {
@@ -465,21 +466,31 @@
                 _html = function () {
                     var title = inst.options.title ? inst.options.title :  inst._getRegional('title');
 
-                    return '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">'
-                        + '<span class="ui-dialog-title">' + title + '</span>'
-                        + '<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">'
-                        + '<span class="ui-icon ui-icon-closethick">close</span></a></div>';
+					var html = '<span class="ui-dialog-title">' + title + '</span>';
+
+					if (!inst.inline && inst.options.showCloseButton) {
+                        html += '<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">'
+							+ '<span class="ui-icon ui-icon-closethick">close</span></a>';
+					}
+
+					return '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' + html + '</div>';
                 };
 
                 this.init = function () {
                     e = $(_html()).prependTo(inst.dialog);
+
                     var close = $('.ui-dialog-titlebar-close', e);
                     inst._hoverable(close);
                     inst._focusable(close);
-
                     close.click( function() {
-                        inst.close()
+                        inst.close();
                     });
+
+					if (!inst.inline && inst.options.draggable) {
+						inst.dialog.draggable({
+							handle: e
+						});
+					}
                 };
             },
 
@@ -1640,8 +1651,6 @@
 				return $.extend({}, models.lab);
 			};
 
-			//@todo getHSL, getLAB, getCMYK
-
 			this.getChannels = function() {
 				return {
 					r:	this.getRGB().r,
@@ -1730,6 +1739,7 @@
 			closeOnOutside:		true,		// Close the dialog when clicking outside the dialog (not for inline)
 			color:				'#00FF00',	// Initial color (for inline only)
 			colorFormat:		'HEX',		// Format string for output color format
+			draggable:			true,		// Make popup dialog draggable if header is visible.
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
 			regional:			'',
@@ -1751,6 +1761,7 @@
 			showAnim:			'fadeIn',
 			showCancelButton:	true,
 			showNoneButton:		false,
+			showCloseButton:	true,
 			showOn:				'focus',	// 'focus', 'button', 'both'
 			showOptions:		{},
 			swatches:			null,

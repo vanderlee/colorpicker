@@ -89,6 +89,10 @@ Options:
 		For example, to create the common hex color format, use "#rxgxbx".
 		For an rgba() format, use "rgba(rd,gd,bd,af)"
 
+	dragggable:			true
+		Make the dialog draggable if the header is visible and the dialog is
+		not inline.
+
 	duration:			'fast'
 		Same as jQueryUI DatePicker.
 
@@ -147,6 +151,10 @@ Options:
 
 	showCancelButton:	true
 		Show the Cancel button if buttonpane is visible.
+
+	showCloseButton:	true
+		Show the Close button if the header is visible.
+		If the dialog is inline, the close button is never shown.
 
 	showNoneButton:		false
 		Show the None/Revert button if buttonpane is visible.

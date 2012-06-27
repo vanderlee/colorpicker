@@ -191,10 +191,12 @@
 
 		<hr/>
 
-        Modal (and showCancelButton, closeOnEscape): <input type="text" class="cp-modal" value="9ba73f"/>
+        Modal (and showCancelButton, closeOnEscape, showCloseButton): <input type="text" class="cp-modal" value="9ba73f"/>
 		<script>
            	$( function() {
                 $('.cp-modal').colorpicker({
+					parts:				'draggable',
+					showCloseButton:	false,
 					modal:				true,
 					showCancelButton:	false,
 					closeOnEscape:		false
