@@ -13,7 +13,6 @@ Limit number of events triggered.
 Output format array for fallbacks? ie. NAME, HEX, RGBA.
 Exact name match only for output.
 Add L*A*B (or CIELAB) and CMYK color spaces, and inputs.
-Movable dialog
 Small size variant (128x128)
 isRTL? What to RTL, besides button?
 Undo/redo memory?
