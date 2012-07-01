@@ -1,4 +1,7 @@
 Disable selection in MSIE: this.dialog.on('selectstart', function(event) { return false; })
+Clip colors in the getters as well?
+Discrepancy in to/from LAB conversions.
+Range LAB and XYZ to [0,1] range
 LAB-based color distance.
 Completely destroy object when closed.
 Construct a Color object from {r:g:b:a:} array
@@ -16,3 +19,9 @@ Add L*A*B (or CIELAB) and CMYK color spaces, and inputs.
 Small size variant (128x128)
 isRTL? What to RTL, besides button?
 Undo/redo memory?
+ARIA support.
+Number input change/keyup -> Only trigger once for each actual event!
+Normalize XYZ
+Allow only set (dec/hex) characters in inputs
+Most-recently-used swatches
+Output color models in callback? All (expensive) or select few?

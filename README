@@ -134,7 +134,7 @@ Options:
 		Determine which parts to display.
 		Use any of the preset names ('full', 'popup' or 'inline') or specify
 		an array of part names (i.e. ['header', 'map', 'bar', 'hex', 'hsv',
-		'rgb', 'alpha', 'preview', 'swatches', 'footer']).
+		'rgb', 'alpha', 'lab', 'cmyk', 'preview', 'swatches', 'footer']).
 		If an empty string is given, the parts will be automatically chosen as
 		preset 'popup' or 'inline' depending on the context in which the
 		colorpicker is used.

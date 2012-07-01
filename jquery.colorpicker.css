@@ -162,16 +162,17 @@
 }
 
 /* Inputs */
-.ui-colorpicker-inputs label,
-.ui-colorpicker-hsv label,
-.ui-colorpicker-rgb label,
-.ui-colorpicker-a label {
+label {
     width: 1.5em;
     display: inline-block;
+}
+label:after {
+	content: ':';
 }
 
 .ui-colorpicker-number {
 	margin: .1em;
+	width: 4em;
 }
 
 /* Hex */
