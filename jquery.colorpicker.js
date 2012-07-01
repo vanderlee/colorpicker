@@ -387,19 +387,19 @@
 				html;
 
 			layout.sort(function(a, b) {
-					if (a.pos[1] == b.pos[1]) {
-						return a.pos[0] - b.pos[0];
-					}
-					return a.pos[1] - b.pos[1];
-				});
+				if (a.pos[1] == b.pos[1]) {
+					return a.pos[0] - b.pos[0];
+				}
+				return a.pos[1] - b.pos[1];
+			});
 
 			// Determine dimensions of the table
 			width = 0;
 			height = 0;
-			for (index in layout) {
-				width = Math.max(width, layout[index].pos[0] + layout[index].pos[2]);
-				height = Math.max(height, layout[index].pos[1] + layout[index].pos[3]);
-			}
+			$.each (layout, function(index, part) {
+				width = Math.max(width, part.pos[0] + part.pos[2]);
+				height = Math.max(height, part.pos[1] + part.pos[3]);
+			});
 
 			// Initialize bitmap
 			bitmap = [];
@@ -410,15 +410,15 @@
 			// Mark rows and columns which have layout assigned
 			rows	= new Array(height);
 			columns = new Array(width);
-			for (index in layout) {
+			$.each (layout, function(index, part) {
 				// mark columns
-				for (x = 0; x < layout[index].pos[2]; x += 1) {
-					columns[layout[index].pos[0] + x] = true;
+				for (x = 0; x < part.pos[2]; x += 1) {
+					columns[part.pos[0] + x] = true;
 				}
-				for (y = 0; y < layout[index].pos[3]; y += 1) {
-					rows[layout[index].pos[1] + y] = true;
+				for (y = 0; y < part.pos[3]; y += 1) {
+					rows[part.pos[1] + y] = true;
 				}
-			}
+			});
 
 			// Generate the table
 			html = '';
@@ -1598,7 +1598,7 @@
 					var lab2 = {
 						l: lab.l * 100,
 						a: (lab.a * 255) - 128,
-						b: (lab.b * 255) - 128,
+						b: (lab.b * 255) - 128
 					}
 
 					var xyz = {

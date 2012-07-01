@@ -13,5 +13,5 @@ Undo/redo memory?
 ARIA support.
 Allow only set (dec/hex) characters in inputs
 Most-recently-used swatches
-Output color models in callback? All (expensive) or select few?
+Close callback color model output; scale values to UI ranges?
 HSL/HSV distance calculations should take into account cyclic hue.
