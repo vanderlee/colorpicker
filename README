@@ -180,7 +180,9 @@ Events:
 
 	close:			null
 		Triggered when the popup is closed.
-		Callbacks recieve same data as select event.
+		Callbacks recieve same data as select event and an additional number
+		of fields containing the current color in all supported color spaces.
+		These are rgb{}, hsv{}, cmyk{}, lab{}, hsl{} and a for alpha.
 
 	select:			null
 		Triggered on each change, confirmation (click on OK button) and
@@ -189,8 +191,8 @@ Events:
 
 		The event recieves a jQuery event object and a data object containing
 		the elements 'formatted' (with the color formatted according to
-		formatColor) and r, g, b, a, h, s and v all in floating point range\
-		(0-1).
+		formatColor).
+
 		Note that select may be triggered in rapid succession when dragging
 		the mouse accross the map or bar and may be triggered without a change
 		in color upon specific user interactions.
