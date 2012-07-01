@@ -1379,7 +1379,7 @@
         },
 
         Color = function () {
-			var models = {	rgb:	{r: 0, g: 0, b: 0},
+			var spaces = {	rgb:	{r: 0, g: 0, b: 0},
 							hsv:	{h: 0, s: 0, v: 0},
 							hsl:	{h: 0, s: 0, l: 0},
 							lab:	{l: 0, a: 0, b: 0},
@@ -1676,110 +1676,110 @@
 			}
 
 			this.setRGB = function(r, g, b) {
-				models = {rgb: this.getRGB()};
-				if (r !== null)		models.rgb.r = _clip(r);
-				if (g !== null)		models.rgb.g = _clip(g);
-				if (b !== null)		models.rgb.b = _clip(b);
+				spaces = {rgb: this.getRGB()};
+				if (r !== null)		spaces.rgb.r = _clip(r);
+				if (g !== null)		spaces.rgb.g = _clip(g);
+				if (b !== null)		spaces.rgb.b = _clip(b);
 			}
 
 			this.setHSV = function(h, s, v) {
-				models = {hsv: this.getHSV()};
-				if (h !== null)		models.hsv.h = _clip(h);
-				if (s !== null)		models.hsv.s = _clip(s);
-				if (v !== null)		models.hsv.v = _clip(v);
+				spaces = {hsv: this.getHSV()};
+				if (h !== null)		spaces.hsv.h = _clip(h);
+				if (s !== null)		spaces.hsv.s = _clip(s);
+				if (v !== null)		spaces.hsv.v = _clip(v);
 			}
 
 			this.setHSL = function(h, s, l) {
-				models = {hsl: this.getHSL()};
-				if (h !== null)		models.hsl.h = _clip(h);
-				if (s !== null)		models.hsl.s = _clip(s);
-				if (l !== null)		models.hsl.l = _clip(l);
+				spaces = {hsl: this.getHSL()};
+				if (h !== null)		spaces.hsl.h = _clip(h);
+				if (s !== null)		spaces.hsl.s = _clip(s);
+				if (l !== null)		spaces.hsl.l = _clip(l);
 			}
 
 			this.setLAB = function(l, a, b) {
-				models = {lab: this.getLAB()};
-				if (l !== null)		models.lab.l = _clip(l);
-				if (a !== null)		models.lab.a = _clip(a);
-				if (b !== null)		models.lab.b = _clip(b);
+				spaces = {lab: this.getLAB()};
+				if (l !== null)		spaces.lab.l = _clip(l);
+				if (a !== null)		spaces.lab.a = _clip(a);
+				if (b !== null)		spaces.lab.b = _clip(b);
 			}
 
 			this.setCMYK = function(c, m, y, k) {
-				models = {cmyk: this.getCMYK()};
-				if (c !== null)		models.cmyk.c = _clip(c);
-				if (m !== null)		models.cmyk.m = _clip(m);
-				if (y !== null)		models.cmyk.y = _clip(y);
-				if (k !== null)		models.cmyk.k = _clip(k);
+				spaces = {cmyk: this.getCMYK()};
+				if (c !== null)		spaces.cmyk.c = _clip(c);
+				if (m !== null)		spaces.cmyk.m = _clip(m);
+				if (y !== null)		spaces.cmyk.y = _clip(y);
+				if (k !== null)		spaces.cmyk.k = _clip(k);
 			}
 
 			this.getRGB = function() {
-				if (!models.rgb) {
-					models.rgb	= models.lab ?	_xyz_to_rgb(_lab_to_xyz(models.lab))
-								: models.hsv ?	_hsv_to_rgb(models.hsv)
-								: models.hsl ?	_hsl_to_rgb(models.hsl)
-								: models.cmyk ?	_cmy_to_rgb(_cmyk_to_cmy(models.cmyk))
+				if (!spaces.rgb) {
+					spaces.rgb	= spaces.lab ?	_xyz_to_rgb(_lab_to_xyz(spaces.lab))
+								: spaces.hsv ?	_hsv_to_rgb(spaces.hsv)
+								: spaces.hsl ?	_hsl_to_rgb(spaces.hsl)
+								: spaces.cmyk ?	_cmy_to_rgb(_cmyk_to_cmy(spaces.cmyk))
 								: {r: 0, g: 0, b: 0};
-					models.rgb.r = _clip(models.rgb.r);
-					models.rgb.g = _clip(models.rgb.g);
-					models.rgb.b = _clip(models.rgb.b);
+					spaces.rgb.r = _clip(spaces.rgb.r);
+					spaces.rgb.g = _clip(spaces.rgb.g);
+					spaces.rgb.b = _clip(spaces.rgb.b);
 				}
-				return $.extend({}, models.rgb);
+				return $.extend({}, spaces.rgb);
 			};
 
 			this.getHSV = function() {
-				if (!models.hsv) {
-					models.hsv	= models.lab ? _rgb_to_hsv(this.getRGB())
-								: models.rgb ?	_rgb_to_hsv(models.rgb)
-								: models.hsl ?	_rgb_to_hsv(this.getRGB())
-								: models.cmyk ?	_rgb_to_hsv(this.getRGB())
+				if (!spaces.hsv) {
+					spaces.hsv	= spaces.lab ? _rgb_to_hsv(this.getRGB())
+								: spaces.rgb ?	_rgb_to_hsv(spaces.rgb)
+								: spaces.hsl ?	_rgb_to_hsv(this.getRGB())
+								: spaces.cmyk ?	_rgb_to_hsv(this.getRGB())
 								: {h: 0, s: 0, v: 0};
-					models.hsv.h = _clip(models.hsv.h);
-					models.hsv.s = _clip(models.hsv.s);
-					models.hsv.v = _clip(models.hsv.v);
+					spaces.hsv.h = _clip(spaces.hsv.h);
+					spaces.hsv.s = _clip(spaces.hsv.s);
+					spaces.hsv.v = _clip(spaces.hsv.v);
 				}
-				return $.extend({}, models.hsv);
+				return $.extend({}, spaces.hsv);
 			};
 
 			this.getHSL = function() {
-				if (!models.hsl) {
-					models.hsl	= models.rgb ?	_rgb_to_hsl(models.rgb)
-								: models.hsv ?	_rgb_to_hsl(this.getRGB())
-								: models.cmyk ?	_rgb_to_hsl(this.getRGB())
-								: models.hsv ?	_rgb_to_hsl(this.getRGB())
+				if (!spaces.hsl) {
+					spaces.hsl	= spaces.rgb ?	_rgb_to_hsl(spaces.rgb)
+								: spaces.hsv ?	_rgb_to_hsl(this.getRGB())
+								: spaces.cmyk ?	_rgb_to_hsl(this.getRGB())
+								: spaces.hsv ?	_rgb_to_hsl(this.getRGB())
 								: {h: 0, s: 0, l: 0};
-					models.hsl.h = _clip(models.hsl.h);
-					models.hsl.s = _clip(models.hsl.s);
-					models.hsl.l = _clip(models.hsl.l);
+					spaces.hsl.h = _clip(spaces.hsl.h);
+					spaces.hsl.s = _clip(spaces.hsl.s);
+					spaces.hsl.l = _clip(spaces.hsl.l);
 				}
-				return $.extend({}, models.hsl);
+				return $.extend({}, spaces.hsl);
 			};
 
 			this.getCMYK = function() {
-				if (!models.cmyk) {
-					models.cmyk	= models.rgb ?	_cmy_to_cmyk(_rgb_to_cmy(models.rgb))
-								: models.hsv ?	_cmy_to_cmyk(_rgb_to_cmy(this.getRGB()))
-								: models.hsl ?	_cmy_to_cmyk(_rgb_to_cmy(this.getRGB()))
-								: models.lab ?	_cmy_to_cmyk(_rgb_to_cmy(this.getRGB()))
+				if (!spaces.cmyk) {
+					spaces.cmyk	= spaces.rgb ?	_cmy_to_cmyk(_rgb_to_cmy(spaces.rgb))
+								: spaces.hsv ?	_cmy_to_cmyk(_rgb_to_cmy(this.getRGB()))
+								: spaces.hsl ?	_cmy_to_cmyk(_rgb_to_cmy(this.getRGB()))
+								: spaces.lab ?	_cmy_to_cmyk(_rgb_to_cmy(this.getRGB()))
 								: {c: 0, m: 0, y: 0, k: 1};
-					models.cmyk.c = _clip(models.cmyk.c);
-					models.cmyk.m = _clip(models.cmyk.m);
-					models.cmyk.y = _clip(models.cmyk.y);
-					models.cmyk.k = _clip(models.cmyk.k);
+					spaces.cmyk.c = _clip(spaces.cmyk.c);
+					spaces.cmyk.m = _clip(spaces.cmyk.m);
+					spaces.cmyk.y = _clip(spaces.cmyk.y);
+					spaces.cmyk.k = _clip(spaces.cmyk.k);
 				}
-				return $.extend({}, models.cmyk);
+				return $.extend({}, spaces.cmyk);
 			};
 
 			this.getLAB = function() {
-				if (!models.lab) {
-					models.lab	= models.rgb ?	_xyz_to_lab(_rgb_to_xyz(models.rgb))
-								: models.hsv ?	_xyz_to_lab(_rgb_to_xyz(this.getRGB()))
-								: models.hsl ?	_xyz_to_lab(_rgb_to_xyz(this.getRGB()))
-								: models.cmyk ?	_xyz_to_lab(_rgb_to_xyz(this.getRGB()))
+				if (!spaces.lab) {
+					spaces.lab	= spaces.rgb ?	_xyz_to_lab(_rgb_to_xyz(spaces.rgb))
+								: spaces.hsv ?	_xyz_to_lab(_rgb_to_xyz(this.getRGB()))
+								: spaces.hsl ?	_xyz_to_lab(_rgb_to_xyz(this.getRGB()))
+								: spaces.cmyk ?	_xyz_to_lab(_rgb_to_xyz(this.getRGB()))
 								: {l: 0, a: 0, b: 0};
-					models.lab.l = _clip(models.lab.l);
-					models.lab.a = _clip(models.lab.a);
-					models.lab.b = _clip(models.lab.b);
+					spaces.lab.l = _clip(spaces.lab.l);
+					spaces.lab.a = _clip(spaces.lab.a);
+					spaces.lab.b = _clip(spaces.lab.b);
 				}
-				return $.extend({}, models.lab);
+				return $.extend({}, spaces.lab);
 			};
 
 			this.getChannels = function() {
@@ -2255,27 +2255,31 @@
 				that.generated	= false;
 
 				that.opened		= false;
-				that._callback('close');
+				that._callback('close', true);
 			});
 			if (that.overlay) {
 				that.overlay.destroy();
 			}
 		},
 
-		_callback: function (callback) {
+		_callback: function (callback, spaces) {
 			var that = this;
 
 			if (that.color.set) {
-				return that._trigger(callback, null, {
-					formatted: _formatColor(that.options.colorFormat, that.color),
-					r: that.color.getRGB().r,
-					g: that.color.getRGB().g,
-					b: that.color.getRGB().b,
-					a: that.color.getAlpha(),
-					h: that.color.getHSV().h,
-					s: that.color.getHSV().s,
-					v: that.color.getHSV().v
-				});
+				var data = {
+					formatted: _formatColor(that.options.colorFormat, that.color)
+				};
+
+				if (spaces === true) {
+					data.a		= that.color.getAlpha();
+					data.rgb	= that.color.getRGB();
+					data.hsv	= that.color.getHSV();
+					data.cmyk	= that.color.getCMYK();
+					data.hsl	= that.color.getHSL();
+					data.lab	= that.color.getLAB();
+				}
+
+				return that._trigger(callback, null, data);
 			} else {
 				return that._trigger(callback, null, {
 					formatted: ''
