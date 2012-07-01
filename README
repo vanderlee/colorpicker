@@ -182,7 +182,7 @@ Events:
 		Triggered when the popup is closed.
 		Callbacks recieve same data as select event and an additional number
 		of fields containing the current color in all supported color spaces.
-		These are rgb{}, hsv{}, cmyk{}, lab{}, hsl{} and a for alpha.
+		These are rgb{}, hsv{}, cmyk{}, lab{}, hsl{} and a.
 
 	select:			null
 		Triggered on each change, confirmation (click on OK button) and
