@@ -2124,7 +2124,7 @@
 
 			// Determine the parts to include in this colorpicker
 			if (typeof that.options.parts === 'string') {
-				if (that.options.parts in _parts_lists) {
+				if (_parts_lists[that.options.parts]) {
 					parts_list = _parts_lists[that.options.parts];
 				} else {
 					// automatic
@@ -2136,24 +2136,23 @@
 
 			// Add any parts to the internal parts list
 			that.parts = {};
-			for (index in parts_list) {
-				part = parts_list[index];
-				if (part in _parts) {
+			$.each(parts_list, function(index, part) {
+				if (_parts[part]) {
 					that.parts[part] = new _parts[part](that);
 				}
-			}
+			});
 
 			if (!that.generated) {
 				var layout_parts = [];
 
-				for (index in that.options.layout) {
-					if (index in that.parts) {
+				$.each(that.options.layout, function(part, pos) {
+					if (that.parts[part]) {
 						layout_parts.push({
-							part: index,
-							pos: that.options.layout[index]
+							'part': part,
+							'pos':  pos
 						});
 					}
-				}
+				});
 
 				$(_layoutTable(layout_parts, function(cell, x, y) {
 					var classes = ['ui-colorpicker-' + cell.part + '-container'];
