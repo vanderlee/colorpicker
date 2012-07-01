@@ -162,12 +162,14 @@
 }
 
 /* Inputs */
-label {
+.ui-colorpicker-rgb label,
+.ui-colorpicker-hsv label,
+.ui-colorpicker-hsl label,
+.ui-colorpicker-lab label,
+.ui-colorpicker-cmyk label,
+.ui-colorpicker-alpha label {
     width: 1.5em;
     display: inline-block;
-}
-label:after {
-	content: ':';
 }
 
 .ui-colorpicker-number {
