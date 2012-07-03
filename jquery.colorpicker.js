@@ -71,10 +71,17 @@
 						}
 		,	'HEX3':		function(color) {
 							var rgb = color.getRGB();
-							var r = Math.round(rgb.r * 16);
-							var g = Math.round(rgb.g * 16);
-							var b = Math.round(rgb.b * 16);
-							return '#'+r.toString(16)+g.toString(16)+b.toString(16);
+
+							var r = Math.round(rgb.r * 255);
+							var g = Math.round(rgb.g * 255);
+							var b = Math.round(rgb.b * 255);
+
+							if (((r >>> 4) == (r &= 0xf))
+							 && ((g >>> 4) == (g &= 0xf))
+							 && ((b >>> 4) == (b &= 0xf))) {
+								return '#'+r.toString(16)+g.toString(16)+b.toString(16);
+							}
+							return false;
 						}
 		,	'RGBA':		function(color) {
 							return _formatColor(color.getAlpha() >= 1
@@ -99,33 +106,42 @@
 		,	'NAME':		function(color) {
 							return _closestName(color);
 						}
-		,	'_EXACT':	function(color) {		//@todo experimental. Implement a good fallback list
-							return _exactName(COLOR);
+		,	'EXACT':	function(color) {		//@todo experimental. Implement a good fallback list
+							return _exactName(color);
 						}
 		},
 
-		_formatColor = function (format, color) {
-			var that = this;
+		_formatColor = function (formats, color) {
+			var that		= this,
+				text		= null,
+				types		= {	'x':	function(v) {return _intToHex(v * 255);}
+							,	'd':	function(v) {return Math.round(v * 255);}
+							,	'f':	function(v) {return v;}
+							,	'p':	function(v) {return v * 100;}
+							},
+				channels	= color.getChannels();
 
-			var types = {
-				'x':	function(v) {return _intToHex(v * 255);}
-			,	'd':	function(v) {return Math.round(v * 255);}
-			,	'f':	function(v) {return v;}
-			,	'p':	function(v) {return v * 100;}
-			};
-
-			if (_formats[format]) {
-				return _formats[format](color);
+			if (!$.isArray(formats)) {
+				formats = [formats];
 			}
 
-			var channels = color.getChannels();
-
-			return format.replace(/\\?[rgbhsva][xdfp]/g, function(m) {
-				if (m.match(/^\\/)) {
-					return m.slice(1);
+			$.each(formats, function(index, format) {
+				if (_formats[format]) {
+					text = _formats[format](color);
+//console.debug(format, text);
+					return (text === false);
+				} else {
+					text = format.replace(/\\?[rgbhsva][xdfp]/g, function(m) {
+						if (m.match(/^\\/)) {
+							return m.slice(1);
+						}
+						return types[m[1]](channels[m[0]]);
+					});
+					return false;
 				}
-				return types[m[1]](channels[m[0]]);
 			});
+
+			return text;
 		},
 
 		_colors = {
@@ -272,20 +288,23 @@
 		},
 
 		_exactName = function(color) {
-			$.each(_colors, function(name, color_b) {
+			var name	= false;
+
+			$.each(_colors, function(n, color_b) {
 				if (color.equals(new Color(color_b.r, color_b.g, color_b.b))) {
-					return name;
+					name = n;
+					return false;
 				}
 			});
 
-			return false;
+			return name;
 		},
 
 		_closestName = function(color) {
 			var rgb			= color.getRGB();
 
 			var distance	= null;
-			var name		= '';
+			var name		= false;
 
 			$.each(_colors, function(n, color_b) {
 				var d = color.distance(new Color(color_b.r, color_b.g, color_b.b));
@@ -2269,13 +2288,17 @@
 					formatted: _formatColor(that.options.colorFormat, that.color)
 				};
 
+				var lab = that.color.getLAB();
+				lab.a = (lab.a * 2) - 1;
+				lab.b = (lab.b * 2) - 1;
+
 				if (spaces === true) {
 					data.a		= that.color.getAlpha();
 					data.rgb	= that.color.getRGB();
 					data.hsv	= that.color.getHSV();
 					data.cmyk	= that.color.getCMYK();
 					data.hsl	= that.color.getHSL();
-					data.lab	= that.color.getLAB();
+					data.lab	= lab;
 				}
 
 				return that._trigger(callback, null, data);

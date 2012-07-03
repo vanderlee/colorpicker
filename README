@@ -1,4 +1,4 @@
-jQuery.colorpicker v0.9.1
+jQuery.colorpicker v0.9.2
 
 Copyright (c) 2011-2012 Martijn W. van der Lee
 Licensed under the MIT.
@@ -69,12 +69,13 @@ Options:
 		Specifies the format of the color string returned in callbacks.
 		You can either specify one of the predefined formats:
 			HEX		#123456
-			HEX3	#135 (rounds colors)
+			HEX3	#135 if possible, otherwise false.
 			RGBA	rgb(123,45,67) or rgba(123,45,67,0.123%)
 			RGBA%	rgb(12%,34%,56%) or rgba(12%,34%,56%,0.123%)
 			HSLA	hsl(123,45,67) or hsla(123,45,67,0.123%)
 			HSLA%	hsl(12%,34%,56%) or hsla(12%,34%,56%,0.123%)
 			NAME	Closest color name
+			EXACT	Exact name if possible, otherwise false.
 		or specify your own format...
 		Each color channel is specified as a pair of two characters.
 		The first character determines the color channel:
@@ -88,6 +89,12 @@ Options:
 		All patterns are case sensitive.
 		For example, to create the common hex color format, use "#rxgxbx".
 		For an rgba() format, use "rgba(rd,gd,bd,af)"
+
+		You can also specify an array of formats where the first non-FALSE one
+		is returned. Note that the only formats able to return FALSE are the
+		predefined formats HEX3 and EXACT. For example, this array will output
+		HEX3 format if possible or HEX format otherwise:
+			['HEX3', 'HEX']
 
 	dragggable:			true
 		Make the dialog draggable if the header is visible and the dialog is
@@ -183,6 +190,8 @@ Events:
 		Callbacks recieve same data as select event and an additional number
 		of fields containing the current color in all supported color spaces.
 		These are rgb{}, hsv{}, cmyk{}, lab{}, hsl{} and a.
+		Most values are floating point numbers in range [0,1] for accuracy.
+		The a and b values in the lab color space have range [-1,1].
 
 	select:			null
 		Triggered on each change, confirmation (click on OK button) and
