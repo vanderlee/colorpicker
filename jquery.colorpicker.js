@@ -618,7 +618,7 @@
                     return html;
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     switch (inst.mode) {
                     case 'h':
                         $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
@@ -818,7 +818,7 @@
                     return html;
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     switch (inst.mode) {
                     case 'h':
                     case 's':
@@ -974,7 +974,7 @@
 
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     if (inst.options.alpha) {
                         $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).show();
                     } else {
@@ -1014,7 +1014,7 @@
 
                     $('.ui-colorpicker-mode', e).click(function () {
                         inst.mode = $(this).val();
-                        inst._generateAllParts();
+                        inst._updateAllParts();
                     });
 
                     $('.ui-colorpicker-number', e).bind('change keyup', function () {
@@ -1042,7 +1042,7 @@
                     });
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     $('.ui-colorpicker-mode', e).each(function () {
                         $(this).attr('checked', $(this).val() === inst.mode);
                     });
@@ -1072,7 +1072,7 @@
 
                     $('.ui-colorpicker-mode', e).click(function () {
                         inst.mode = $(this).val();
-                        inst._generateAllParts();
+                        inst._updateAllParts();
                     });
 
                     $('.ui-colorpicker-number', e).bind('change keyup', function () {
@@ -1096,7 +1096,7 @@
                     });
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     $('.ui-colorpicker-mode', e).each(function () {
                         $(this).attr('checked', $(this).val() === inst.mode);
                     });
@@ -1150,7 +1150,7 @@
                     });
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     this.repaint();
                 };
 
@@ -1196,7 +1196,7 @@
                     });
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     this.repaint();
                 };
 
@@ -1222,7 +1222,7 @@
 
                     $('.ui-colorpicker-mode', e).click(function () {
                         inst.mode = $(this).val();
-                        inst._generateAllParts();
+                        inst._updateAllParts();
                     });
 
                     $('.ui-colorpicker-number', e).bind('change keyup', function () {
@@ -1231,7 +1231,7 @@
                     });
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     $('.ui-colorpicker-mode', e).each(function () {
                         $(this).attr('checked', $(this).val() === inst.mode);
                     });
@@ -1278,7 +1278,7 @@
                     });
                 };
 
-                this.generate = function () {
+                this.update = function () {
                     this.repaint();
                 };
 
@@ -1392,7 +1392,7 @@
                     $('.ui-colorpicker-cancel', part).button(inst.changed ? 'enable' : 'disable');
                 };
 
-                this.generate = function () {};
+                this.update = function () {};
             }
         },
 
@@ -2060,7 +2060,6 @@
 
 			if (this.dialog !== null) {
 				this.dialog.remove();
-
 			}
 
 			if (this.overlay) {
@@ -2190,7 +2189,7 @@
 				})).appendTo(that.dialog).addClass('ui-dialog-content ui-widget-content');
 
 				that._initAllParts();
-				that._generateAllParts();
+				that._updateAllParts();
 				that.generated = true;
 			}
 		},
@@ -2244,7 +2243,6 @@
 				});
 
 				//@todo zIndexOffset option, to raise above other elements?
-
 				that.dialog.css('z-index', zIndex += 2);
 
 				that.overlay = that.options.modal ? new $.ui.dialog.overlay(that) : null;
@@ -2274,6 +2272,7 @@
 				that.opened		= false;
 				that._callback('close', true);
 			});
+
 			if (that.overlay) {
 				that.overlay.destroy();
 			}
@@ -2316,10 +2315,10 @@
 			});
 		},
 
-		_generateAllParts: function () {
+		_updateAllParts: function () {
 			$.each(this.parts, function (index, part) {
-				if (part.generate) {
-					part.generate();
+				if (part.update) {
+					part.update();
 				}
 			});
 		},
@@ -2357,7 +2356,7 @@
 					break
 			}
 
-			// update colors
+			// update input element content
 			if (!this.inline) {
 				if (!this.color.set) {
 					this.element.val('');
