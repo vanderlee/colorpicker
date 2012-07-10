@@ -128,14 +128,14 @@
 			$.each(formats, function(index, format) {
 				if (_formats[format]) {
 					text = _formats[format](color);
-//console.debug(format, text);
 					return (text === false);
 				} else {
 					text = format.replace(/\\?[rgbhsva][xdfp]/g, function(m) {
 						if (m.match(/^\\/)) {
 							return m.slice(1);
 						}
-						return types[m[1]](channels[m[0]]);
+						return types[m.charAt(1)](channels[m.charAt(0)]);
+						return 0;
 					});
 					return false;
 				}
