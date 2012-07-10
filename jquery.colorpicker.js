@@ -135,7 +135,6 @@
 							return m.slice(1);
 						}
 						return types[m.charAt(1)](channels[m.charAt(0)]);
-						return 0;
 					});
 					return false;
 				}
