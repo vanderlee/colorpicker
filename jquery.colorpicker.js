@@ -487,30 +487,29 @@
 
         _parts = {
             header: function (inst) {
-                var that = this,
-                    e = null,
-                    _html;
+                var that	= this,
+                    e		= null,
+                    _html	=function() {
+						var title = inst.options.title ? inst.options.title :  inst._getRegional('title');
 
-                _html = function () {
-                    var title = inst.options.title ? inst.options.title :  inst._getRegional('title');
+						var html = '<span class="ui-dialog-title">' + title + '</span>';
 
-					var html = '<span class="ui-dialog-title">' + title + '</span>';
+						if (!inst.inline && inst.options.showCloseButton) {
+							html += '<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">'
+								+ '<span class="ui-icon ui-icon-closethick">close</span></a>';
+						}
 
-					if (!inst.inline && inst.options.showCloseButton) {
-                        html += '<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">'
-							+ '<span class="ui-icon ui-icon-closethick">close</span></a>';
-					}
+						return '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' + html + '</div>';
+					};
 
-					return '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' + html + '</div>';
-                };
-
-                this.init = function () {
+                this.init = function() {
                     e = $(_html()).prependTo(inst.dialog);
 
                     var close = $('.ui-dialog-titlebar-close', e);
                     inst._hoverable(close);
                     inst._focusable(close);
-                    close.click( function() {
+                    close.click(function(event) {
+						event.preventDefault();
                         inst.close();
                     });
 
