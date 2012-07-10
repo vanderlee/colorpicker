@@ -2225,11 +2225,22 @@
 			if (!that.opened) {
 				that._generate();
 
-				var offset = that.element.offset(),
-					x = offset.left,
-					y = offset.top + that.element.outerHeight();
-				x -= Math.max(0, (x + that.dialog.width()) - $(window).width() + 20);
-				y -= Math.max(0, (y + that.dialog.height()) - $(window).height() + 20);
+				var offset	= that.element.offset(),
+					bottom	= $(window).height() + $(window).scrollTop(),
+					left	= $(window).width() + $(window).scrollLeft(),
+					height	= that.dialog.outerHeight(),
+					width	= that.dialog.outerWidth(),
+					x		= offset.left,
+					y		= offset.top + that.element.outerHeight();
+
+				if (y + height > bottom) {
+					if (offset.top - height >= $(window).scrollTop()) {
+						y = offset.top - height;
+					} else {
+						y = Math.max(0, bottom - height);
+					}
+				}
+
 				that.dialog.css({'left': x, 'top': y});
 
 				// Automatically find highest z-index.
