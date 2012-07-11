@@ -2046,26 +2046,6 @@
 			return this;
 		},
 
-		destroy: function() {
-			this.element.unbind();
-
-			if (this.image !== null) {
-				this.image.remove();
-			}
-
-			if (this.button !== null) {
-				this.button.remove();
-			}
-
-			if (this.dialog !== null) {
-				this.dialog.remove();
-			}
-
-			if (this.overlay) {
-				this.overlay.destroy();
-			}
-		},
-
 		_setOption: function(key, value){
 			var that = this;
 
@@ -2226,11 +2206,15 @@
 
 				var offset	= that.element.offset(),
 					bottom	= $(window).height() + $(window).scrollTop(),
-					left	= $(window).width() + $(window).scrollLeft(),
+					right	= $(window).width() + $(window).scrollLeft(),
 					height	= that.dialog.outerHeight(),
 					width	= that.dialog.outerWidth(),
 					x		= offset.left,
 					y		= offset.top + that.element.outerHeight();
+
+				if (x + width > right) {
+					x = Math.max(0, right - width);
+				}
 
 				if (y + height > bottom) {
 					if (offset.top - height >= $(window).scrollTop()) {
@@ -2285,6 +2269,26 @@
 
 			if (that.overlay) {
 				that.overlay.destroy();
+			}
+		},
+
+		destroy: function() {
+			this.element.unbind();
+
+			if (this.image !== null) {
+				this.image.remove();
+			}
+
+			if (this.button !== null) {
+				this.button.remove();
+			}
+
+			if (this.dialog !== null) {
+				this.dialog.remove();
+			}
+
+			if (this.overlay) {
+				this.overlay.destroy();
 			}
 		},
 
