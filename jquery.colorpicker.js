@@ -542,7 +542,7 @@
                     if (x >= 0 && x < width && y >= 0 && y < height) {
                         event.stopImmediatePropagation();
                         event.preventDefault();
-                        $(document).unbind('mousedown', _mousedown);
+						e.unbind('mousedown', _mousedown);
                         $(document).bind('mouseup', _mouseup);
                         $(document).bind('mousemove', _mousemove);
                         _mousemove(event);
@@ -554,7 +554,7 @@
                     event.preventDefault();
                     $(document).unbind('mouseup', _mouseup);
                     $(document).unbind('mousemove', _mousemove);
-                    $(document).bind('mousedown', _mousedown);
+                    e.bind('mousedown', _mousedown);
                 };
 
                 _mousemove = function (event) {
@@ -735,7 +735,7 @@
                     if (x >= 0 && x < width && y >= 0 && y < height) {
                         event.stopImmediatePropagation();
                         event.preventDefault();
-                        $(document).unbind('mousedown', _mousedown);
+                        e.unbind('mousedown', _mousedown);
                         $(document).bind('mouseup', _mouseup);
                         $(document).bind('mousemove', _mousemove);
                         _mousemove(event);
@@ -747,7 +747,7 @@
                     event.preventDefault();
                     $(document).unbind('mouseup', _mouseup);
                     $(document).unbind('mousemove', _mousemove);
-                    $(document).bind('mousedown', _mousedown);
+                    e.bind('mousedown', _mousedown);
                 };
 
                 _mousemove = function (event) {
