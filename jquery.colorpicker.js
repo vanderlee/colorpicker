@@ -609,7 +609,7 @@
                 };
 
                 _html = function () {
-                    var html = '<div class="ui-colorpicker-map" class="ui-colorpicker-border">'
+                    var html = '<div class="ui-colorpicker-map ui-colorpicker-border">'
                             + '<span class="ui-colorpicker-map-layer-1">&nbsp;</span>'
                             + '<span class="ui-colorpicker-map-layer-2">&nbsp;</span>'
                             + (inst.options.alpha ? '<span class="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
@@ -801,7 +801,7 @@
                 };
 
                 _html = function () {
-                    var html = '<div class="ui-colorpicker-bar" class="ui-colorpicker-border">'
+                    var html = '<div class="ui-colorpicker-bar ui-colorpicker-border">'
                             + '<span class="ui-colorpicker-bar-layer-1">&nbsp;</span>'
                             + '<span class="ui-colorpicker-bar-layer-2">&nbsp;</span>'
                             + '<span class="ui-colorpicker-bar-layer-3">&nbsp;</span>'
@@ -955,11 +955,9 @@
                     _html;
 
                 _html = function () {
-                    return '<div class="ui-colorpicker-preview">'
-                        + '<span class="ui-colorpicker-border">'
+                    return '<div class="ui-colorpicker-preview ui-colorpicker-border">'
                         + '<div class="ui-colorpicker-preview-initial"><div class="ui-colorpicker-preview-initial-alpha"></div></div>'
                         + '<div class="ui-colorpicker-preview-current"><div class="ui-colorpicker-preview-current-alpha"></div></div>'
-                        + '</span>'
                         + '</div>';
                 };
 
@@ -1304,7 +1302,7 @@
 							html += '<div class="ui-colorpicker-swatch" style="background-color: ' + css + '" title="' + name + '"></div>';
 						});
 
-						return '<div class="ui-colorpicker-swatches" class="ui-colorpicker-border">' + html + '</div>';
+						return '<div class="ui-colorpicker-swatches ui-colorpicker-border">' + html + '</div>';
 					};
 
                 this.init = function () {
