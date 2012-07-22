@@ -1958,7 +1958,7 @@
 					}
 
 					// Check if clicked on any part of dialog
-					if ($(event.target).closest('.ui-colorpicker').length > 0) {
+					if (that.dialog.is(event.target) || that.dialog.has(event.target).length > 0) {
 						that.element.blur();	// inside window!
 						return;
 					}
