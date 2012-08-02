@@ -1,5 +1,5 @@
 /*jslint devel: true, bitwise: true, regexp: true, browser: true, confusion: true, unparam: true, eqeq: true, white: true, nomen: true, plusplus: true, maxerr: 50, indent: 4 */
-/*globals jQuery */
+/*globals jQuery,Color */
 
 /*
  * ColorPicker
@@ -70,11 +70,10 @@
 							return _formatColor('#rxgxbx', color);
 						}
 		,	'HEX3':		function(color) {
-							var rgb = color.getRGB();
-
-							var r = Math.round(rgb.r * 255);
-							var g = Math.round(rgb.g * 255);
-							var b = Math.round(rgb.b * 255);
+							var rgb = color.getRGB(),
+								r = Math.round(rgb.r * 255),
+								g = Math.round(rgb.g * 255),
+								b = Math.round(rgb.b * 255);
 
 							if (((r >>> 4) == (r &= 0xf))
 							 && ((g >>> 4) == (g &= 0xf))
@@ -300,13 +299,13 @@
 		},
 
 		_closestName = function(color) {
-			var rgb			= color.getRGB();
-
-			var distance	= null;
-			var name		= false;
+			var rgb			= color.getRGB(),
+				distance	= null,
+				name		= false,
+				d;
 
 			$.each(_colors, function(n, color_b) {
-				var d = color.distance(new Color(color_b.r, color_b.g, color_b.b));
+				d = color.distance(new Color(color_b.r, color_b.g, color_b.b));
 				if (d < distance || distance === null) {
 					name = n;
 					if (d == 0) {
@@ -402,7 +401,11 @@
 				columns, rows,
 				index,
 				cell,
-				html;
+				html,
+				w,
+				h,
+				colspan,
+				walked;
 
 			layout.sort(function(a, b) {
 				if (a.pos[1] == b.pos[1]) {
@@ -443,12 +446,9 @@
 			cell = layout[index = 0];
 			for (y = 0; y < height; ++y) {
 				html += '<tr>';
-				for (x = 0; x < width;) {
-					if (cell !== undefined && x == cell.pos[0] && y == cell.pos[1]) {
+				for (x = 0; x < width; x) {
+					if (typeof cell !== 'undefined' && x == cell.pos[0] && y == cell.pos[1]) {
 						// Create a "real" cell
-						var w,
-							h;
-
 						html += callback(cell, x, y);
 
 						for (h = 0; h < cell.pos[3]; h +=1) {
@@ -461,8 +461,8 @@
 						cell = layout[++index];
 					} else {
 						// Fill in the gaps
-						var colspan = 0;
-						var walked = false;
+						colspan = 0;
+						walked = false;
 
 						while (x < width && bitmap[x][y] === undefined && (cell === undefined || y < cell.pos[1] || (y == cell.pos[1] && x < cell.pos[0]))) {
 							if (columns[x] === true) {
@@ -490,9 +490,8 @@
                 var that	= this,
                     e		= null,
                     _html	=function() {
-						var title = inst.options.title ? inst.options.title :  inst._getRegional('title');
-
-						var html = '<span class="ui-dialog-title">' + title + '</span>';
+						var title = inst.options.title || inst._getRegional('title'),
+							html = '<span class="ui-dialog-title">' + title + '</span>';
 
 						if (!inst.inline && inst.options.showCloseButton) {
 							html += '<a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button">'
@@ -1123,9 +1122,9 @@
 
                     $('.ui-colorpicker-number', part).on('change keyup', function (event) {
                         inst.color.setLAB(
-							parseInt($('.ui-colorpicker-lab-l .ui-colorpicker-number', part).val()) / 100,
-							(parseInt($('.ui-colorpicker-lab-a .ui-colorpicker-number', part).val()) + 128) / 255,
-							(parseInt($('.ui-colorpicker-lab-b .ui-colorpicker-number', part).val()) + 128) / 255
+							parseInt($('.ui-colorpicker-lab-l .ui-colorpicker-number', part).val(), 10) / 100,
+							(parseInt($('.ui-colorpicker-lab-a .ui-colorpicker-number', part).val(), 10) + 128) / 255,
+							(parseInt($('.ui-colorpicker-lab-b .ui-colorpicker-number', part).val(), 10) + 128) / 255
 						);
                         inst._change();
                     });
@@ -1174,10 +1173,10 @@
 
                     $('.ui-colorpicker-number', part).on('change keyup', function (event) {
                         inst.color.setCMYK(
-							parseInt($('.ui-colorpicker-cmyk-c .ui-colorpicker-number', part).val()) / 100,
-							parseInt($('.ui-colorpicker-cmyk-m .ui-colorpicker-number', part).val()) / 100,
-							parseInt($('.ui-colorpicker-cmyk-y .ui-colorpicker-number', part).val()) / 100,
-							parseInt($('.ui-colorpicker-cmyk-k .ui-colorpicker-number', part).val()) / 100
+							parseInt($('.ui-colorpicker-cmyk-c .ui-colorpicker-number', part).val(), 10) / 100,
+							parseInt($('.ui-colorpicker-cmyk-m .ui-colorpicker-number', part).val(), 10) / 100,
+							parseInt($('.ui-colorpicker-cmyk-y .ui-colorpicker-number', part).val(), 10) / 100,
+							parseInt($('.ui-colorpicker-cmyk-k .ui-colorpicker-number', part).val(), 10) / 100
 						);
                         inst._change();
                     });
@@ -1236,8 +1235,8 @@
                 };
 
                 this.repaint = function () {
-					var input = $('.ui-colorpicker-a .ui-colorpicker-number', e);
-					var value = Math.round(inst.color.getAlpha() * 100);
+					var input = $('.ui-colorpicker-a .ui-colorpicker-number', e),
+						value = Math.round(inst.color.getAlpha() * 100);
 					if (!input.is(':focus') && input.val() !== value) {
 						input.val(value);
 					}
@@ -1297,8 +1296,8 @@
 						var html = '';
 
 						$.each(inst.options.swatches, function (name, color) {
-							var c = new Color(color.r, color.g, color.b);
-							var css = c.toCSS();
+							var c = new Color(color.r, color.g, color.b),
+								css = c.toCSS();
 							html += '<div class="ui-colorpicker-swatch" style="background-color: ' + css + '" title="' + name + '"></div>';
 						});
 
@@ -1408,7 +1407,7 @@
 						return 0;
 					}
 					if (typeof v == 'string') {
-						v = parseInt(v);
+						v = parseInt(v, 10);
 					}
 					return Math.max(0, Math.min(v, 1));
 				},
@@ -1420,9 +1419,9 @@
 					return hexified;
 				},
 				_rgb_to_xyz = function(rgb) {
-					var r = (rgb.r > 0.04045) ? Math.pow((rgb.r + 0.055) / 1.055, 2.4) : rgb.r / 12.92;
-					var g = (rgb.g > 0.04045) ? Math.pow((rgb.g + 0.055) / 1.055, 2.4) : rgb.g / 12.92;
-					var b = (rgb.b > 0.04045) ? Math.pow((rgb.b + 0.055) / 1.055, 2.4) : rgb.b / 12.92;
+					var r = (rgb.r > 0.04045) ? Math.pow((rgb.r + 0.055) / 1.055, 2.4) : rgb.r / 12.92,
+						g = (rgb.g > 0.04045) ? Math.pow((rgb.g + 0.055) / 1.055, 2.4) : rgb.g / 12.92,
+						b = (rgb.b > 0.04045) ? Math.pow((rgb.b + 0.055) / 1.055, 2.4) : rgb.b / 12.92;
 
 					return {
 						x: r * 0.4124 + g * 0.3576 + b * 0.1805,
@@ -1447,13 +1446,12 @@
 					var minVal = Math.min(rgb.r, rgb.g, rgb.b),
 						maxVal = Math.max(rgb.r, rgb.g, rgb.b),
 						delta = maxVal - minVal,
-						del_R, del_G, del_B;
-
-					var hsv = {
-						h: 0,
-						s: 0,
-						v: maxVal
-					};
+						del_R, del_G, del_B,
+						hsv = {
+							h: 0,
+							s: 0,
+							v: maxVal
+						};
 
 					if (delta === 0) {
 						hsv.h = 0;
@@ -1484,19 +1482,24 @@
 				},
 				_hsv_to_rgb = function(hsv) {
 					var rgb = {
-						r: 0,
-						g: 0,
-						b: 0
-					};
+							r: 0,
+							g: 0,
+							b: 0
+						},
+						var_h,
+						var_i,
+						var_1,
+						var_2,
+						var_3;
 
 					if (hsv.s === 0) {
 						rgb.r = rgb.g = rgb.b = hsv.v;
 					} else {
-						var var_h = hsv.h === 1 ? 0 : hsv.h * 6,
-							var_i = Math.floor(var_h),
-							var_1 = hsv.v * (1 - hsv.s),
-							var_2 = hsv.v * (1 - hsv.s * (var_h - var_i)),
-							var_3 = hsv.v * (1 - hsv.s * (1 - (var_h - var_i)));
+						var_h = hsv.h === 1 ? 0 : hsv.h * 6;
+						var_i = Math.floor(var_h);
+						var_1 = hsv.v * (1 - hsv.s);
+						var_2 = hsv.v * (1 - hsv.s * (var_h - var_i));
+						var_3 = hsv.v * (1 - hsv.s * (1 - (var_h - var_i)));
 
 						if (var_i === 0) {
 							rgb.r = hsv.v;
@@ -1531,13 +1534,12 @@
 					var minVal = Math.min(rgb.r, rgb.g, rgb.b),
 						maxVal = Math.max(rgb.r, rgb.g, rgb.b),
 						delta = maxVal - minVal,
-						del_R, del_G, del_B;
-
-					var hsl = {
-						h: 0,
-						s: 0,
-						l: (maxVal + minVal) / 2
-					};
+						del_R, del_G, del_B,
+						hsl = {
+							h: 0,
+							s: 0,
+							l: (maxVal + minVal) / 2
+						};
 
 					if (delta === 0) {
 						hsl.h = 0;
@@ -1567,12 +1569,24 @@
 					return hsl;
 				},
 				_hsl_to_rgb = function(hsl) {
-					var hue_to_rgb	= function(v1, v2, vH) {
-										if (vH < 0) vH += 1;
-										if (vH > 1) vH -= 1;
-										if ((6 * vH) < 1) return v1 + (v2 - v1) * 6 * vH;
-										if ((2 * vH) < 1) return v2;
-										if ((3 * vH) < 2) return v1 + (v2 - v1) * ((2 / 3) - vH) * 6;
+					var var_1,
+						var_2,
+						hue_to_rgb	= function(v1, v2, vH) {
+										if (vH < 0) {
+											vH += 1;
+										}
+										if (vH > 1) {
+											vH -= 1;
+										}
+										if ((6 * vH) < 1) {
+											return v1 + (v2 - v1) * 6 * vH;
+										}
+										if ((2 * vH) < 1) {
+											return v2;
+										}
+										if ((3 * vH) < 2) {
+											return v1 + (v2 - v1) * ((2 / 3) - vH) * 6;
+										}
 										return v1;
 									};
 
@@ -1584,8 +1598,8 @@
 						};
 					}
 
-					var var_2 = (hsl.l < 0.5) ? hsl.l * (1 + hsl.s) : (hsl.l + hsl.s) - (hsl.s * hsl.l),
-						var_1 = 2 * hsl.l - var_2;
+					var_2 = (hsl.l < 0.5) ? hsl.l * (1 + hsl.s) : (hsl.l + hsl.s) - (hsl.s * hsl.l);
+					var_1 = 2 * hsl.l - var_2;
 
 					return {
 						r: hue_to_rgb(var_1, var_2, hsl.h + (1 / 3)),
@@ -1595,9 +1609,9 @@
 				},
 				_xyz_to_lab = function(xyz) {
 					// CIE-L*ab D65 1931
-					var x = xyz.x / .95047;
-					var y = xyz.y;
-					var z = xyz.z / 1.08883;
+					var x = xyz.x / 0.95047,
+						y = xyz.y,
+						z = xyz.z / 1.08883;
 
 					x = (x > 0.008856) ? Math.pow(x, (1/3)) : (7.787 * x) + (16/116);
 					y = (y > 0.008856) ? Math.pow(y, (1/3)) : (7.787 * y) + (16/116);
@@ -1607,20 +1621,19 @@
 						l: ((116 * y) - 16) / 100,	// [0,100]
 						a: ((500 * (x - y)) + 128) / 255,	// [-128,127]
 						b: ((200 * (y - z))	+ 128) / 255	// [-128,127]
-					}
+					};
 				},
 				_lab_to_xyz = function(lab) {
 					var lab2 = {
-						l: lab.l * 100,
-						a: (lab.a * 255) - 128,
-						b: (lab.b * 255) - 128
-					}
-
-					var xyz = {
-						x: 0,
-						y: (lab2.l + 16) / 116,
-						z: 0
-					};
+							l: lab.l * 100,
+							a: (lab.a * 255) - 128,
+							b: (lab.b * 255) - 128
+						},
+						xyz = {
+							x: 0,
+							y: (lab2.l + 16) / 116,
+							z: 0
+						};
 
 					xyz.x = lab2.a / 500 + xyz.y;
 					xyz.z = xyz.y - lab2.b / 200;
@@ -1629,7 +1642,7 @@
 					xyz.y = (Math.pow(xyz.y, 3) > 0.008856) ? Math.pow(xyz.y, 3) : (xyz.y - 16 / 116) / 7.787;
 					xyz.z = (Math.pow(xyz.z, 3) > 0.008856) ? Math.pow(xyz.z, 3) : (xyz.z - 16 / 116) / 7.787;
 
-					xyz.x *= .95047;
+					xyz.x *= 0.95047;
 					xyz.y *= 1;
 					xyz.z *= 1.08883;
 
@@ -1640,21 +1653,27 @@
 						c: 1 - (rgb.r),
 						m: 1 - (rgb.g),
 						y: 1 - (rgb.b)
-					}
+					};
 				},
 				_cmy_to_rgb = function(cmy) {
 					return {
 						r: 1 - (cmy.c),
 						g: 1 - (cmy.m),
 						b: 1 - (cmy.y)
-					}
+					};
 				},
 				_cmy_to_cmyk = function(cmy) {
 					var K = 1;
 
-					if (cmy.c < K )   K = cmy.c;
-					if (cmy.m < K )   K = cmy.m;
-					if (cmy.y < K )   K = cmy.y;
+					if (cmy.c < K) {
+						K = cmy.c;
+					}
+					if (cmy.m < K) {
+						K = cmy.m;
+					}
+					if (cmy.y < K) {
+						K = cmy.y;
+					}
 
 					if (K == 1) {
 						return {
@@ -1683,48 +1702,82 @@
 			this.set = true;
 
 			this.setAlpha = function(_a) {
-				if (_a !== null)	a = _clip(_a);
-			}
+				if (_a !== null) {
+					a = _clip(_a);
+				}
+			};
 
 			this.getAlpha = function() {
 				return a;
-			}
+			};
 
 			this.setRGB = function(r, g, b) {
 				spaces = {rgb: this.getRGB()};
-				if (r !== null)		spaces.rgb.r = _clip(r);
-				if (g !== null)		spaces.rgb.g = _clip(g);
-				if (b !== null)		spaces.rgb.b = _clip(b);
-			}
+				if (r !== null) {
+					spaces.rgb.r = _clip(r);
+				}
+				if (g !== null) {
+					spaces.rgb.g = _clip(g);
+				}
+				if (b !== null) {
+					spaces.rgb.b = _clip(b);
+				}
+			};
 
 			this.setHSV = function(h, s, v) {
 				spaces = {hsv: this.getHSV()};
-				if (h !== null)		spaces.hsv.h = _clip(h);
-				if (s !== null)		spaces.hsv.s = _clip(s);
-				if (v !== null)		spaces.hsv.v = _clip(v);
-			}
+				if (h !== null) {
+					spaces.hsv.h = _clip(h);
+				}
+				if (s !== null)	{
+					spaces.hsv.s = _clip(s);
+				}
+				if (v !== null)	{
+					spaces.hsv.v = _clip(v);
+				}
+			};
 
 			this.setHSL = function(h, s, l) {
 				spaces = {hsl: this.getHSL()};
-				if (h !== null)		spaces.hsl.h = _clip(h);
-				if (s !== null)		spaces.hsl.s = _clip(s);
-				if (l !== null)		spaces.hsl.l = _clip(l);
-			}
+				if (h !== null)	{
+					spaces.hsl.h = _clip(h);
+				}
+				if (s !== null) {
+					spaces.hsl.s = _clip(s);
+				}
+				if (l !== null) {
+					spaces.hsl.l = _clip(l);
+				}
+			};
 
 			this.setLAB = function(l, a, b) {
 				spaces = {lab: this.getLAB()};
-				if (l !== null)		spaces.lab.l = _clip(l);
-				if (a !== null)		spaces.lab.a = _clip(a);
-				if (b !== null)		spaces.lab.b = _clip(b);
-			}
+				if (l !== null) {
+					spaces.lab.l = _clip(l);
+				}
+				if (a !== null) {
+					spaces.lab.a = _clip(a);
+				}
+				if (b !== null) {
+					spaces.lab.b = _clip(b);
+				}
+			};
 
 			this.setCMYK = function(c, m, y, k) {
 				spaces = {cmyk: this.getCMYK()};
-				if (c !== null)		spaces.cmyk.c = _clip(c);
-				if (m !== null)		spaces.cmyk.m = _clip(m);
-				if (y !== null)		spaces.cmyk.y = _clip(y);
-				if (k !== null)		spaces.cmyk.k = _clip(k);
-			}
+				if (c !== null) {
+					spaces.cmyk.c = _clip(c);
+				}
+				if (m !== null) {
+					spaces.cmyk.m = _clip(m);
+				}
+				if (y !== null) {
+					spaces.cmyk.y = _clip(y);
+				}
+				if (k !== null) {
+					spaces.cmyk.k = _clip(k);
+				}
+			};
 
 			this.getRGB = function() {
 				if (!spaces.rgb) {
@@ -1814,14 +1867,15 @@
 					getter	= 'get'+space.toUpperCase(),
 					a = this[getter](),
 					b = color[getter](),
-					distance = 0;
+					distance = 0,
+					channel;
 
-				for (var channel in a) {
+				for (channel in a) {
 					distance += Math.pow(a[channel] - b[channel], 2);
 				}
 
 				return distance;
-			}
+			};
 
 			this.equals = function(color) {
 				var a = this.getRGB(),
@@ -1857,8 +1911,8 @@
 			};
 
 			this.copy = function() {
-				var rgb = this.getRGB();
-				var a = this.getAlpha();
+				var rgb = this.getRGB(),
+					a = this.getAlpha();
 				return new Color(rgb.r, rgb.g, rgb.b, a);
 			};
 
@@ -1921,7 +1975,8 @@
 		},
 
 		_create: function () {
-			var that = this;
+			var that = this,
+				text;
 
 			++_colorpicker_index;
 
@@ -1966,7 +2021,7 @@
 					// Check if clicked on button
 					var p,
 						parents = $(event.target).parents();
-					for (p in parents) {
+					for (p = 0; p <= parents.length; ++p) {
 						if (that.button !== null && parents[p] === that.button[0]) {
 							return;
 						}
@@ -1993,7 +2048,7 @@
 				}
 				if (that.options.showOn === 'button' || that.options.showOn === 'both') {
 					if (that.options.buttonImage !== '') {
-						var text = that.options.buttonText ? that.options.buttonText : that._getRegional('button');
+						text = that.options.buttonText || that._getRegional('button');
 
 						that.image = $('<img/>').attr({
 							'src':		that.options.buttonImage,
@@ -2076,7 +2131,7 @@
 					property,
 					properties = this.options.altProperties.split(',');
 
-				for (index in properties) {
+				for (index = 0; index <= properties.length; ++index) {
 					property = $.trim(properties[index]);
 					switch (property) {
 						case 'color':
@@ -2111,7 +2166,8 @@
 			var that = this,
 				index,
 				part,
-				parts_list;
+				parts_list,
+				layout_parts;
 
 			// Set color based on element?
 			that._setColor(that.inline? that.options.color : that.element.val());
@@ -2137,7 +2193,7 @@
 			});
 
 			if (!that.generated) {
-				var layout_parts = [];
+				layout_parts = [];
 
 				$.each(that.options.layout, function(part, pos) {
 					if (that.parts[part]) {
@@ -2197,18 +2253,26 @@
 		},
 
 		open: function() {
-			var that = this;
+			var that = this,
+				offset,
+				bottom,
+				right,
+				height,
+				width,
+				x,
+				y,
+				zIndex;
 
 			if (!that.opened) {
 				that._generate();
 
-				var offset	= that.element.offset(),
-					bottom	= $(window).height() + $(window).scrollTop(),
-					right	= $(window).width() + $(window).scrollLeft(),
-					height	= that.dialog.outerHeight(),
-					width	= that.dialog.outerWidth(),
-					x		= offset.left,
-					y		= offset.top + that.element.outerHeight();
+				offset	= that.element.offset();
+				bottom	= $(window).height() + $(window).scrollTop();
+				right	= $(window).width() + $(window).scrollLeft();
+				height	= that.dialog.outerHeight();
+				width	= that.dialog.outerWidth();
+				x		= offset.left;
+				y		= offset.top + that.element.outerHeight();
 
 				if (x + width > right) {
 					x = Math.max(0, right - width);
@@ -2225,7 +2289,7 @@
 				that.dialog.css({'left': x, 'top': y});
 
 				// Automatically find highest z-index.
-				var zIndex = 0;
+				zIndex = 0;
 				$(that.element[0]).parents().each(function() {
 					var z = $(this).css('z-index');
 					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
@@ -2291,14 +2355,16 @@
 		},
 
 		_callback: function (callback, spaces) {
-			var that = this;
+			var that = this,
+				data,
+				lab;
 
 			if (that.color.set) {
-				var data = {
+				data = {
 					formatted: _formatColor(that.options.colorFormat, that.color)
 				};
 
-				var lab = that.color.getLAB();
+				lab = that.color.getLAB();
 				lab.a = (lab.a * 2) - 1;
 				lab.b = (lab.b * 2) - 1;
 
@@ -2365,7 +2431,7 @@
 				case 'name':
 					var name = _closestName(this.color);
 					this.color.setRGB(_colors[name].r, _colors[name].g, _colors[name].b);
-					break
+					break;
 			}
 
 			// update input element content
@@ -2411,5 +2477,4 @@
 				$.colorpicker.regional[this.options.regional][name] : $.colorpicker.regional[''][name];
         }
 	});
-
 }(jQuery));
