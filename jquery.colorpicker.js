@@ -66,8 +66,15 @@
 		},
 
 		_formats = {
-			'HEX':		function(color) {
+			'#HEX':		function(color) {
 							return _formatColor('#rxgxbx', color);
+						}
+		,	'#HEX3':	function(color) {
+							var hex3 = _formats.HEX3(color);
+							return hex3 === false? false : '#'+hex3;
+						}
+		,	'HEX':		function(color) {
+							return _formatColor('rxgxbx', color);
 						}
 		,	'HEX3':		function(color) {
 							var rgb = color.getRGB(),
@@ -78,29 +85,41 @@
 							if (((r >>> 4) == (r &= 0xf))
 							 && ((g >>> 4) == (g &= 0xf))
 							 && ((b >>> 4) == (b &= 0xf))) {
-								return '#'+r.toString(16)+g.toString(16)+b.toString(16);
+								return r.toString(16)+g.toString(16)+b.toString(16);
 							}
 							return false;
 						}
+		,	'RGB':		function(color) {
+							return color.getAlpha() >= 1
+									? _formatColor('rgb(rd,gd,bd)', color)
+									: false;
+						}
 		,	'RGBA':		function(color) {
-							return _formatColor(color.getAlpha() >= 1
-									? 'rgb(rd,gd,bd)'
-									: 'rgba(rd,gd,bd,af)', color);
+							return _formatColor('rgba(rd,gd,bd,af)', color);
+						}
+		,	'RGB%':	function(color) {
+							return color.getAlpha() >= 1
+									? _formatColor('rgb(rp%,gp%,bp%)', color)
+									: false;
 						}
 		,	'RGBA%':	function(color) {
-							return _formatColor(color.getAlpha() >= 1
-									? 'rgb(rp%,gp%,bp%)'
-									: 'rgba(rp%,gp%,bp%,af)', color);
+							return _formatColor('rgba(rp%,gp%,bp%,af)', color);
+						}
+		,	'HSL':		function(color) {
+							return color.getAlpha() >= 1
+									? _formatColor('hsl(hd,sd,vd)', color)
+									: false;
 						}
 		,	'HSLA':		function(color) {
-							return _formatColor(color.getAlpha() >= 1
-									? 'hsl(hd,sd,vd)'
-									: 'hsla(hd,sd,vd,af)', color);
+							return _formatColor('hsla(hd,sd,vd,af)', color);
+						}
+		,	'HSL%':	function(color) {
+							return color.getAlpha() >= 1
+									? _formatColor('hsl(hp%,sp%,vp%)', color)
+									: false;
 						}
 		,	'HSLA%':	function(color) {
-							return _formatColor(color.getAlpha() >= 1
-									? 'hsl(hp%,sp%,vp%)'
-									: 'hsla(hp%,sp%,vp%,af)', color);
+							return _formatColor('hsla(hp%,sp%,vp%,af)', color);
 						}
 		,	'NAME':		function(color) {
 							return _closestName(color);
@@ -328,7 +347,7 @@
             }
 
             // {#}rrggbb
-            m = /^#?([a-fA-F0-9]{1,6})/.exec(color);
+            m = /^#?([a-fA-F0-9]{1,6})$/.exec(color);
             if (m) {
                 c = parseInt(m[1], 16);
                 return new Color(
@@ -338,7 +357,7 @@
 				);
             }
 
-            return new Color();
+            return false;
         },
 
         _parseColor = function(color) {
@@ -349,7 +368,7 @@
             }
 
             // rgba(r,g,b,a)
-            m = /rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/.exec(color);
+            m = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
             if (m) {
                 return new Color(
                     m[1] / 255,
@@ -360,7 +379,7 @@
             }
 
             // rgba(r%,g%,b%,a%)
-            m = /rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)/.exec(color);
+            m = /^rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
             if (m) {
                 return new Color(
                     m[1] / 100,
@@ -371,7 +390,7 @@
             }
 
             // #rrggbb
-            m = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color);
+            m = /^#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/.exec(color);
             if (m) {
                 return new Color(
                     parseInt(m[1], 16) / 255,
@@ -381,7 +400,7 @@
             }
 
             // #rgb
-            m = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color);
+            m = /^#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
             if (m) {
                 return new Color(
                    parseInt(m[1] + m[1], 16) / 255,
@@ -1135,7 +1154,6 @@
 					lab.l *= 100;
 					lab.a = (lab.a * 255) - 128;
 					lab.b = (lab.b * 255) - 128;
-					//console.debug(lab);
 
                     $.each(lab, function (index, value) {
 						var input = $('.ui-colorpicker-lab-' + index + ' .ui-colorpicker-number', part);
@@ -2079,9 +2097,9 @@
 						that.close();
 					}
 				}).keyup(function (event) {
-					var rgb = _parseHex(that.element.val());
-					if (rgb) {
-						that.color = (rgb === false ? new Color() : new Color(rgb[0], rgb[1], rgb[2]));
+					var color = _parseColor(that.element.val());
+					if (!that.color.equals(color)) {
+						that.color = color;
 						that._change();
 					}
 				});
@@ -2150,8 +2168,8 @@
 		},
 
 		_setColor: function(text) {
-			this.color = _parseColor(text);
-			this.currentColor = this.color.copy();
+			this.color			= _parseColor(text);
+			this.currentColor	= this.color.copy();
 
 			this._setImageBackground();
 			this._setAltField();
@@ -2438,8 +2456,8 @@
 			if (!this.inline) {
 				if (!this.color.set) {
 					this.element.val('');
-				} else if (!this.color.equals(_parseHex(this.element.val()))) {
-					this.element.val(this.color.toHex());
+				} else if (!this.color.equals(_parseColor(this.element.val()))) {
+					this.element.val(_formatColor(this.options.colorFormat, this.color));
 				}
 
 				this._setImageBackground();
