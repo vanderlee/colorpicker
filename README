@@ -68,12 +68,18 @@ Options:
 	colorFormat:		'HEX'
 		Specifies the format of the color string returned in callbacks.
 		You can either specify one of the predefined formats:
-			HEX		#123456
-			HEX3	#135 if possible, otherwise false.
-			RGBA	rgb(123,45,67) or rgba(123,45,67,0.123%)
-			RGBA%	rgb(12%,34%,56%) or rgba(12%,34%,56%,0.123%)
-			HSLA	hsl(123,45,67) or hsla(123,45,67,0.123%)
-			HSLA%	hsl(12%,34%,56%) or hsla(12%,34%,56%,0.123%)
+			#HEX	#112233
+			#HEX3	#123 if possible, otherwise false.
+			HEX		112233
+			HEX3	123 if possible, otherwise false.
+			RGB		rgb(123,45,67) if opaque, otherwise false.
+			RGBA	rgba(123,45,67,0.123%)
+			RGB%	rgb(12%,34%,56%) if opaque, otherwise false.
+			RGBA%	rgba(12%,34%,56%,0.123%)
+			HSL		hsl(123,45,67) if opaque, otherwise false.
+			HSLA	hsla(123,45,67,0.123%)
+			HSL%	hsl(12%,34%,56%) if opaque, otherwise false.
+			HSLA%	hsla(12%,34%,56%,0.123%)
 			NAME	Closest color name
 			EXACT	Exact name if possible, otherwise false.
 		or specify your own format...

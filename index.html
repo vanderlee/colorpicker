@@ -150,7 +150,7 @@
            	$( function() {
                 $('.cp-name').colorpicker({
 					parts: 'full',
-					colorFormat: ['EXACT', 'HEX3', 'RGBA'],
+					colorFormat: ['EXACT', '#HEX3', 'RGB', 'RGBA'],
 					init: function(event, color) {
 								$('.cp-name-output').text(color.formatted);
 							},
@@ -199,6 +199,17 @@
 					modal:				true,
 					showCancelButton:	false,
 					closeOnEscape:		false
+				});
+			});
+		</script>
+
+		<hr/>
+
+        Input formatting: <input type="text" class="cp-input" value="rgb(123,42,87)"/>
+		<script>
+           	$( function() {
+                $('.cp-input').colorpicker({
+					colorFormat: ['RGBA']
 				});
 			});
 		</script>
