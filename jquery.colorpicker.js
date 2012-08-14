@@ -444,13 +444,13 @@
 			// Initialize bitmap
 			bitmap = [];
 			for (x = 0; x < width; ++x) {
-				bitmap.push(new Array(height));
+				bitmap.push([]);
 			}
 
 			// Mark rows and columns which have layout assigned
-			rows	= new Array(height);
-			columns = new Array(width);
-			$.each (layout, function(index, part) {
+			rows	= [];
+			columns = [];
+			$.each(layout, function(index, part) {
 				// mark columns
 				for (x = 0; x < part.pos[2]; x += 1) {
 					columns[part.pos[0] + x] = true;
