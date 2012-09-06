@@ -1270,10 +1270,10 @@
                     var html = '';
 
                     if (inst.options.alpha) {
-                        html += '<input class="ui-colorpicker-hex-alpha" maxlength="2" size="2"/>';
+                        html += '<input class="ui-colorpicker-hex-alpha" type="text" maxlength="2" size="2"/>';
                     }
 
-                    html += '<input class="ui-colorpicker-hex-input" maxlength="6" size="6"/>';
+                    html += '<input class="ui-colorpicker-hex-input" type="text" maxlength="6" size="6"/>';
 
                     return '<div class="ui-colorpicker-hex"><label>#</label>' + html + '</div>';
                 };
