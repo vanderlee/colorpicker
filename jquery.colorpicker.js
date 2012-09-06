@@ -1281,12 +1281,24 @@
                 this.init = function () {
                     e = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
 
+                    // repeat here makes the invalid input disappear faster
+                    $('.ui-colorpicker-hex-input', e).bind('change keydown', function () {
+                        $(this).val($(this).val().replace(/[^a-fA-F\d]/, ''));
+                    });
+
                     $('.ui-colorpicker-hex-input', e).bind('change keyup', function () {
+                        // repeat here makes sure that the invalid input doesn't get parsed
+                        $(this).val($(this).val().replace(/[^a-fA-F\d]/, ''));
                         inst.color = _parseHex($(this).val());
                         inst._change();
                     });
 
+                    $('.ui-colorpicker-hex-alpha', e).bind('change keydown', function () {
+                        $(this).val($(this).val().replace(/[^a-fA-F\d]/, ''));
+                    });
+
                     $('.ui-colorpicker-hex-alpha', e).bind('change keyup', function () {
+                        $(this).val($(this).val().replace(/[^a-fA-F\d]/, ''));
                         inst.color.setAlpha(parseInt($('.ui-colorpicker-hex-alpha', e).val(), 16) / 255);
                         inst._change();
                     });
