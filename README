@@ -85,7 +85,11 @@ Options:
 		or specify your own format...
 		Each color channel is specified as a pair of two characters.
 		The first character determines the color channel:
-			r, g, b, a, h, s or v.
+			a			Alpha
+			r, g, b		RGB color space; red, green and blue
+			h, s, v		HSV color space; hue, saturation and value
+			c, m, y, k	CMYK color space; cyan, magenta, yellow and black
+			L, A, B		LAB color space; Luminosity, *A and *B.
 		The second character specifies the data type:
 			x			Two-digit hexadecimal notation.
 			d			Decimal (0-255) notation.

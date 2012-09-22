@@ -148,7 +148,7 @@
 					text = _formats[format](color);
 					return (text === false);
 				} else {
-					text = format.replace(/\\?[rgbhsva][xdfp]/g, function(m) {
+					text = format.replace(/\\?[argbhsvcmykLAB][xdfp]/g, function(m) {
 						if (m.match(/^\\/)) {
 							return m.slice(1);
 						}
@@ -1888,7 +1888,14 @@
 					a:	this.getAlpha(),
 					h:	this.getHSV().h,
 					s:	this.getHSV().s,
-					v:	this.getHSV().v
+					v:	this.getHSV().v,
+					c:	this.getCMYK().c,
+					m:	this.getCMYK().m,
+					y:	this.getCMYK().y,
+					k:	this.getCMYK().k,
+					L:	this.getLAB().l,
+					A:	this.getLAB().a,
+					B:	this.getLAB().b
 				};
 			};
 
