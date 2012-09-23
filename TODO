@@ -1,3 +1,4 @@
+Fix the weird one-pixel vertical shift bug
 Completely destroy object when closed.
 Enabled/disabled
 isRTL? What to RTL, besides button?

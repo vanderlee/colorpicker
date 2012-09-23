@@ -378,6 +378,15 @@
                 );
             }
 
+            // hsla(r,g,b,a)
+            m = /^hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
+            if (m) {
+				return (new Color()).setHSL(
+					m[1] / 255,
+					m[2] / 255,
+					m[3] / 255).setAlpha(parseFloat(m[4]));
+            }
+
             // rgba(r%,g%,b%,a%)
             m = /^rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
             if (m) {
@@ -387,6 +396,15 @@
                     m[3] / 100,
                     m[4] / 100
                 );
+            }
+
+            // hsla(r%,g%,b%,a%)
+            m = /^hsla?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
+            if (m) {
+				return (new Color()).setHSL(
+					m[1] / 100,
+					m[2] / 100,
+					m[3] / 100).setAlpha(m[4] / 100);
             }
 
             // #rrggbb
@@ -1735,6 +1753,8 @@
 				if (_a !== null) {
 					a = _clip(_a);
 				}
+
+				return this;
 			};
 
 			this.getAlpha = function() {
@@ -1752,6 +1772,8 @@
 				if (b !== null) {
 					spaces.rgb.b = _clip(b);
 				}
+
+				return this;
 			};
 
 			this.setHSV = function(h, s, v) {
@@ -1765,6 +1787,8 @@
 				if (v !== null)	{
 					spaces.hsv.v = _clip(v);
 				}
+
+				return this;
 			};
 
 			this.setHSL = function(h, s, l) {
@@ -1778,6 +1802,8 @@
 				if (l !== null) {
 					spaces.hsl.l = _clip(l);
 				}
+
+				return this;
 			};
 
 			this.setLAB = function(l, a, b) {
@@ -1791,6 +1817,8 @@
 				if (b !== null) {
 					spaces.lab.b = _clip(b);
 				}
+
+				return this;
 			};
 
 			this.setCMYK = function(c, m, y, k) {
@@ -1807,6 +1835,8 @@
 				if (k !== null) {
 					spaces.cmyk.k = _clip(k);
 				}
+
+				return this;
 			};
 
 			this.getRGB = function() {
