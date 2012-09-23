@@ -1,4 +1,7 @@
-Fix the weird one-pixel vertical shift bug
+Fix the weird one-pixel vertical shift bug.
+	Caused by ui-widget class.
+	Only happens in Chrome and only on some, not all.
+	Disappears and re-appears at different zoom levels.
 Completely destroy object when closed.
 Enabled/disabled
 isRTL? What to RTL, besides button?
