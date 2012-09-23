@@ -338,13 +338,8 @@
 		},
 
         _parseHex = function(color) {
-            var name = $.trim(color).toLowerCase(),
-                c,
+            var c,
                 m;
-
-            if (_colors[name]) {
-                return new Color(_colors[name].r, _colors[name].g, _colors[name].b);
-            }
 
             // {#}rrggbb
             m = /^#?([a-fA-F0-9]{1,6})$/.exec(color);
@@ -361,10 +356,15 @@
         },
 
         _parseColor = function(color) {
-            var m;
+            var name = $.trim(color).toLowerCase(),
+                m;
 
             if (color == '') {
                 return new Color();
+            }
+
+            if (_colors[name]) {
+                return new Color(_colors[name].r, _colors[name].g, _colors[name].b);
             }
 
             // rgba(r,g,b,a)
@@ -1300,23 +1300,25 @@
                     e = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
 
                     // repeat here makes the invalid input disappear faster
-                    $('.ui-colorpicker-hex-input', e).bind('change keydown', function () {
-                        $(this).val($(this).val().replace(/[^a-fA-F\d]/, ''));
+                    $('.ui-colorpicker-hex-input', e).bind('change keydown keyup', function (a, b, c) {
+						if (/[^a-fA-F0-9]/.test($(this).val())) {
+							$(this).val($(this).val().replace(/[^a-fA-F0-9]/, ''));
+						}
                     });
 
                     $('.ui-colorpicker-hex-input', e).bind('change keyup', function () {
                         // repeat here makes sure that the invalid input doesn't get parsed
-                        $(this).val($(this).val().replace(/[^a-fA-F\d]/, ''));
-                        inst.color = _parseHex($(this).val());
+                        inst.color = _parseHex($(this).val()).setAlpha(inst.color.getAlpha());
                         inst._change();
                     });
 
-                    $('.ui-colorpicker-hex-alpha', e).bind('change keydown', function () {
-                        $(this).val($(this).val().replace(/[^a-fA-F\d]/, ''));
+                    $('.ui-colorpicker-hex-alpha', e).bind('change keydown keyup', function () {
+						if (/[^a-fA-F0-9]/.test($(this).val())) {
+							$(this).val($(this).val().replace(/[^a-fA-F0-9]/, ''));
+						}
                     });
 
                     $('.ui-colorpicker-hex-alpha', e).bind('change keyup', function () {
-                        $(this).val($(this).val().replace(/[^a-fA-F\d]/, ''));
                         inst.color.setAlpha(parseInt($('.ui-colorpicker-hex-alpha', e).val(), 16) / 255);
                         inst._change();
                     });
@@ -1948,7 +1950,8 @@
 				var a = this.getRGB(),
 					b = color.getRGB();
 
-				return a.r == b.r
+				return this.getAlpha() == color.getAlpha()
+					&& a.r == b.r
 					&& a.g == b.g
 					&& a.b == b.b;
 			};
