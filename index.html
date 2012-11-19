@@ -5,31 +5,18 @@
 		<!-- jQuery/jQueryUI (hosted) -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
-		<script src="http://jqueryui.com/themeroller/themeswitchertool/"></script>
 		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css"/>
         <style>
 			body {
 				font-family:	'Segoe UI', Verdana, Arial, Helvetica, sans-serif;
 				font-size:		62.5%;
 			}
-
-			#switcher {
-				float: 			right;
-				display: 		inline-block;
-			}
         </style>
 		<script src="jquery.colorpicker.js"></script>
 		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>
 		<script src="i18n/jquery.ui.colorpicker-nl.js"></script>
-        <script>
-           	$( function() {
-				$('#switcher').themeswitcher();
-            });
-        </script>
     </head>
     <body>
-        <div id="switcher"></div>
-
 		<h1>jQuery ColorPicker</h1>
 
 		<hr/>
@@ -156,7 +143,7 @@
            	$( function() {
                 $('.cp-name').colorpicker({
 					parts: 'full',
-					colorFormat: ['EXACT', '#HEX3', 'RGB', 'RGBA'],
+					colorFormat: ['NAME', 'EXACT', '#HEX3', 'RGB', 'RGBA'],
 					init: function(event, color) {
 								$('.cp-name-output').text(color.formatted);
 							},
