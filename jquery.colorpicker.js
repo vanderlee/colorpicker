@@ -2068,7 +2068,7 @@
 				that.options.swatches = _colors;
 			}
 
-			if (this.element[0].nodeName.toLowerCase() === 'input') {
+			if (this.element[0].nodeName.toLowerCase() === 'input' || !this.inline) {
 				that._setColor(that.element.val());
 
 				this._callback('init');
