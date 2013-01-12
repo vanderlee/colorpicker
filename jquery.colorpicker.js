@@ -2041,7 +2041,8 @@
 
 			close:              null,
 			init:				null,
-			select:             null
+			select:             null,
+			open:               null
 		},
 
 		_create: function () {
@@ -2375,6 +2376,7 @@
 
 				that._effectShow(this.dialog);
 				that.opened = true;
+				that._callback('open', true);
 
 				// Without waiting for domready the width of the map is 0 and we
 				// wind up with the cursor stuck in the upper left corner
