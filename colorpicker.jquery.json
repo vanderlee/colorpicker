@@ -11,7 +11,7 @@
 	"licenses": [
 		{
 			"type": "MIT",
-			"url": "https://raw.github.com/ghusse/jQRangeSlider/master/MIT-License.txt"
+			"url": "http://opensource.org/licenses/MIT"
 		}
 	],
 	"dependencies":{
