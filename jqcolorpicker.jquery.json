@@ -1,6 +1,6 @@
 {
 	"name": "jQColorpicker",
-	"version": "0.9.5",
+	"version": "0.9.6",
 	"title": "jQColorpicker",
 	"description": "JQuery colorpicker with themeroller styling, RGB, HSL, CMYK and L*A*B support. Standard look & feel, configurable layout. Works as a popup or inline.",
 	"author": {
