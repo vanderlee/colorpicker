@@ -20,7 +20,7 @@
 	},
 	"dependencies":{
 		"jquery": ">=1.5",
-		"jquery-ui": ">=1.7",
+		"jquery-ui": ">=1.7"
 	},
 	"homepage": "http://www.vanderlee.com/martijn/?page_id=314",
 	"demo": "http://vanderlee.github.com/colorpicker/",
