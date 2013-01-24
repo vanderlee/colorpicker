@@ -2053,7 +2053,8 @@
 
 			close:              null,
 			init:				null,
-			select:             null
+			select:             null,
+			open:               null
 		},
 
 		_create: function () {
@@ -2080,7 +2081,7 @@
 				that.options.swatches = _colors;
 			}
 
-			if (this.element[0].nodeName.toLowerCase() === 'input') {
+			if (this.element[0].nodeName.toLowerCase() === 'input' || !this.inline) {
 				that._setColor(that.element.val());
 
 				this._callback('init');
@@ -2387,6 +2388,7 @@
 
 				that._effectShow(this.dialog);
 				that.opened = true;
+				that._callback('open', true);
 
 				// Without waiting for domready the width of the map is 0 and we
 				// wind up with the cursor stuck in the upper left corner
