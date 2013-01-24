@@ -1,6 +1,6 @@
 {
 	"name": "jQColorpicker",
-	"version": "0.9.6",
+	"version": "0.9.7",
 	"title": "jQColorpicker",
 	"description": "JQuery colorpicker with themeroller styling, RGB, HSL, CMYK and L*A*B support. Standard look & feel, configurable layout. Works as a popup or inline.",
 	"author": {
@@ -18,7 +18,7 @@
 		"type": "git",
 		"url": "https://github.com/vanderlee/colorpicker.git"
 	},
-	"dependencies":{
+	"dependencies": {
 		"jquery": ">=1.5",
 		"jquery-ui": ">=1.7"
 	},
@@ -26,7 +26,7 @@
 	"demo": "http://vanderlee.github.com/colorpicker/",
 	"download":"https://github.com/vanderlee/colorpicker",
 	"bugs": "https://github.com/vanderlee/colorpicker/issues",
-	"maintainers":[
+	"maintainers": [
 		{
 			"name": "Martijn van der Lee",
 			"url": "http://blog.vanderlee.com",
