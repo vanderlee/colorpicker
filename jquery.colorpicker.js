@@ -1450,7 +1450,6 @@
 							cmyk:	{c: 0, m: 0, y: 0, k: 1}
 						},
 				a = 1,
-				arg,
 				args = arguments,
 				_clip = function(v) {
 					if (isNaN(v) || v === null) {
@@ -1930,7 +1929,16 @@
 					B:	this.getLAB().b
 				};
 			};
-
+			
+			this.getSpaces = function() {
+				return $.extend(true, {}, spaces);
+			};
+			
+			this.setSpaces = function(new_spaces) {
+				spaces = new_spaces;
+				return this;
+			};
+			
 			this.distance = function(color) {
 				var space	= 'lab',
 					getter	= 'get'+space.toUpperCase(),
@@ -1981,13 +1989,17 @@
 			};
 
 			this.copy = function() {
-				var rgb = this.getRGB(),
+				var spaces = this.getSpaces(),
 					a = this.getAlpha();
-				return new Color(rgb.r, rgb.g, rgb.b, a);
+				return new Color(spaces, a);
 			};
 
 			// Construct
-			if (args.length > 0) {
+			if (args.length == 2) {
+				this.setSpaces(args[0]);
+				this.setAlpha(args[1] === 0 ? 0 : args[1] || 1);
+			}
+			if (args.length > 2) {
 				this.setRGB(args[0], args[1], args[2]);
 				this.setAlpha(args[3] === 0 ? 0 : args[3] || 1);
 			}
