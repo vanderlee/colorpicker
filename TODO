@@ -1,3 +1,6 @@
+Implement a getColor method.
+	Use preconfigured/default output color.
+	Allow optional manual specification of color.
 Fix the weird one-pixel vertical shift bug.
 	Caused by ui-widget class.
 	Only happens in Chrome and only on some, not all.

@@ -116,6 +116,11 @@ Options:
 	hsv:				true
 		Whether or not to show the inputs for HSV.
 
+	inline:				true
+		If set to false, attaching to a non-input will still make the dialog
+		a popup instead of inline. Make sure you handle events to catch the
+		color change, otherwise you can't use the color.
+
 	layout:				{ ... }
 		Set the position of elements in a table layout.
 		You could create any layout possible with HTML tables by specifying
@@ -178,6 +183,7 @@ Options:
 
 	showOn:				'focus'
 		Same as jQueryUI DatePicker.
+		Also opens on clicks for non-focusable elements.
 
 	showOptions:		{}
 		Same as jQueryUI DatePicker.

@@ -15,113 +15,163 @@
 		<script src="jquery.colorpicker.js"></script>
 		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>
 		<script src="i18n/jquery.ui.colorpicker-nl.js"></script>
+
+		<script>
+			$(function() {
+				$('#tabs').tabs();
+			});
+		</script>
     </head>
     <body>
 		<h1>jQuery ColorPicker</h1>
 
-		<hr/>
+		<div id="tabs">
+			<ul>
+			  <li><a href="#tab-input">Basic &lt;input&gt;</a></li>
+			  <li><a href="#tab-element">Basic element</a></li>
+			  <li><a href="#tab-full">All features</a></li>
+			  <li><a href="#tab-i18n">Localization</a></li>
+			  <li><a href="#tab-websafe">Websafe colors</a></li>
+			  <li><a href="#tab-alt">Alternative display field</a></li>
+			  <li><a href="#tab-events">Events</a></li>
+			  <li><a href="#tab-input-format">Input formatting</a></li>
+			  <li><a href="#tab-format">Output formatting</a></li>
+			  <li><a href="#tab-format-list">Output format list</a></li>
+			  <li><a href="#tab-dialog">In a dialog</a></li>
+			  <li><a href="#tab-modal">Modal</a></li>
+			  <li><a href="#tab-no-inline">Any element to popup</a></li>
+			</ul>
 
-        Basic &lt;input&gt; example, without any options: <input type="text" class="cp-basic" value="fe9810"/>
+			<div id="tab-input">
+				<h2>Basic &lt;input&gt; example, without any options</h2>
+				<input type="text" class="cp-basic" value="fe9810"/>
+			</div>
 
-		<hr/>
+			<div id="tab-element">
+				<h2>Basic element (&lt;span&gt;> example, without any options</h2>
+				<span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
+			</div>
 
-        Basic &lt;div&gt; example, without any options: <span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
+			<div id="tab-full">
+				<h2>Fully-featured example</h2>
+				<input type="text" class="cp-full" value="186aa7"/>
+			</div>
+
+			<div id="tab-i18n">
+				<h2>Localized to Dutch (nl)</h2>
+				<input type="text" class="cp-i18n" value="ccea73"/>
+			</div>
+
+			<div id="tab-websafe">
+				<h2>Limit to websafe colors</h2>
+				<input type="text" class="cp-websafe" value="0fa7c2"/>
+			</div>
+
+			<div id="tab-alt">
+				<h2>Alternative field class</h2>
+				<input type="text" class="cp-alt" value="b762ae"/>
+				<span class="cp-alt-target" style="display: inline-block; border: thin solid black; padding: .5em 4em;">
+					<div style=" background-color: white; border: thin solid black; padding: .25em 2em; font-size: 1.25em; font-weight: bold;">Background-color on outside, text color here</div>
+				</span>
+			</div>
+
+			<div id="tab-events">
+				<h2>Events</h2>
+				<input type="text" class="cp-events" value="92b64a"/>
+				<div class="cp-events-log" style="vertical-align: top; display: inline-block; border: thin solid black; height: 10em; overflow-y: scroll; width: 50em;"></div>
+			</div>
+
+			<div id="tab-format">
+				<h2>Output formatting HSLA</h2>
+				<input type="text" class="cp-format" value="918237"/>
+				<span class="cp-format-output"></span>
+			</div>
+
+			<div id="tab-format-list">
+				<h2>Output format list</h2>
+				You can specify a list of output formats, the first perfect match for the color is output.
+				<input type="text" class="cp-name" value="a92fb4"/>
+				<span class="cp-name-output"></span>
+			</div>
+
+			<div id="tab-dialog">
+				<h2>Dialog with Colorpicker popup (demonstrates z-index)</h2>
+				<button id="cp-dialog-open">Open dialog</button>
+				<div id="cp-dialog-modal" title="Basic modal dialog">
+					Basic &lt;input&gt; example, without any options: <input type="text" class="cp-basic" value="fe9810"/>
+					<br/>
+					Basic element example, without any options: <span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
+				</div>
+			</div>
+
+			<div id="tab-modal">
+				<h2>Modal (and showCancelButton, closeOnEscape, showCloseButton)</h2>
+				<input type="text" class="cp-modal" value="9ba73f"/>
+			</div>
+
+			<div id="tab-input-format">
+				<h2>Input formatting</h2>
+				Demonstrates the ability to parse common color formats as input.
+				<input type="text" class="cp-input" value="rgb(123,42,87)"/>
+			</div>
+
+			<div id="tab-no-inline">
+				<h2>Popup from any element (&lt;em&gt;)</h2>
+				Just click on this <em>Emphasized</em> word to show the colorpicker. 
+			</div>
+		</div>
+
 		<script>
            	$( function() {
                 $('.cp-basic').colorpicker();
-			});
-		</script>
 
-		<hr/>
-
-        Fully-featured example: <input type="text" class="cp-full" value="186aa7"/>
-		<script>
-           	$( function() {
-                $('.cp-full').colorpicker({
+				$('.cp-full').colorpicker({
 					parts: 'full',
 					showOn: 'both',
 					buttonColorize: true,
 					showNoneButton: true,
 					alpha: true
 				});
-			});
-		</script>
 
-		<hr/>
-
-        Localized to Dutch (nl): <input type="text" class="cp-nl" value="ccea73"/>
-		<script>
-           	$( function() {
-				$('.cp-nl').colorpicker({
+				$('.cp-i18n').colorpicker({
 					regional: 'nl',
 					showNoneButton: true,
 					alpha: true
 				});
-			});
-		</script>
 
-		<hr/>
-
-        Limit to websafe colors: <input type="text" class="cp-websafe" value="0fa7c2"/>
-		<script>
-           	$( function() {
                 $('.cp-websafe').colorpicker({
 					limit: 'websafe'
 				});
-			});
-		</script>
 
-		<hr/>
-
-        Alternative field class: <input type="text" class="cp-alt" value="b762ae"/>
-		<span class="cp-alt-target" style="display: inline-block; border: thin solid black; padding: .5em 4em;">
-			<div style=" background-color: white; border: thin solid black; padding: .25em 2em; font-size: 1.25em; font-weight: bold;">Background-color on outside, text color here</div>
-		</span>
-		<script>
-           	$( function() {
                 $('.cp-alt').colorpicker({
 					altField: '.cp-alt-target',
 					altProperties: 'background-color,color',
 					altAlpha: true,
 					alpha: true
 				});
-			});
-		</script>
 
-		<hr/>
+				{	// event log
+					var count = 0;
 
-        Events: <input type="text" class="cp-events" value="92b64a"/>
-		<div class="cp-events-log" style="vertical-align: top; display: inline-block; border: thin solid black; height: 10em; overflow-y: scroll; width: 50em;"></div>
-		<script>
-           	$( function() {
-				var count = 0;
+					function addToEventLog(label, message) {
+						var line = '<div>#'+(++count)+' '+label+': '+message+'</div>';
+						var log = $('.cp-events-log');
+						log.append(line).scrollTop(log[0].scrollHeight);
+					}
 
-				function addToEventLog(label, message) {
-					var line = '<div>#'+(++count)+' '+label+': '+message+'</div>';
-					var log = $('.cp-events-log');
-					log.append(line).scrollTop(log[0].scrollHeight);
+					$('.cp-events').colorpicker({
+						init:			function(event, color) {
+											addToEventLog('Init', color.formatted);
+										},
+						select:			function(event, color) {
+											addToEventLog('Select', color.formatted);
+										},
+						close:			function(event, color) {
+											addToEventLog('Close', color.formatted + ' r:' + color.rgb.r + ' g:' + color.rgb.g + ' b:' + color.rgb.b + ' a:' + color.a);
+										}
+					});
 				}
 
-                $('.cp-events').colorpicker({
-					init:			function(event, color) {
-										addToEventLog('Init', color.formatted);
-									},
-					select:			function(event, color) {
-										addToEventLog('Select', color.formatted);
-									},
-					close:			function(event, color) {
-										addToEventLog('Close', color.formatted + ' r:' + color.rgb.r + ' g:' + color.rgb.g + ' b:' + color.rgb.b + ' a:' + color.a);
-									}
-				});
-			});
-		</script>
-
-		<hr/>
-
-        Output formatting HSLA: <input type="text" class="cp-format" value="918237"/>
-		<span class="cp-format-output"></span>
-		<script>
-           	$( function() {
                 $('.cp-format').colorpicker({
 					colorFormat: 'HSLA',
 					alpha: true,
@@ -132,18 +182,10 @@
 								$('.cp-format-output').text(color.formatted);
 							}
 				});
-			});
-		</script>
 
-		<hr/>
-
-        Output format list: <input type="text" class="cp-name" value="a92fb4"/>
-		<span class="cp-name-output"></span>
-		<script>
-           	$( function() {
                 $('.cp-name').colorpicker({
 					parts: 'full',
-					colorFormat: ['NAME', 'EXACT', '#HEX3', 'RGB', 'RGBA'],
+					colorFormat: ['EXACT', '#HEX3', 'RGB', 'RGBA'],
 					init: function(event, color) {
 								$('.cp-name-output').text(color.formatted);
 							},
@@ -151,20 +193,7 @@
 								$('.cp-name-output').text(color.formatted);
 							}
 				});
-			});
-		</script>
-
-		<hr/>
-
-		Dialog with Colorpicker popup (demonstrates z-index):
-		<button id="cp-dialog-open">Open dialog</button>
-		<div id="cp-dialog-modal" title="Basic modal dialog">
-			Basic &lt;input&gt; example, without any options: <input type="text" class="cp-basic" value="fe9810"/>
-			<br/>
-			Basic &lt;div&gt; example, without any options: <span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
-		</div>
-		<script>
-			$(function() {
+	
 				var dialog = $('#cp-dialog-modal').dialog({
 					autoOpen:	false,
 					minWidth:	500,
@@ -178,14 +207,7 @@
 				$('#cp-dialog-open').click(function() {
 					dialog.dialog('open');
 				});
-			});
-		</script>
 
-		<hr/>
-
-        Modal (and showCancelButton, closeOnEscape, showCloseButton): <input type="text" class="cp-modal" value="9ba73f"/>
-		<script>
-           	$( function() {
                 $('.cp-modal').colorpicker({
 					parts:				'draggable',
 					showCloseButton:	false,
@@ -193,16 +215,13 @@
 					showCancelButton:	false,
 					closeOnEscape:		false
 				});
-			});
-		</script>
-
-		<hr/>
-
-        Input formatting: <input type="text" class="cp-input" value="rgb(123,42,87)"/>
-		<script>
-           	$( function() {
+			
                 $('.cp-input').colorpicker({
 					colorFormat: ['RGBA']
+				});
+
+                $('em').colorpicker({
+					inline: false
 				});
 			});
 		</script>

@@ -2024,7 +2024,7 @@
 			draggable:			true,		// Make popup dialog draggable if header is visible.
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
-			regional:			'',
+			inline:				true,		// Show any divs as inline by default
 			layout: {
 				map:		[0, 0, 1, 5],	// Left, Top, Width, Height (in table cells).
 				bar:		[1, 0, 1, 5],
@@ -2041,6 +2041,7 @@
 			modal:				false,		// Modal dialog?
 			mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
 			parts:				'',			// leave empty for automatic selection
+			regional:			'',
 			rgb:				true,		// Show RGB controls and modes
 			showAnim:			'fadeIn',
 			showCancelButton:	true,
@@ -2081,7 +2082,7 @@
 				that.options.swatches = _colors;
 			}
 
-			if (this.element[0].nodeName.toLowerCase() === 'input' || !this.inline) {
+			if (this.element[0].nodeName.toLowerCase() === 'input' || !that.options.inline) {
 				that._setColor(that.element.val());
 
 				this._callback('init');
@@ -2125,7 +2126,7 @@
 				});
 
 				if (that.options.showOn === 'focus' || that.options.showOn === 'both') {
-					that.element.focus(function () {
+					that.element.on('focus click', function () {
 						that.open();
 					});
 				}
