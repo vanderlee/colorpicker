@@ -192,6 +192,11 @@ Options:
 		'null' to show swatches of HTML colors or provide your own object
 		with colornames and {r:1, g:1, b:1} array.
 		For example { 'red': {r:1, g:0, b:0}, 'blue': {r:0, g:0, b:1} }
+		Alternatively, load a predefined set of swatches and specify the name.
+		For example, for the pantone set, specify 'pantone'.
+
+	swatchesWidth:		84
+		Width of the swatches display in pixels.
 
 	title:				null
 		Title to display in the header. If null, use language default.
