@@ -224,77 +224,7 @@
 				);
             }
 
-            return false;
-        },
-
-        _parseCssColor = function(color) {
-            var m;
-
-            if (color == '') {
-                return new Color();
-            }
-
-            // rgba(r,g,b,a)
-            m = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
-            if (m) {
-                return new Color(
-                    m[1] / 255,
-                    m[2] / 255,
-                    m[3] / 255,
-                    parseFloat(m[4])
-                );
-            }
-
-            // hsla(r,g,b,a)
-            m = /^hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
-            if (m) {
-				return (new Color()).setHSL(
-					m[1] / 255,
-					m[2] / 255,
-					m[3] / 255).setAlpha(parseFloat(m[4]));
-            }
-
-            // rgba(r%,g%,b%,a%)
-            m = /^rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
-            if (m) {
-                return new Color(
-                    m[1] / 100,
-                    m[2] / 100,
-                    m[3] / 100,
-                    m[4] / 100
-                );
-            }
-
-            // hsla(r%,g%,b%,a%)
-            m = /^hsla?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
-            if (m) {
-				return (new Color()).setHSL(
-					m[1] / 100,
-					m[2] / 100,
-					m[3] / 100).setAlpha(m[4] / 100);
-            }
-
-            // #rrggbb
-            m = /^#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/.exec(color);
-            if (m) {
-                return new Color(
-                    parseInt(m[1], 16) / 255,
-                    parseInt(m[2], 16) / 255,
-                    parseInt(m[3], 16) / 255
-                );
-            }
-
-            // #rgb
-            m = /^#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
-            if (m) {
-                return new Color(
-                   parseInt(m[1] + m[1], 16) / 255,
-                   parseInt(m[2] + m[2], 16) / 255,
-                   parseInt(m[3] + m[3], 16) / 255
-                );
-            }
-
-            return _parseHex(color);
+            return new Color();
         },
 
 		_layoutTable = function(layout, callback) {
@@ -2458,23 +2388,81 @@
         },
 
         _parseColor: function(color) {
-            var c;
+            var c,
+				m;
 
+			// no color
             if (color == '') {
                 return new Color();
             }
 
+			// named swatch
 			c = this._getSwatch($.trim(color));
             if (c) {
                 return new Color(c.r, c.g, c.b);
             }
 
-			c = _parseCssColor(color);
-			if (c) {
-				return c;
-			}
+            // rgba(r,g,b,a)
+            m = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
+            if (m) {
+                return new Color(
+                    m[1] / 255,
+                    m[2] / 255,
+                    m[3] / 255,
+                    parseFloat(m[4])
+                );
+            }
 
-            return _parseHex(color);
+            // hsla(r,g,b,a)
+            m = /^hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
+            if (m) {
+				return (new Color()).setHSL(
+					m[1] / 255,
+					m[2] / 255,
+					m[3] / 255).setAlpha(parseFloat(m[4]));
+            }
+
+            // rgba(r%,g%,b%,a%)
+            m = /^rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
+            if (m) {
+                return new Color(
+                    m[1] / 100,
+                    m[2] / 100,
+                    m[3] / 100,
+                    m[4] / 100
+                );
+            }
+
+            // hsla(r%,g%,b%,a%)
+            m = /^hsla?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
+            if (m) {
+				return (new Color()).setHSL(
+					m[1] / 100,
+					m[2] / 100,
+					m[3] / 100).setAlpha(m[4] / 100);
+            }
+
+            // #rrggbb
+            m = /^#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/.exec(color);
+            if (m) {
+                return new Color(
+                    parseInt(m[1], 16) / 255,
+                    parseInt(m[2], 16) / 255,
+                    parseInt(m[3], 16) / 255
+                );
+            }
+
+            // #rgb
+            m = /^#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
+            if (m) {
+                return new Color(
+                   parseInt(m[1] + m[1], 16) / 255,
+                   parseInt(m[2] + m[2], 16) / 255,
+                   parseInt(m[3] + m[3], 16) / 255
+                );
+            }
+			
+			return _parseHex(color);
         },
 
 		_exactName: function(color) {
