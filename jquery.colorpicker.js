@@ -2171,7 +2171,7 @@
 				$(that.element[0]).parents().each(function() {
 					var z = $(this).css('z-index');
 					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
-						zIndex = z;
+						zIndex = parseInt(z);
 						return false;
 					}
 				});
