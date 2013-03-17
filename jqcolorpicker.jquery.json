@@ -1,7 +1,7 @@
 {
-	"name": "jQColorpicker",
-	"version": "0.9.7",
-	"title": "jQColorpicker",
+	"name": "Vanderlee Colorpicker",
+	"version": "0.9.8",
+	"title": "Vanderlee Colorpicker",
 	"description": "JQuery colorpicker with themeroller styling, RGB, HSL, CMYK and L*A*B support. Standard look & feel, configurable layout. Works as a popup or inline.",
 	"author": {
 			"name": "Martijn van der Lee",
