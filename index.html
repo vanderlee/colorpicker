@@ -43,6 +43,7 @@
 			  <li><a href="#tab-no-inline">Any element to popup</a></li>
 			  <li><a href="#tab-layout">Custom layout</a></li>
 			  <li><a href="#tab-pantone">Custom swatches</a></li>
+			  <li><a href="#tab-hidden-input">Hidden input</a></li>
 			</ul>
 
 			<div id="tab-input">
@@ -135,8 +136,15 @@
 				<input type="text" class="cp-pantone" value="242"/>
 				<span class="cp-pantone-output"></span>
 			</div>
-		</div>
 
+			<div id="tab-hidden-input">
+				<h2>Hidden input</h2>
+				Uses a hidden input and buttons to pop open the colorpicker<br/>
+				<input type="hidden" class="cp-hidden-input" value="#abc123"/>
+				<button id="cp-hidden-input-open">Open</button>
+			</div>
+		</div>
+		
 		<script>
            	$( function() {
                 $('.cp-basic').colorpicker();
@@ -210,7 +218,7 @@
 							}
 				});
 	
-				var dialog = $('#cp-dialog-modal').dialog({
+				var dialogModal = $('#cp-dialog-modal').dialog({
 					autoOpen:	false,
 					minWidth:	500,
 					modal:		true,
@@ -219,9 +227,8 @@
 									}
 								}
 				});
-
 				$('#cp-dialog-open').click(function() {
-					dialog.dialog('open');
+					dialogModal.dialog('open');
 				});
 
                 $('.cp-modal').colorpicker({
@@ -269,6 +276,12 @@
 					select:			function(event, color) {
 										$('.cp-pantone-output').text(color.formatted);
 									}
+				});
+
+                var dialogHidden = $('.cp-hidden-input').colorpicker();
+				$('#cp-hidden-input-open').click(function(e) {
+					e.stopPropagation();
+					dialogHidden.colorpicker('open');
 				});
 			});
 		</script>
