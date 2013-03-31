@@ -2144,7 +2144,13 @@
 			if (!that.opened) {
 				that._generate();
 
-				offset	= that.element.offset();
+				if (that.element.is(':hidden')) {
+					var hiddenPlaceholder = $('<div/>').insertBefore(that.element);
+					offset	= hiddenPlaceholder.offset();
+					hiddenPlaceholder.remove();
+				} else {
+					offset	= that.element.offset();
+				}
 				bottom	= $(window).height() + $(window).scrollTop();
 				right	= $(window).width() + $(window).scrollLeft();
 				height	= that.dialog.outerHeight();
