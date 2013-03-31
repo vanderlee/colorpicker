@@ -1885,7 +1885,7 @@
 				that.dialog = $('.ui-colorpicker:last');
 
 				// Click outside/inside
-				$(document).mousedown(function (event) {
+				$(document).delegate('html', 'touchstart click', function (event) {
 					if (!that.opened || event.target === that.element[0] || that.overlay) {
 						return;
 					}
