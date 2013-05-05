@@ -55,7 +55,7 @@ jQuery(function($) {
 				inst._change();
 			}
 
-			$().add(sliders.r).add(sliders.g).add(sliders.b).slider({
+			$(sliders.r).add(sliders.g).add(sliders.b).slider({
 				min: 0,
 				max: 255,
 				step: 1,
