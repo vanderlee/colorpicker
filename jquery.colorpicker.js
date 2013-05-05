@@ -933,56 +933,6 @@
 				};
 			},
 
-			rgbslider: function (inst) {
-				var name	= 'rgbslider',
-					that	= this,
-					sliders	= {	r: $('<div class="ui-colorpicker-slider"/>'),
-								g: $('<div class="ui-colorpicker-slider"/>'),
-								b: $('<div class="ui-colorpicker-slider"/>')
-							};
-
-				this.init = function () {
-					if (!inst.options.rgb) {
-						return;
-					}
-
-					$('<div class="ui-colorpicker-'+name+'"/>').append(sliders.r, sliders.g, sliders.b)
-					.appendTo($('.ui-colorpicker-'+name+'-container', inst.dialog));
-
-					function refresh() {
-						inst.color.setRGB(
-							sliders.r.slider('value') / 255,
-							sliders.g.slider('value') / 255,
-							sliders.b.slider('value') / 255
-						);
-
-						inst._change();
-					}
-
-					$().add(sliders.r).add(sliders.g).add(sliders.b).slider({
-						min: 0,
-						max: 255,
-						step: 1,
-						slide:	refresh,
-						change:	refresh
-					});
-				};
-
-				this.repaint = function () {
-					$.each(inst.color.getRGB(), function (index, value) {
-						var input = sliders[index];
-						value = Math.round(value * 255);
-						if (input.slider('value') !== value) {
-							input.slider('value', value);
-						}
-					});
-				};
-
-				this.update = function () {
-					this.repaint();
-				};
-			},
-
 			lab: function (inst) {
 				var that = this,
 					part = null,
