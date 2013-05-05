@@ -48,6 +48,7 @@
 }
 
 .ui-colorpicker table {
+	width:					100%;
     font-size:				100%; /* Reset browser table font-size */
 	margin:					0;
 }

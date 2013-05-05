@@ -15,6 +15,137 @@
 (function ($) {
 	"use strict";
 
+	var _colorpicker_index = 0,
+
+		_container_popup = '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
+
+		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
+
+		_parts_lists = {
+			'full':			['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'lab', 'cmyk', 'preview', 'swatches', 'footer'],
+			'popup':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
+			'draggable':	['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
+			'inline':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
+		},
+
+		_intToHex = function (dec) {
+			var result = Math.round(dec).toString(16);
+			if (result.length === 1) {
+				result = ('0' + result);
+			}
+			return result.toLowerCase();
+		},
+
+        _parseHex = function(color) {
+            var c,
+                m;
+
+            // {#}rrggbb
+            m = /^#?([a-fA-F0-9]{1,6})$/.exec(color);
+            if (m) {
+                c = parseInt(m[1], 16);
+                return new $.colorpicker.Color(
+					((c >> 16) & 0xFF) / 255,
+                    ((c >>  8) & 0xFF) / 255,
+                    (c & 0xFF) / 255
+				);
+            }
+
+            return new $.colorpicker.Color();
+        },
+
+		_layoutTable = function(layout, callback) {
+			var bitmap,
+				x,
+				y,
+				width, height,
+				columns, rows,
+				index,
+				cell,
+				html,
+				w,
+				h,
+				colspan,
+				walked;
+
+			layout.sort(function(a, b) {
+				if (a.pos[1] == b.pos[1]) {
+					return a.pos[0] - b.pos[0];
+				}
+				return a.pos[1] - b.pos[1];
+			});
+
+			// Determine dimensions of the table
+			width = 0;
+			height = 0;
+			$.each (layout, function(index, part) {
+				width = Math.max(width, part.pos[0] + part.pos[2]);
+				height = Math.max(height, part.pos[1] + part.pos[3]);
+			});
+
+			// Initialize bitmap
+			bitmap = [];
+			for (x = 0; x < width; ++x) {
+				bitmap.push([]);
+			}
+
+			// Mark rows and columns which have layout assigned
+			rows	= [];
+			columns = [];
+			$.each(layout, function(index, part) {
+				// mark columns
+				for (x = 0; x < part.pos[2]; x += 1) {
+					columns[part.pos[0] + x] = true;
+				}
+				for (y = 0; y < part.pos[3]; y += 1) {
+					rows[part.pos[1] + y] = true;
+				}
+			});
+
+			// Generate the table
+			html = '';
+			cell = layout[index = 0];
+			for (y = 0; y < height; ++y) {
+				html += '<tr>';
+				for (x = 0; x < width; x) {
+					if (typeof cell !== 'undefined' && x == cell.pos[0] && y == cell.pos[1]) {
+						// Create a "real" cell
+						html += callback(cell, x, y);
+
+						for (h = 0; h < cell.pos[3]; h +=1) {
+							for (w = 0; w < cell.pos[2]; w +=1) {
+								bitmap[x + w][y + h] = true;
+							}
+						}
+
+						x += cell.pos[2];
+						cell = layout[++index];
+					} else {
+						// Fill in the gaps
+						colspan = 0;
+						walked = false;
+
+						while (x < width && bitmap[x][y] === undefined && (cell === undefined || y < cell.pos[1] || (y == cell.pos[1] && x < cell.pos[0]))) {
+							if (columns[x] === true) {
+								colspan += 1;
+							}
+							walked = true;
+							x += 1;
+						}
+
+						if (colspan > 0) {
+							html += '<td colspan="'+colspan+'"></td>';
+						} else if (!walked) {
+							x += 1;
+						}
+					}
+				}
+				html += '</tr>';
+			}
+
+			return '<table cellspacing="0" cellpadding="0" border="0"><tbody>' + html + '</tbody></table>';
+		};
+
 	$.colorpicker = new function() {
 		this.regional = [];
 		this.regional[''] =	{
@@ -186,144 +317,12 @@
 			'pink':					{r: 1, g: 0.7529411764705882, b: 0.796078431372549},
 			'lightpink':			{r: 1, g: 0.7137254901960784, b: 0.7568627450980392}
 		};
-	};
 
-	var _colorpicker_index = 0,
-
-		_container_popup = '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
-
-		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
-
-		_parts_lists = {
-			'full':			['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'lab', 'cmyk', 'preview', 'swatches', 'footer'],
-			'popup':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
-			'draggable':	['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
-			'inline':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
-		},
-
-		_intToHex = function (dec) {
-			var result = Math.round(dec).toString(16);
-			if (result.length === 1) {
-				result = ('0' + result);
-			}
-			return result.toLowerCase();
-		},
-
-        _parseHex = function(color) {
-            var c,
-                m;
-
-            // {#}rrggbb
-            m = /^#?([a-fA-F0-9]{1,6})$/.exec(color);
-            if (m) {
-                c = parseInt(m[1], 16);
-                return new Color(
-					((c >> 16) & 0xFF) / 255,
-                    ((c >>  8) & 0xFF) / 255,
-                    (c & 0xFF) / 255
-				);
-            }
-
-            return new Color();
-        },
-
-		_layoutTable = function(layout, callback) {
-			var bitmap,
-				x,
-				y,
-				width, height,
-				columns, rows,
-				index,
-				cell,
-				html,
-				w,
-				h,
-				colspan,
-				walked;
-
-			layout.sort(function(a, b) {
-				if (a.pos[1] == b.pos[1]) {
-					return a.pos[0] - b.pos[0];
-				}
-				return a.pos[1] - b.pos[1];
-			});
-
-			// Determine dimensions of the table
-			width = 0;
-			height = 0;
-			$.each (layout, function(index, part) {
-				width = Math.max(width, part.pos[0] + part.pos[2]);
-				height = Math.max(height, part.pos[1] + part.pos[3]);
-			});
-
-			// Initialize bitmap
-			bitmap = [];
-			for (x = 0; x < width; ++x) {
-				bitmap.push([]);
-			}
-
-			// Mark rows and columns which have layout assigned
-			rows	= [];
-			columns = [];
-			$.each(layout, function(index, part) {
-				// mark columns
-				for (x = 0; x < part.pos[2]; x += 1) {
-					columns[part.pos[0] + x] = true;
-				}
-				for (y = 0; y < part.pos[3]; y += 1) {
-					rows[part.pos[1] + y] = true;
-				}
-			});
-
-			// Generate the table
-			html = '';
-			cell = layout[index = 0];
-			for (y = 0; y < height; ++y) {
-				html += '<tr>';
-				for (x = 0; x < width; x) {
-					if (typeof cell !== 'undefined' && x == cell.pos[0] && y == cell.pos[1]) {
-						// Create a "real" cell
-						html += callback(cell, x, y);
-
-						for (h = 0; h < cell.pos[3]; h +=1) {
-							for (w = 0; w < cell.pos[2]; w +=1) {
-								bitmap[x + w][y + h] = true;
-							}
-						}
-
-						x += cell.pos[2];
-						cell = layout[++index];
-					} else {
-						// Fill in the gaps
-						colspan = 0;
-						walked = false;
-
-						while (x < width && bitmap[x][y] === undefined && (cell === undefined || y < cell.pos[1] || (y == cell.pos[1] && x < cell.pos[0]))) {
-							if (columns[x] === true) {
-								colspan += 1;
-							}
-							walked = true;
-							x += 1;
-						}
-
-						if (colspan > 0) {
-							html += '<td colspan="'+colspan+'"></td>';
-						} else if (!walked) {
-							x += 1;
-						}
-					}
-				}
-				html += '</tr>';
-			}
-
-			return '<table cellspacing="0" cellpadding="0" border="0"><tbody>' + html + '</tbody></table>';
-		},
-
-        _parts = {
-            header: function (inst) {
-                var that	= this,
-                    e		= null,
-                    _html	=function() {
+		this.parts = {
+			header: function (inst) {
+				var that	= this,
+					e		= null,
+					_html	=function() {
 						var title = inst.options.title || inst._getRegional('title'),
 							html = '<span class="ui-dialog-title">' + title + '</span>';
 
@@ -335,609 +334,659 @@
 						return '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' + html + '</div>';
 					};
 
-                this.init = function() {
-                    e = $(_html()).prependTo(inst.dialog);
+				this.init = function() {
+					e = $(_html()).prependTo(inst.dialog);
 
-                    var close = $('.ui-dialog-titlebar-close', e);
-                    inst._hoverable(close);
-                    inst._focusable(close);
-                    close.click(function(event) {
+					var close = $('.ui-dialog-titlebar-close', e);
+					inst._hoverable(close);
+					inst._focusable(close);
+					close.click(function(event) {
 						event.preventDefault();
-                        inst.close();
-                    });
+						inst.close();
+					});
 
 					if (!inst.inline && inst.options.draggable) {
 						inst.dialog.draggable({
 							handle: e
 						});
 					}
-                };
-            },
+				};
+			},
 
-            map: function (inst) {
-                var that	= this,
-                    e		= null,
+			map: function (inst) {
+				var that	= this,
+					e		= null,
 					mousemove_timeout = null,
-                    _mousedown, _mouseup, _mousemove, _html;
+					_mousedown, _mouseup, _mousemove, _html;
 
-                _mousedown = function (event) {
-                    if (!inst.opened) {
-                        return;
-                    }
+				_mousedown = function (event) {
+					if (!inst.opened) {
+						return;
+					}
 
-                    var div		= $('.ui-colorpicker-map-layer-pointer', e),
-                        offset	= div.offset(),
-                        width	= div.width(),
-                        height	= div.height(),
-                        x		= event.pageX - offset.left,
-                        y		= event.pageY - offset.top;
+					var div		= $('.ui-colorpicker-map-layer-pointer', e),
+						offset	= div.offset(),
+						width	= div.width(),
+						height	= div.height(),
+						x		= event.pageX - offset.left,
+						y		= event.pageY - offset.top;
 
-                    if (x >= 0 && x < width && y >= 0 && y < height) {
-                        event.stopImmediatePropagation();
-                        event.preventDefault();
+					if (x >= 0 && x < width && y >= 0 && y < height) {
+						event.stopImmediatePropagation();
+						event.preventDefault();
 						e.unbind('mousedown', _mousedown);
-                        $(document).bind('mouseup', _mouseup);
-                        $(document).bind('mousemove', _mousemove);
-                        _mousemove(event);
-                    }
-                };
+						$(document).bind('mouseup', _mouseup);
+						$(document).bind('mousemove', _mousemove);
+						_mousemove(event);
+					}
+				};
 
-                _mouseup = function (event) {
-                    event.stopImmediatePropagation();
-                    event.preventDefault();
-                    $(document).unbind('mouseup', _mouseup);
-                    $(document).unbind('mousemove', _mousemove);
-                    e.bind('mousedown', _mousedown);
-                };
+				_mouseup = function (event) {
+					event.stopImmediatePropagation();
+					event.preventDefault();
+					$(document).unbind('mouseup', _mouseup);
+					$(document).unbind('mousemove', _mousemove);
+					e.bind('mousedown', _mousedown);
+				};
 
-                _mousemove = function (event) {
-                    event.stopImmediatePropagation();
-                    event.preventDefault();
+				_mousemove = function (event) {
+					event.stopImmediatePropagation();
+					event.preventDefault();
 
-                    if (event.pageX === that.x && event.pageY === that.y) {
-                        return;
-                    }
-                    that.x = event.pageX;
-                    that.y = event.pageY;
+					if (event.pageX === that.x && event.pageY === that.y) {
+						return;
+					}
+					that.x = event.pageX;
+					that.y = event.pageY;
 
-                    var div = $('.ui-colorpicker-map-layer-pointer', e),
-                        offset = div.offset(),
-                        width = div.width(),
-                        height = div.height(),
-                        x = event.pageX - offset.left,
-                        y = event.pageY - offset.top;
+					var div = $('.ui-colorpicker-map-layer-pointer', e),
+						offset = div.offset(),
+						width = div.width(),
+						height = div.height(),
+						x = event.pageX - offset.left,
+						y = event.pageY - offset.top;
 
-                    x = Math.max(0, Math.min(x / width, 1));
-                    y = Math.max(0, Math.min(y / height, 1));
+					x = Math.max(0, Math.min(x / width, 1));
+					y = Math.max(0, Math.min(y / height, 1));
 
-                    // interpret values
-                    switch (inst.mode) {
-                    case 'h':
+					// interpret values
+					switch (inst.mode) {
+					case 'h':
 						inst.color.setHSV(null, x, 1 - y);
-                        break;
+						break;
 
-                    case 's':
-                    case 'a':
+					case 's':
+					case 'a':
 						inst.color.setHSV(x, null, 1 - y);
-                        break;
+						break;
 
-                    case 'v':
+					case 'v':
 						inst.color.setHSV(x, 1 - y, null);
-                        break;
+						break;
 
-                    case 'r':
+					case 'r':
 						inst.color.setRGB(null, 1 - y, x);
-                        break;
+						break;
 
-                    case 'g':
+					case 'g':
 						inst.color.setRGB(1 - y, null, x);
-                        break;
+						break;
 
-                    case 'b':
+					case 'b':
 						inst.color.setRGB(x, 1 - y, null);
-                        break;
-                    }
-
-                    inst._change();
-                };
-
-                _html = function () {
-                    var html = '<div class="ui-colorpicker-map ui-colorpicker-border">'
-                            + '<span class="ui-colorpicker-map-layer-1">&nbsp;</span>'
-                            + '<span class="ui-colorpicker-map-layer-2">&nbsp;</span>'
-                            + (inst.options.alpha ? '<span class="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
-                            + '<span class="ui-colorpicker-map-layer-pointer"><span class="ui-colorpicker-map-pointer"></span></span></div>';
-                    return html;
-                };
-
-                this.update = function () {
-                    switch (inst.mode) {
-                    case 'h':
-                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
-                        $('.ui-colorpicker-map-layer-2', e).hide();
-                        break;
-
-                    case 's':
-                    case 'a':
-                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
-                        break;
-
-                    case 'v':
-                        $(e).css('background-color', 'black');
-                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-map-layer-2', e).hide();
-                        break;
-
-                    case 'r':
-                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
-                        break;
-
-                    case 'g':
-                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
-                        break;
-
-                    case 'b':
-                        $('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
-                        break;
-                    }
-                    that.repaint();
-                };
-
-                this.repaint = function () {
-                    var div = $('.ui-colorpicker-map-layer-pointer', e),
-                        x = 0,
-                        y = 0;
-
-                    switch (inst.mode) {
-                    case 'h':
-                        x = inst.color.getHSV().s * div.width();
-                        y = (1 - inst.color.getHSV().v) * div.width();
-                        $(e).css('background-color', inst.color.copy().normalize().toCSS());
-                        break;
-
-                    case 's':
-                    case 'a':
-                        x = inst.color.getHSV().h * div.width();
-                        y = (1 - inst.color.getHSV().v) * div.width();
-                        $('.ui-colorpicker-map-layer-2', e).css('opacity', 1 - inst.color.getHSV().s);
-                        break;
-
-                    case 'v':
-                        x = inst.color.getHSV().h * div.width();
-                        y = (1 - inst.color.getHSV().s) * div.width();
-                        $('.ui-colorpicker-map-layer-1', e).css('opacity', inst.color.getHSV().v);
-                        break;
-
-                    case 'r':
-                        x = inst.color.getRGB().b * div.width();
-                        y = (1 - inst.color.getRGB().g) * div.width();
-                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().r);
-                        break;
-
-                    case 'g':
-                        x = inst.color.getRGB().b * div.width();
-                        y = (1 - inst.color.getRGB().r) * div.width();
-                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().g);
-                        break;
-
-                    case 'b':
-                        x = inst.color.getRGB().r * div.width();
-                        y = (1 - inst.color.getRGB().g) * div.width();
-                        $('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().b);
-                        break;
-                    }
-
-                    if (inst.options.alpha) {
-                        $('.ui-colorpicker-map-layer-alpha', e).css('opacity', 1 - inst.color.getAlpha());
-                    }
-
-                    $('.ui-colorpicker-map-pointer', e).css({
-                        'left': x - 7,
-                        'top': y - 7
-                    });
-                };
-
-                this.init = function () {
-                    e = $(_html()).appendTo($('.ui-colorpicker-map-container', inst.dialog));
-
-                    e.bind('mousedown', _mousedown);
-                };
-            },
-
-            bar: function (inst) {
-                var that		= this,
-                    e			= null,
-                    _mousedown, _mouseup, _mousemove, _html;
-
-                _mousedown = function (event) {
-                    if (!inst.opened) {
-                        return;
-                    }
-
-                    var div		= $('.ui-colorpicker-bar-layer-pointer', e),
-                        offset	= div.offset(),
-                        width	= div.width(),
-                        height	= div.height(),
-                        x		= event.pageX - offset.left,
-                        y		= event.pageY - offset.top;
-
-                    if (x >= 0 && x < width && y >= 0 && y < height) {
-                        event.stopImmediatePropagation();
-                        event.preventDefault();
-                        e.unbind('mousedown', _mousedown);
-                        $(document).bind('mouseup', _mouseup);
-                        $(document).bind('mousemove', _mousemove);
-                        _mousemove(event);
-                    }
-                };
-
-                _mouseup = function (event) {
-                    event.stopImmediatePropagation();
-                    event.preventDefault();
-                    $(document).unbind('mouseup', _mouseup);
-                    $(document).unbind('mousemove', _mousemove);
-                    e.bind('mousedown', _mousedown);
-                };
-
-                _mousemove = function (event) {
-                    event.stopImmediatePropagation();
-                    event.preventDefault();
-
-                    if (event.pageY === that.y) {
-                        return;
-                    }
-                    that.y = event.pageY;
-
-                    var div = $('.ui-colorpicker-bar-layer-pointer', e),
-                        offset  = div.offset(),
-                        height  = div.height(),
-                        y = event.pageY - offset.top;
-
-                    y = Math.max(0, Math.min(y / height, 1));
-
-                    // interpret values
-                    switch (inst.mode) {
-                    case 'h':
-                        inst.color.setHSV(1 - y, null, null);
-                        break;
-
-                    case 's':
-                        inst.color.setHSV(null, 1 - y, null);
-                        break;
-
-                    case 'v':
-                        inst.color.setHSV(null, null, 1 - y);
-                        break;
-
-                    case 'r':
-                        inst.color.setRGB(1 - y, null, null);
-                        break;
-
-                    case 'g':
-                        inst.color.setRGB(null, 1 - y, null);
-                        break;
-
-                    case 'b':
-                        inst.color.setRGB(null, null, 1 - y);
-                        break;
-
-                    case 'a':
-                        inst.color.setAlpha(1 - y);
-                        break;
-                    }
-
-                    inst._change();
-                };
-
-                _html = function () {
-                    var html = '<div class="ui-colorpicker-bar ui-colorpicker-border">'
-                            + '<span class="ui-colorpicker-bar-layer-1">&nbsp;</span>'
-                            + '<span class="ui-colorpicker-bar-layer-2">&nbsp;</span>'
-                            + '<span class="ui-colorpicker-bar-layer-3">&nbsp;</span>'
-                            + '<span class="ui-colorpicker-bar-layer-4">&nbsp;</span>';
-
-                    if (inst.options.alpha) {
-                        html += '<span class="ui-colorpicker-bar-layer-alpha">&nbsp;</span>'
-                            + '<span class="ui-colorpicker-bar-layer-alphabar">&nbsp;</span>';
-                    }
-
-                    html += '<span class="ui-colorpicker-bar-layer-pointer"><span class="ui-colorpicker-bar-pointer"></span></span></div>';
-
-                    return html;
-                };
-
-                this.update = function () {
-                    switch (inst.mode) {
-                    case 'h':
-                    case 's':
-                    case 'v':
-                    case 'r':
-                    case 'g':
-                    case 'b':
-                        $('.ui-colorpicker-bar-layer-alpha', e).show();
-                        $('.ui-colorpicker-bar-layer-alphabar', e).hide();
-                        break;
-
-                    case 'a':
-                        $('.ui-colorpicker-bar-layer-alpha', e).hide();
-                        $('.ui-colorpicker-bar-layer-alphabar', e).show();
-                        break;
-                    }
-
-                    switch (inst.mode) {
-                    case 'h':
-                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-2', e).hide();
-                        $('.ui-colorpicker-bar-layer-3', e).hide();
-                        $('.ui-colorpicker-bar-layer-4', e).hide();
-                        break;
-
-                    case 's':
-                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-3', e).hide();
-                        $('.ui-colorpicker-bar-layer-4', e).hide();
-                        break;
-
-                    case 'v':
-                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-2', e).hide();
-                        $('.ui-colorpicker-bar-layer-3', e).hide();
-                        $('.ui-colorpicker-bar-layer-4', e).hide();
-                        break;
-
-                    case 'r':
-                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
-                        break;
-
-                    case 'g':
-                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -2600px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
-                        break;
-
-                    case 'b':
-                        $('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -3640px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -3380px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -2860px', 'opacity': ''}).show();
-                        $('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -3120px', 'opacity': ''}).show();
-                        break;
-
-                    case 'a':
-                        $('.ui-colorpicker-bar-layer-1', e).hide();
-                        $('.ui-colorpicker-bar-layer-2', e).hide();
-                        $('.ui-colorpicker-bar-layer-3', e).hide();
-                        $('.ui-colorpicker-bar-layer-4', e).hide();
-                        break;
-                    }
-                    that.repaint();
-                };
-
-                this.repaint = function () {
-                    var div = $('.ui-colorpicker-bar-layer-pointer', e),
-                        y = 0;
-
-                    switch (inst.mode) {
-                    case 'h':
-                        y = (1 - inst.color.getHSV().h) * div.height();
-                        break;
-
-                    case 's':
-                        y = (1 - inst.color.getHSV().s) * div.height();
-                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.getHSV().v);
-                        $(e).css('background-color', inst.color.copy().normalize().toCSS());
-                        break;
-
-                    case 'v':
-                        y = (1 - inst.color.getHSV().v) * div.height();
-                        $(e).css('background-color', inst.color.copy().normalize().toCSS());
-                        break;
-
-                    case 'r':
-                        y = (1 - inst.color.getRGB().r) * div.height();
-                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().b - inst.color.getRGB().g)));
-                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().g - inst.color.getRGB().b)));
-                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().b, inst.color.getRGB().g));
-                        break;
-
-                    case 'g':
-                        y = (1 - inst.color.getRGB().g) * div.height();
-                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().b - inst.color.getRGB().r)));
-                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().r - inst.color.getRGB().b)));
-                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().r, inst.color.getRGB().b));
-                        break;
-
-                    case 'b':
-                        y = (1 - inst.color.getRGB().b) * div.height();
-                        $('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().r - inst.color.getRGB().g)));
-                        $('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().g - inst.color.getRGB().r)));
-                        $('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().r, inst.color.getRGB().g));
-                        break;
-
-                    case 'a':
-                        y = (1 - inst.color.getAlpha()) * div.height();
-                        $(e).css('background-color', inst.color.copy().normalize().toCSS());
-                        break;
-                    }
-
-                    if (inst.mode !== 'a') {
-                        $('.ui-colorpicker-bar-layer-alpha', e).css('opacity', 1 - inst.color.getAlpha());
-                    }
-
-                    $('.ui-colorpicker-bar-pointer', e).css('top', y - 3);
-                };
-
-                this.init = function () {
-                    e = $(_html()).appendTo($('.ui-colorpicker-bar-container', inst.dialog));
-
-                    e.bind('mousedown', _mousedown);
-                };
-            },
-
-            preview: function (inst) {
-                var that = this,
-                    e = null,
-                    _html;
-
-                _html = function () {
-                    return '<div class="ui-colorpicker-preview ui-colorpicker-border">'
-                        + '<div class="ui-colorpicker-preview-initial"><div class="ui-colorpicker-preview-initial-alpha"></div></div>'
-                        + '<div class="ui-colorpicker-preview-current"><div class="ui-colorpicker-preview-current-alpha"></div></div>'
-                        + '</div>';
-                };
-
-                this.init = function () {
-                    e = $(_html()).appendTo($('.ui-colorpicker-preview-container', inst.dialog));
-
-                    $('.ui-colorpicker-preview-initial', e).click(function () {
-                        inst.color = inst.currentColor.copy();
-                        inst._change();
-                    });
-
-                };
-
-                this.update = function () {
-                    if (inst.options.alpha) {
-                        $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).show();
-                    } else {
-                        $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).hide();
-                    }
-
-                    this.repaint();
-                };
-
-                this.repaint = function () {
-                    $('.ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.toCSS()).attr('title', inst.currentColor.toHex());
-                    $('.ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.getAlpha());
-                    $('.ui-colorpicker-preview-current', e).css('background-color', inst.color.toCSS()).attr('title', inst.color.toHex());
-                    $('.ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.getAlpha());
-                };
-            },
-
-            hsv: function (inst) {
-                var that = this,
-                    e = null,
-                    _html;
-
-                _html = function () {
-                    var html = '';
-
-                    if (inst.options.hsv) {
-                        html +=	'<div class="ui-colorpicker-hsv-h"><input class="ui-colorpicker-mode" type="radio" value="h"/><label>' + inst._getRegional('hsvH') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="360" size="10"/><span class="ui-colorpicker-unit">&deg;</span></div>'
-                            + '<div class="ui-colorpicker-hsv-s"><input class="ui-colorpicker-mode" type="radio" value="s"/><label>' + inst._getRegional('hsvS') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>'
-                            + '<div class="ui-colorpicker-hsv-v"><input class="ui-colorpicker-mode" type="radio" value="v"/><label>' + inst._getRegional('hsvV') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
-                    }
-
-                    return '<div class="ui-colorpicker-hsv">' + html + '</div>';
-                };
-
-                this.init = function () {
-                    e = $(_html()).appendTo($('.ui-colorpicker-hsv-container', inst.dialog));
-
-                    $('.ui-colorpicker-mode', e).click(function () {
-                        inst.mode = $(this).val();
-                        inst._updateAllParts();
-                    });
-
-                    $('.ui-colorpicker-number', e).bind('change keyup', function () {
-                        inst.color.setHSV(
+						break;
+					}
+
+					inst._change();
+				};
+
+				_html = function () {
+					var html = '<div class="ui-colorpicker-map ui-colorpicker-border">'
+							+ '<span class="ui-colorpicker-map-layer-1">&nbsp;</span>'
+							+ '<span class="ui-colorpicker-map-layer-2">&nbsp;</span>'
+							+ (inst.options.alpha ? '<span class="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
+							+ '<span class="ui-colorpicker-map-layer-pointer"><span class="ui-colorpicker-map-pointer"></span></span></div>';
+					return html;
+				};
+
+				this.update = function () {
+					switch (inst.mode) {
+					case 'h':
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).hide();
+						break;
+
+					case 's':
+					case 'a':
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+						break;
+
+					case 'v':
+						$(e).css('background-color', 'black');
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).hide();
+						break;
+
+					case 'r':
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
+						break;
+
+					case 'g':
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
+						break;
+
+					case 'b':
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
+						break;
+					}
+					that.repaint();
+				};
+
+				this.repaint = function () {
+					var div = $('.ui-colorpicker-map-layer-pointer', e),
+						x = 0,
+						y = 0;
+
+					switch (inst.mode) {
+					case 'h':
+						x = inst.color.getHSV().s * div.width();
+						y = (1 - inst.color.getHSV().v) * div.width();
+						$(e).css('background-color', inst.color.copy().normalize().toCSS());
+						break;
+
+					case 's':
+					case 'a':
+						x = inst.color.getHSV().h * div.width();
+						y = (1 - inst.color.getHSV().v) * div.width();
+						$('.ui-colorpicker-map-layer-2', e).css('opacity', 1 - inst.color.getHSV().s);
+						break;
+
+					case 'v':
+						x = inst.color.getHSV().h * div.width();
+						y = (1 - inst.color.getHSV().s) * div.width();
+						$('.ui-colorpicker-map-layer-1', e).css('opacity', inst.color.getHSV().v);
+						break;
+
+					case 'r':
+						x = inst.color.getRGB().b * div.width();
+						y = (1 - inst.color.getRGB().g) * div.width();
+						$('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().r);
+						break;
+
+					case 'g':
+						x = inst.color.getRGB().b * div.width();
+						y = (1 - inst.color.getRGB().r) * div.width();
+						$('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().g);
+						break;
+
+					case 'b':
+						x = inst.color.getRGB().r * div.width();
+						y = (1 - inst.color.getRGB().g) * div.width();
+						$('.ui-colorpicker-map-layer-2', e).css('opacity', inst.color.getRGB().b);
+						break;
+					}
+
+					if (inst.options.alpha) {
+						$('.ui-colorpicker-map-layer-alpha', e).css('opacity', 1 - inst.color.getAlpha());
+					}
+
+					$('.ui-colorpicker-map-pointer', e).css({
+						'left': x - 7,
+						'top': y - 7
+					});
+				};
+
+				this.init = function () {
+					e = $(_html()).appendTo($('.ui-colorpicker-map-container', inst.dialog));
+
+					e.bind('mousedown', _mousedown);
+				};
+			},
+
+			bar: function (inst) {
+				var that		= this,
+					e			= null,
+					_mousedown, _mouseup, _mousemove, _html;
+
+				_mousedown = function (event) {
+					if (!inst.opened) {
+						return;
+					}
+
+					var div		= $('.ui-colorpicker-bar-layer-pointer', e),
+						offset	= div.offset(),
+						width	= div.width(),
+						height	= div.height(),
+						x		= event.pageX - offset.left,
+						y		= event.pageY - offset.top;
+
+					if (x >= 0 && x < width && y >= 0 && y < height) {
+						event.stopImmediatePropagation();
+						event.preventDefault();
+						e.unbind('mousedown', _mousedown);
+						$(document).bind('mouseup', _mouseup);
+						$(document).bind('mousemove', _mousemove);
+						_mousemove(event);
+					}
+				};
+
+				_mouseup = function (event) {
+					event.stopImmediatePropagation();
+					event.preventDefault();
+					$(document).unbind('mouseup', _mouseup);
+					$(document).unbind('mousemove', _mousemove);
+					e.bind('mousedown', _mousedown);
+				};
+
+				_mousemove = function (event) {
+					event.stopImmediatePropagation();
+					event.preventDefault();
+
+					if (event.pageY === that.y) {
+						return;
+					}
+					that.y = event.pageY;
+
+					var div = $('.ui-colorpicker-bar-layer-pointer', e),
+						offset  = div.offset(),
+						height  = div.height(),
+						y = event.pageY - offset.top;
+
+					y = Math.max(0, Math.min(y / height, 1));
+
+					// interpret values
+					switch (inst.mode) {
+					case 'h':
+						inst.color.setHSV(1 - y, null, null);
+						break;
+
+					case 's':
+						inst.color.setHSV(null, 1 - y, null);
+						break;
+
+					case 'v':
+						inst.color.setHSV(null, null, 1 - y);
+						break;
+
+					case 'r':
+						inst.color.setRGB(1 - y, null, null);
+						break;
+
+					case 'g':
+						inst.color.setRGB(null, 1 - y, null);
+						break;
+
+					case 'b':
+						inst.color.setRGB(null, null, 1 - y);
+						break;
+
+					case 'a':
+						inst.color.setAlpha(1 - y);
+						break;
+					}
+
+					inst._change();
+				};
+
+				_html = function () {
+					var html = '<div class="ui-colorpicker-bar ui-colorpicker-border">'
+							+ '<span class="ui-colorpicker-bar-layer-1">&nbsp;</span>'
+							+ '<span class="ui-colorpicker-bar-layer-2">&nbsp;</span>'
+							+ '<span class="ui-colorpicker-bar-layer-3">&nbsp;</span>'
+							+ '<span class="ui-colorpicker-bar-layer-4">&nbsp;</span>';
+
+					if (inst.options.alpha) {
+						html += '<span class="ui-colorpicker-bar-layer-alpha">&nbsp;</span>'
+							+ '<span class="ui-colorpicker-bar-layer-alphabar">&nbsp;</span>';
+					}
+
+					html += '<span class="ui-colorpicker-bar-layer-pointer"><span class="ui-colorpicker-bar-pointer"></span></span></div>';
+
+					return html;
+				};
+
+				this.update = function () {
+					switch (inst.mode) {
+					case 'h':
+					case 's':
+					case 'v':
+					case 'r':
+					case 'g':
+					case 'b':
+						$('.ui-colorpicker-bar-layer-alpha', e).show();
+						$('.ui-colorpicker-bar-layer-alphabar', e).hide();
+						break;
+
+					case 'a':
+						$('.ui-colorpicker-bar-layer-alpha', e).hide();
+						$('.ui-colorpicker-bar-layer-alphabar', e).show();
+						break;
+					}
+
+					switch (inst.mode) {
+					case 'h':
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).hide();
+						$('.ui-colorpicker-bar-layer-3', e).hide();
+						$('.ui-colorpicker-bar-layer-4', e).hide();
+						break;
+
+					case 's':
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-3', e).hide();
+						$('.ui-colorpicker-bar-layer-4', e).hide();
+						break;
+
+					case 'v':
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).hide();
+						$('.ui-colorpicker-bar-layer-3', e).hide();
+						$('.ui-colorpicker-bar-layer-4', e).hide();
+						break;
+
+					case 'r':
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
+						break;
+
+					case 'g':
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -2600px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
+						break;
+
+					case 'b':
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -3640px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -3380px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -2860px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -3120px', 'opacity': ''}).show();
+						break;
+
+					case 'a':
+						$('.ui-colorpicker-bar-layer-1', e).hide();
+						$('.ui-colorpicker-bar-layer-2', e).hide();
+						$('.ui-colorpicker-bar-layer-3', e).hide();
+						$('.ui-colorpicker-bar-layer-4', e).hide();
+						break;
+					}
+					that.repaint();
+				};
+
+				this.repaint = function () {
+					var div = $('.ui-colorpicker-bar-layer-pointer', e),
+						y = 0;
+
+					switch (inst.mode) {
+					case 'h':
+						y = (1 - inst.color.getHSV().h) * div.height();
+						break;
+
+					case 's':
+						y = (1 - inst.color.getHSV().s) * div.height();
+						$('.ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.getHSV().v);
+						$(e).css('background-color', inst.color.copy().normalize().toCSS());
+						break;
+
+					case 'v':
+						y = (1 - inst.color.getHSV().v) * div.height();
+						$(e).css('background-color', inst.color.copy().normalize().toCSS());
+						break;
+
+					case 'r':
+						y = (1 - inst.color.getRGB().r) * div.height();
+						$('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().b - inst.color.getRGB().g)));
+						$('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().g - inst.color.getRGB().b)));
+						$('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().b, inst.color.getRGB().g));
+						break;
+
+					case 'g':
+						y = (1 - inst.color.getRGB().g) * div.height();
+						$('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().b - inst.color.getRGB().r)));
+						$('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().r - inst.color.getRGB().b)));
+						$('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().r, inst.color.getRGB().b));
+						break;
+
+					case 'b':
+						y = (1 - inst.color.getRGB().b) * div.height();
+						$('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (inst.color.getRGB().r - inst.color.getRGB().g)));
+						$('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (inst.color.getRGB().g - inst.color.getRGB().r)));
+						$('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(inst.color.getRGB().r, inst.color.getRGB().g));
+						break;
+
+					case 'a':
+						y = (1 - inst.color.getAlpha()) * div.height();
+						$(e).css('background-color', inst.color.copy().normalize().toCSS());
+						break;
+					}
+
+					if (inst.mode !== 'a') {
+						$('.ui-colorpicker-bar-layer-alpha', e).css('opacity', 1 - inst.color.getAlpha());
+					}
+
+					$('.ui-colorpicker-bar-pointer', e).css('top', y - 3);
+				};
+
+				this.init = function () {
+					e = $(_html()).appendTo($('.ui-colorpicker-bar-container', inst.dialog));
+
+					e.bind('mousedown', _mousedown);
+				};
+			},
+
+			preview: function (inst) {
+				var that = this,
+					e = null,
+					_html;
+
+				_html = function () {
+					return '<div class="ui-colorpicker-preview ui-colorpicker-border">'
+						+ '<div class="ui-colorpicker-preview-initial"><div class="ui-colorpicker-preview-initial-alpha"></div></div>'
+						+ '<div class="ui-colorpicker-preview-current"><div class="ui-colorpicker-preview-current-alpha"></div></div>'
+						+ '</div>';
+				};
+
+				this.init = function () {
+					e = $(_html()).appendTo($('.ui-colorpicker-preview-container', inst.dialog));
+
+					$('.ui-colorpicker-preview-initial', e).click(function () {
+						inst.color = inst.currentColor.copy();
+						inst._change();
+					});
+
+				};
+
+				this.update = function () {
+					if (inst.options.alpha) {
+						$('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).show();
+					} else {
+						$('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).hide();
+					}
+
+					this.repaint();
+				};
+
+				this.repaint = function () {
+					$('.ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.toCSS()).attr('title', inst.currentColor.toHex());
+					$('.ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.getAlpha());
+					$('.ui-colorpicker-preview-current', e).css('background-color', inst.color.toCSS()).attr('title', inst.color.toHex());
+					$('.ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.getAlpha());
+				};
+			},
+
+			hsv: function (inst) {
+				var that = this,
+					e = null,
+					_html;
+
+				_html = function () {
+					var html = '';
+
+					if (inst.options.hsv) {
+						html +=	'<div class="ui-colorpicker-hsv-h"><input class="ui-colorpicker-mode" type="radio" value="h"/><label>' + inst._getRegional('hsvH') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="360" size="10"/><span class="ui-colorpicker-unit">&deg;</span></div>'
+							+ '<div class="ui-colorpicker-hsv-s"><input class="ui-colorpicker-mode" type="radio" value="s"/><label>' + inst._getRegional('hsvS') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>'
+							+ '<div class="ui-colorpicker-hsv-v"><input class="ui-colorpicker-mode" type="radio" value="v"/><label>' + inst._getRegional('hsvV') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100" size="10"/><span class="ui-colorpicker-unit">%</span></div>';
+					}
+
+					return '<div class="ui-colorpicker-hsv">' + html + '</div>';
+				};
+
+				this.init = function () {
+					e = $(_html()).appendTo($('.ui-colorpicker-hsv-container', inst.dialog));
+
+					$('.ui-colorpicker-mode', e).click(function () {
+						inst.mode = $(this).val();
+						inst._updateAllParts();
+					});
+
+					$('.ui-colorpicker-number', e).bind('change keyup', function () {
+						inst.color.setHSV(
 							$('.ui-colorpicker-hsv-h .ui-colorpicker-number', e).val() / 360,
 							$('.ui-colorpicker-hsv-s .ui-colorpicker-number', e).val() / 100,
 							$('.ui-colorpicker-hsv-v .ui-colorpicker-number', e).val() / 100
 						);
-                        inst._change();
-                    });
-                };
+						inst._change();
+					});
+				};
 
-                this.repaint = function () {
+				this.repaint = function () {
 					var hsv = inst.color.getHSV();
 					hsv.h *= 360;
 					hsv.s *= 100;
 					hsv.v *= 100;
 
-                    $.each(hsv, function (index, value) {
+					$.each(hsv, function (index, value) {
 						var input = $('.ui-colorpicker-hsv-' + index + ' .ui-colorpicker-number', e);
-                        value = Math.round(value);
-                        if (input.val() !== value) {
-                            input.val(value);
-                        }
-                    });
-                };
+						value = Math.round(value);
+						if (input.val() !== value) {
+							input.val(value);
+						}
+					});
+				};
 
-                this.update = function () {
-                    $('.ui-colorpicker-mode', e).each(function () {
-                        $(this).attr('checked', $(this).val() === inst.mode);
-                    });
-                    this.repaint();
-                };
-            },
+				this.update = function () {
+					$('.ui-colorpicker-mode', e).each(function () {
+						$(this).attr('checked', $(this).val() === inst.mode);
+					});
+					this.repaint();
+				};
+			},
 
-            rgb: function (inst) {
-                var that = this,
-                    e = null,
-                    _html;
+			rgb: function (inst) {
+				var that = this,
+					e = null,
+					_html;
 
-                _html = function () {
-                    var html = '';
+				_html = function () {
+					var html = '';
 
-                    if (inst.options.rgb) {
-                        html += '<div class="ui-colorpicker-rgb-r"><input class="ui-colorpicker-mode" type="radio" value="r"/><label>' + inst._getRegional('rgbR') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255"/></div>'
-                            + '<div class="ui-colorpicker-rgb-g"><input class="ui-colorpicker-mode" type="radio" value="g"/><label>' + inst._getRegional('rgbG') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255"/></div>'
-                            + '<div class="ui-colorpicker-rgb-b"><input class="ui-colorpicker-mode" type="radio" value="b"/><label>' + inst._getRegional('rgbB') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255"/></div>';
-                    }
+					if (inst.options.rgb) {
+						html += '<div class="ui-colorpicker-rgb-r"><input class="ui-colorpicker-mode" type="radio" value="r"/><label>' + inst._getRegional('rgbR') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255"/></div>'
+							+ '<div class="ui-colorpicker-rgb-g"><input class="ui-colorpicker-mode" type="radio" value="g"/><label>' + inst._getRegional('rgbG') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255"/></div>'
+							+ '<div class="ui-colorpicker-rgb-b"><input class="ui-colorpicker-mode" type="radio" value="b"/><label>' + inst._getRegional('rgbB') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="255"/></div>';
+					}
 
-                    return '<div class="ui-colorpicker-rgb">' + html + '</div>';
-                };
+					return '<div class="ui-colorpicker-rgb">' + html + '</div>';
+				};
 
-                this.init = function () {
-                    e = $(_html()).appendTo($('.ui-colorpicker-rgb-container', inst.dialog));
+				this.init = function () {
+					e = $(_html()).appendTo($('.ui-colorpicker-rgb-container', inst.dialog));
 
-                    $('.ui-colorpicker-mode', e).click(function () {
-                        inst.mode = $(this).val();
-                        inst._updateAllParts();
-                    });
+					$('.ui-colorpicker-mode', e).click(function () {
+						inst.mode = $(this).val();
+						inst._updateAllParts();
+					});
 
-                    $('.ui-colorpicker-number', e).bind('change keyup', function () {
-                        inst.color.setRGB(
+					$('.ui-colorpicker-number', e).bind('change keyup', function () {
+						inst.color.setRGB(
 							$('.ui-colorpicker-rgb-r .ui-colorpicker-number', e).val() / 255,
 							$('.ui-colorpicker-rgb-g .ui-colorpicker-number', e).val() / 255,
 							$('.ui-colorpicker-rgb-b .ui-colorpicker-number', e).val() / 255
 						);
 
-                        inst._change();
-                    });
-                };
+						inst._change();
+					});
+				};
 
-                this.repaint = function () {
-                    $.each(inst.color.getRGB(), function (index, value) {
+				this.repaint = function () {
+					$.each(inst.color.getRGB(), function (index, value) {
 						var input = $('.ui-colorpicker-rgb-' + index + ' .ui-colorpicker-number', e);
-                        value = Math.round(value * 255);
-                        if (input.val() !== value) {
-                            input.val(value);
-                        }
-                    });
-                };
+						value = Math.round(value * 255);
+						if (input.val() !== value) {
+							input.val(value);
+						}
+					});
+				};
 
-                this.update = function () {
-                    $('.ui-colorpicker-mode', e).each(function () {
-                        $(this).attr('checked', $(this).val() === inst.mode);
-                    });
-                    this.repaint();
-                };
-            },
+				this.update = function () {
+					$('.ui-colorpicker-mode', e).each(function () {
+						$(this).attr('checked', $(this).val() === inst.mode);
+					});
+					this.repaint();
+				};
+			},
 
-            lab: function (inst) {
-                var that = this,
-                    part = null,
-                    html = function () {
+			rgbslider: function (inst) {
+				var name	= 'rgbslider',
+					that	= this,
+					sliders	= {	r: $('<div class="ui-colorpicker-slider"/>'),
+								g: $('<div class="ui-colorpicker-slider"/>'),
+								b: $('<div class="ui-colorpicker-slider"/>')
+							};
+
+				this.init = function () {
+					if (!inst.options.rgb) {
+						return;
+					}
+
+					$('<div class="ui-colorpicker-'+name+'"/>').append(sliders.r, sliders.g, sliders.b)
+					.appendTo($('.ui-colorpicker-'+name+'-container', inst.dialog));
+
+					function refresh() {
+						inst.color.setRGB(
+							sliders.r.slider('value') / 255,
+							sliders.g.slider('value') / 255,
+							sliders.b.slider('value') / 255
+						);
+
+						inst._change();
+					}
+
+					$().add(sliders.r).add(sliders.g).add(sliders.b).slider({
+						min: 0,
+						max: 255,
+						step: 1,
+						slide:	refresh,
+						change:	refresh
+					});
+				};
+
+				this.repaint = function () {
+					$.each(inst.color.getRGB(), function (index, value) {
+						var input = sliders[index];
+						value = Math.round(value * 255);
+						if (input.slider('value') !== value) {
+							input.slider('value', value);
+						}
+					});
+				};
+
+				this.update = function () {
+					this.repaint();
+				};
+			},
+
+			lab: function (inst) {
+				var that = this,
+					part = null,
+					html = function () {
 						var html = '';
 
 						if (inst.options.hsv) {
@@ -949,46 +998,46 @@
 						return '<div class="ui-colorpicker-lab">' + html + '</div>';
 					};
 
-                this.init = function () {
+				this.init = function () {
 					var data = 0;
 
-                    part = $(html()).appendTo($('.ui-colorpicker-lab-container', inst.dialog));
+					part = $(html()).appendTo($('.ui-colorpicker-lab-container', inst.dialog));
 
-                    $('.ui-colorpicker-number', part).on('change keyup', function (event) {
-                        inst.color.setLAB(
+					$('.ui-colorpicker-number', part).on('change keyup', function (event) {
+						inst.color.setLAB(
 							parseInt($('.ui-colorpicker-lab-l .ui-colorpicker-number', part).val(), 10) / 100,
 							(parseInt($('.ui-colorpicker-lab-a .ui-colorpicker-number', part).val(), 10) + 128) / 255,
 							(parseInt($('.ui-colorpicker-lab-b .ui-colorpicker-number', part).val(), 10) + 128) / 255
 						);
-                        inst._change();
-                    });
-                };
+						inst._change();
+					});
+				};
 
-                this.repaint = function () {
+				this.repaint = function () {
 					var lab = inst.color.getLAB();
 					lab.l *= 100;
 					lab.a = (lab.a * 255) - 128;
 					lab.b = (lab.b * 255) - 128;
 
-                    $.each(lab, function (index, value) {
+					$.each(lab, function (index, value) {
 						var input = $('.ui-colorpicker-lab-' + index + ' .ui-colorpicker-number', part);
-                        value = Math.round(value);
-                        if (input.val() !== value) {
-                            input.val(value);
-                        }
-                    });
-                };
+						value = Math.round(value);
+						if (input.val() !== value) {
+							input.val(value);
+						}
+					});
+				};
 
-                this.update = function () {
-                    this.repaint();
-                };
+				this.update = function () {
+					this.repaint();
+				};
 
-            },
+			},
 
-            cmyk: function (inst) {
-                var that = this,
-                    part = null,
-                    html = function () {
+			cmyk: function (inst) {
+				var that = this,
+					part = null,
+					html = function () {
 						var html = '';
 
 						if (inst.options.hsv) {
@@ -1001,149 +1050,149 @@
 						return '<div class="ui-colorpicker-cmyk">' + html + '</div>';
 					};
 
-                this.init = function () {
-                    part = $(html()).appendTo($('.ui-colorpicker-cmyk-container', inst.dialog));
+				this.init = function () {
+					part = $(html()).appendTo($('.ui-colorpicker-cmyk-container', inst.dialog));
 
-                    $('.ui-colorpicker-number', part).on('change keyup', function (event) {
-                        inst.color.setCMYK(
+					$('.ui-colorpicker-number', part).on('change keyup', function (event) {
+						inst.color.setCMYK(
 							parseInt($('.ui-colorpicker-cmyk-c .ui-colorpicker-number', part).val(), 10) / 100,
 							parseInt($('.ui-colorpicker-cmyk-m .ui-colorpicker-number', part).val(), 10) / 100,
 							parseInt($('.ui-colorpicker-cmyk-y .ui-colorpicker-number', part).val(), 10) / 100,
 							parseInt($('.ui-colorpicker-cmyk-k .ui-colorpicker-number', part).val(), 10) / 100
 						);
-                        inst._change();
-                    });
-                };
+						inst._change();
+					});
+				};
 
-                this.repaint = function () {
-                    $.each(inst.color.getCMYK(), function (index, value) {
+				this.repaint = function () {
+					$.each(inst.color.getCMYK(), function (index, value) {
 						var input = $('.ui-colorpicker-cmyk-' + index + ' .ui-colorpicker-number', part);
-                        value = Math.round(value * 100);
-                        if (input.val() !== value) {
-                            input.val(value);
-                        }
-                    });
-                };
+						value = Math.round(value * 100);
+						if (input.val() !== value) {
+							input.val(value);
+						}
+					});
+				};
 
-                this.update = function () {
-                    this.repaint();
-                };
+				this.update = function () {
+					this.repaint();
+				};
 
-            },
+			},
 
-            alpha: function (inst) {
-                var that = this,
-                    e = null,
-                    _html;
+			alpha: function (inst) {
+				var that = this,
+					e = null,
+					_html;
 
-                _html = function () {
-                    var html = '';
+				_html = function () {
+					var html = '';
 
-                    if (inst.options.alpha) {
-                        html += '<div class="ui-colorpicker-a"><input class="ui-colorpicker-mode" name="mode" type="radio" value="a"/><label>' + inst._getRegional('alphaA') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100"/><span class="ui-colorpicker-unit">%</span></div>';
-                    }
+					if (inst.options.alpha) {
+						html += '<div class="ui-colorpicker-a"><input class="ui-colorpicker-mode" name="mode" type="radio" value="a"/><label>' + inst._getRegional('alphaA') + '</label><input class="ui-colorpicker-number" type="number" min="0" max="100"/><span class="ui-colorpicker-unit">%</span></div>';
+					}
 
-                    return '<div class="ui-colorpicker-alpha">' + html + '</div>';
-                };
+					return '<div class="ui-colorpicker-alpha">' + html + '</div>';
+				};
 
-                this.init = function () {
-                    e = $(_html()).appendTo($('.ui-colorpicker-alpha-container', inst.dialog));
+				this.init = function () {
+					e = $(_html()).appendTo($('.ui-colorpicker-alpha-container', inst.dialog));
 
-                    $('.ui-colorpicker-mode', e).click(function () {
-                        inst.mode = $(this).val();
-                        inst._updateAllParts();
-                    });
+					$('.ui-colorpicker-mode', e).click(function () {
+						inst.mode = $(this).val();
+						inst._updateAllParts();
+					});
 
-                    $('.ui-colorpicker-number', e).bind('change keyup', function () {
-                        inst.color.setAlpha($('.ui-colorpicker-a .ui-colorpicker-number', e).val() / 100);
-                        inst._change();
-                    });
-                };
+					$('.ui-colorpicker-number', e).bind('change keyup', function () {
+						inst.color.setAlpha($('.ui-colorpicker-a .ui-colorpicker-number', e).val() / 100);
+						inst._change();
+					});
+				};
 
-                this.update = function () {
-                    $('.ui-colorpicker-mode', e).each(function () {
-                        $(this).attr('checked', $(this).val() === inst.mode);
-                    });
-                    this.repaint();
-                };
+				this.update = function () {
+					$('.ui-colorpicker-mode', e).each(function () {
+						$(this).attr('checked', $(this).val() === inst.mode);
+					});
+					this.repaint();
+				};
 
-                this.repaint = function () {
+				this.repaint = function () {
 					var input = $('.ui-colorpicker-a .ui-colorpicker-number', e),
 						value = Math.round(inst.color.getAlpha() * 100);
 					if (!input.is(':focus') && input.val() !== value) {
 						input.val(value);
 					}
-                };
-            },
+				};
+			},
 
-            hex: function (inst) {
-                var that = this,
-                    e = null,
-                    _html;
+			hex: function (inst) {
+				var that = this,
+					e = null,
+					_html;
 
-                _html = function () {
-                    var html = '';
+				_html = function () {
+					var html = '';
 
-                    if (inst.options.alpha) {
-                        html += '<input class="ui-colorpicker-hex-alpha" type="text" maxlength="2" size="2"/>';
-                    }
+					if (inst.options.alpha) {
+						html += '<input class="ui-colorpicker-hex-alpha" type="text" maxlength="2" size="2"/>';
+					}
 
-                    html += '<input class="ui-colorpicker-hex-input" type="text" maxlength="6" size="6"/>';
+					html += '<input class="ui-colorpicker-hex-input" type="text" maxlength="6" size="6"/>';
 
-                    return '<div class="ui-colorpicker-hex"><label>#</label>' + html + '</div>';
-                };
+					return '<div class="ui-colorpicker-hex"><label>#</label>' + html + '</div>';
+				};
 
-                this.init = function () {
-                    e = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
+				this.init = function () {
+					e = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
 
-                    // repeat here makes the invalid input disappear faster
-                    $('.ui-colorpicker-hex-input', e).bind('change keydown keyup', function (a, b, c) {
+					// repeat here makes the invalid input disappear faster
+					$('.ui-colorpicker-hex-input', e).bind('change keydown keyup', function (a, b, c) {
 						if (/[^a-fA-F0-9]/.test($(this).val())) {
 							$(this).val($(this).val().replace(/[^a-fA-F0-9]/, ''));
 						}
-                    });
+					});
 
-                    $('.ui-colorpicker-hex-input', e).bind('change keyup', function () {
-                        // repeat here makes sure that the invalid input doesn't get parsed
-                        inst.color = _parseHex($(this).val()).setAlpha(inst.color.getAlpha());
-                        inst._change();
-                    });
+					$('.ui-colorpicker-hex-input', e).bind('change keyup', function () {
+						// repeat here makes sure that the invalid input doesn't get parsed
+						inst.color = _parseHex($(this).val()).setAlpha(inst.color.getAlpha());
+						inst._change();
+					});
 
-                    $('.ui-colorpicker-hex-alpha', e).bind('change keydown keyup', function () {
+					$('.ui-colorpicker-hex-alpha', e).bind('change keydown keyup', function () {
 						if (/[^a-fA-F0-9]/.test($(this).val())) {
 							$(this).val($(this).val().replace(/[^a-fA-F0-9]/, ''));
 						}
-                    });
+					});
 
-                    $('.ui-colorpicker-hex-alpha', e).bind('change keyup', function () {
-                        inst.color.setAlpha(parseInt($('.ui-colorpicker-hex-alpha', e).val(), 16) / 255);
-                        inst._change();
-                    });
-                };
+					$('.ui-colorpicker-hex-alpha', e).bind('change keyup', function () {
+						inst.color.setAlpha(parseInt($('.ui-colorpicker-hex-alpha', e).val(), 16) / 255);
+						inst._change();
+					});
+				};
 
-                this.update = function () {
-                    this.repaint();
-                };
+				this.update = function () {
+					this.repaint();
+				};
 
-                this.repaint = function () {
-                    if (!$('.ui-colorpicker-hex-input', e).is(':focus')) {
-                        $('.ui-colorpicker-hex-input', e).val(inst.color.toHex(true));
-                    }
+				this.repaint = function () {
+					if (!$('.ui-colorpicker-hex-input', e).is(':focus')) {
+						$('.ui-colorpicker-hex-input', e).val(inst.color.toHex(true));
+					}
 
-                    if (!$('.ui-colorpicker-hex-alpha', e).is(':focus')) {
-                        $('.ui-colorpicker-hex-alpha', e).val(_intToHex(inst.color.getAlpha() * 255));
-                    }
-                };
-            },
+					if (!$('.ui-colorpicker-hex-alpha', e).is(':focus')) {
+						$('.ui-colorpicker-hex-alpha', e).val(_intToHex(inst.color.getAlpha() * 255));
+					}
+				};
+			},
 
-            swatches: function (inst) {
-                var that = this,
-                    part = null,
-                    html = function () {
+			swatches: function (inst) {
+				var that = this,
+					part = null,
+					html = function () {
 						var html = '';
 
 						$.each(inst._getSwatches(), function (name, color) {
-							var c = new Color(color.r, color.g, color.b),
+							var c = new $.colorpicker.Color(color.r, color.g, color.b),
 								css = c.toCSS();
 							html += '<div class="ui-colorpicker-swatch" style="background-color:' + css + '" title="' + name + '"></div>';
 						});
@@ -1151,22 +1200,22 @@
 						return '<div class="ui-colorpicker-swatches ui-colorpicker-border" style="width:' + inst.options.swatchesWidth + 'px">' + html + '</div>';
 					};
 
-                this.init = function () {
-                    part = $(html()).appendTo($('.ui-colorpicker-swatches-container', inst.dialog));
+				this.init = function () {
+					part = $(html()).appendTo($('.ui-colorpicker-swatches-container', inst.dialog));
 
-                    $('.ui-colorpicker-swatch', part).click(function () {
-                        inst.color	= inst._parseColor($(this).css('background-color'));
-                        inst._change();
-                    });
-                };
-            },
+					$('.ui-colorpicker-swatch', part).click(function () {
+						inst.color	= inst._parseColor($(this).css('background-color'));
+						inst._change();
+					});
+				};
+			},
 
-            footer: function (inst) {
-                var that = this,
+			footer: function (inst) {
+				var that = this,
 					part = null,
 					id_transparent = 'ui-colorpicker-special-transparent-'+_colorpicker_index,
 					id_none = 'ui-colorpicker-special-none-'+_colorpicker_index,
-                    html = function () {
+					html = function () {
 						var html = '';
 
 						if (inst.options.alpha || (!inst.inline && inst.options.showNoneButton)) {
@@ -1193,53 +1242,53 @@
 						return '<div class="ui-dialog-buttonpane ui-widget-content">' + html + '</div>';
 					};
 
-                this.init = function () {
-                    part = $(html()).appendTo(inst.dialog);
+				this.init = function () {
+					part = $(html()).appendTo(inst.dialog);
 
-                    $('.ui-colorpicker-ok', part).button().click(function () {
-                        inst.close();
-                    });
+					$('.ui-colorpicker-ok', part).button().click(function () {
+						inst.close();
+					});
 
-                    $('.ui-colorpicker-cancel', part).button().click(function () {
-                        inst.color = inst.currentColor.copy();
-                        inst._change(inst.color.set);
-                        inst.close();
-                    });
+					$('.ui-colorpicker-cancel', part).button().click(function () {
+						inst.color = inst.currentColor.copy();
+						inst._change(inst.color.set);
+						inst.close();
+					});
 
-                    //inst._getRegional('transparent')
-                    $('.ui-colorpicker-buttonset', part).buttonset();
+					//inst._getRegional('transparent')
+					$('.ui-colorpicker-buttonset', part).buttonset();
 
-                    $('.ui-colorpicker-special-color', part).click(function () {
-                        inst._change();
-                    });
+					$('.ui-colorpicker-special-color', part).click(function () {
+						inst._change();
+					});
 
-                    $('#'+id_none, part).click(function () {
-                        inst._change(false);
-                    });
+					$('#'+id_none, part).click(function () {
+						inst._change(false);
+					});
 
-                    $('#'+id_transparent, part).click(function () {
-                        inst.color.setAlpha(0);
-                        inst._change();
-                    });
-                };
+					$('#'+id_transparent, part).click(function () {
+						inst.color.setAlpha(0);
+						inst._change();
+					});
+				};
 
-                this.repaint = function () {
-                    if (!inst.color.set) {
-                        $('.ui-colorpicker-special-none', part).attr('checked', true).button( "refresh" );
-                    } else if (inst.color.getAlpha() == 0) {
-                        $('.ui-colorpicker-special-transparent', part).attr('checked', true).button( "refresh" );
-                    } else {
-                        $('input', part).attr('checked', false).button( "refresh" );
-                    }
+				this.repaint = function () {
+					if (!inst.color.set) {
+						$('.ui-colorpicker-special-none', part).attr('checked', true).button( "refresh" );
+					} else if (inst.color.getAlpha() == 0) {
+						$('.ui-colorpicker-special-transparent', part).attr('checked', true).button( "refresh" );
+					} else {
+						$('input', part).attr('checked', false).button( "refresh" );
+					}
 
-                    $('.ui-colorpicker-cancel', part).button(inst.changed ? 'enable' : 'disable');
-                };
+					$('.ui-colorpicker-cancel', part).button(inst.changed ? 'enable' : 'disable');
+				};
 
-                this.update = function () {};
-            }
-        },
+				this.update = function () {};
+			}
+		};
 
-        Color = function () {
+		this.Color = function () {
 			var spaces = {	rgb:	{r: 0, g: 0, b: 0},
 							hsv:	{h: 0, s: 0, v: 0},
 							hsl:	{h: 0, s: 0, l: 0},
@@ -1560,7 +1609,7 @@
 			};
 
 			this.setRGB = function(r, g, b) {
-				spaces = {rgb: this.getRGB()};
+				spaces = { rgb: this.getRGB() };
 				if (r !== null) {
 					spaces.rgb.r = _clip(r);
 				}
@@ -1726,16 +1775,16 @@
 					B:	this.getLAB().b
 				};
 			};
-			
+
 			this.getSpaces = function() {
 				return $.extend(true, {}, spaces);
 			};
-			
+
 			this.setSpaces = function(new_spaces) {
 				spaces = new_spaces;
 				return this;
 			};
-			
+
 			this.distance = function(color) {
 				var space	= 'lab',
 					getter	= 'get'+space.toUpperCase(),
@@ -1788,7 +1837,7 @@
 			this.copy = function() {
 				var spaces = this.getSpaces(),
 					a = this.getAlpha();
-				return new Color(spaces, a);
+				return new $.colorpicker.Color(spaces, a);
 			};
 
 			// Construct
@@ -1801,6 +1850,7 @@
 				this.setAlpha(args[3] === 0 ? 0 : args[3] || 1);
 			}
 		};
+	};
 
 	$.widget("vanderlee.colorpicker", {
 		options: {
@@ -2065,8 +2115,8 @@
 			// Add any parts to the internal parts list
 			that.parts = {};
 			$.each(parts_list, function(index, part) {
-				if (_parts[part]) {
-					that.parts[part] = new _parts[part](that);
+				if ($.colorpicker.parts[part]) {
+					that.parts[part] = new $.colorpicker.parts[part](that);
 				}
 			});
 
@@ -2399,19 +2449,19 @@
 
 			// no color
             if (color == '') {
-                return new Color();
+                return new $.colorpicker.Color();
             }
 
 			// named swatch
 			c = this._getSwatch($.trim(color));
             if (c) {
-                return new Color(c.r, c.g, c.b);
+                return new $.colorpicker.Color(c.r, c.g, c.b);
             }
 
             // rgba(r,g,b,a)
             m = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
             if (m) {
-                return new Color(
+                return new $.colorpicker.Color(
                     m[1] / 255,
                     m[2] / 255,
                     m[3] / 255,
@@ -2422,7 +2472,7 @@
             // hsla(r,g,b,a)
             m = /^hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
             if (m) {
-				return (new Color()).setHSL(
+				return (new $.colorpicker.Color()).setHSL(
 					m[1] / 255,
 					m[2] / 255,
 					m[3] / 255).setAlpha(parseFloat(m[4]));
@@ -2431,7 +2481,7 @@
             // rgba(r%,g%,b%,a%)
             m = /^rgba?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
             if (m) {
-                return new Color(
+                return new $.colorpicker.Color(
                     m[1] / 100,
                     m[2] / 100,
                     m[3] / 100,
@@ -2442,7 +2492,7 @@
             // hsla(r%,g%,b%,a%)
             m = /^hsla?\(\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*,\s*(\d+(?:\.\d+)?)\%\s*(?:,\s*(\d+(?:\.\d+)?)\s*)?\)$/.exec(color);
             if (m) {
-				return (new Color()).setHSL(
+				return (new $.colorpicker.Color()).setHSL(
 					m[1] / 100,
 					m[2] / 100,
 					m[3] / 100).setAlpha(m[4] / 100);
@@ -2451,7 +2501,7 @@
             // #rrggbb
             m = /^#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/.exec(color);
             if (m) {
-                return new Color(
+                return new $.colorpicker.Color(
                     parseInt(m[1], 16) / 255,
                     parseInt(m[2], 16) / 255,
                     parseInt(m[3], 16) / 255
@@ -2461,7 +2511,7 @@
             // #rgb
             m = /^#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
             if (m) {
-                return new Color(
+                return new $.colorpicker.Color(
                    parseInt(m[1] + m[1], 16) / 255,
                    parseInt(m[2] + m[2], 16) / 255,
                    parseInt(m[3] + m[3], 16) / 255
@@ -2475,7 +2525,7 @@
 			var name	= false;
 
 			$.each(this._getSwatches(), function(n, swatch) {
-				if (color.equals(new Color(swatch.r, swatch.g, swatch.b))) {
+				if (color.equals(new $.colorpicker.Color(swatch.r, swatch.g, swatch.b))) {
 					name = n;
 					return false;
 				}
@@ -2492,7 +2542,7 @@
 				d;
 
 			$.each(this._getSwatches(), function(n, swatch) {
-				d = color.distance(new Color(swatch.r, swatch.g, swatch.b));
+				d = color.distance(new $.colorpicker.Color(swatch.r, swatch.g, swatch.b));
 				if (d < distance || distance === null) {
 					name = n;
 					if (d == 0) {
