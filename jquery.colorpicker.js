@@ -865,7 +865,7 @@
 					$.each(hsv, function (index, value) {
 						var input = $('.ui-colorpicker-hsv-' + index + ' .ui-colorpicker-number', e);
 						value = Math.round(value);
-						if (input.val() !== value) {
+						if (input.val() != value) {
 							input.val(value);
 						}
 					});
@@ -905,6 +905,7 @@
 					});
 
 					$('.ui-colorpicker-number', e).bind('change keyup', function () {
+						var r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', e).val();
 						inst.color.setRGB(
 							$('.ui-colorpicker-rgb-r .ui-colorpicker-number', e).val() / 255,
 							$('.ui-colorpicker-rgb-g .ui-colorpicker-number', e).val() / 255,
@@ -918,8 +919,8 @@
 				this.repaint = function () {
 					$.each(inst.color.getRGB(), function (index, value) {
 						var input = $('.ui-colorpicker-rgb-' + index + ' .ui-colorpicker-number', e);
-						value = Math.round(value * 255);
-						if (input.val() !== value) {
+						value = Math.floor(value * 255);
+						if (input.val() != value) {
 							input.val(value);
 						}
 					});
@@ -972,7 +973,7 @@
 					$.each(lab, function (index, value) {
 						var input = $('.ui-colorpicker-lab-' + index + ' .ui-colorpicker-number', part);
 						value = Math.round(value);
-						if (input.val() !== value) {
+						if (input.val() != value) {
 							input.val(value);
 						}
 					});
@@ -1018,7 +1019,7 @@
 					$.each(inst.color.getCMYK(), function (index, value) {
 						var input = $('.ui-colorpicker-cmyk-' + index + ' .ui-colorpicker-number', part);
 						value = Math.round(value * 100);
-						if (input.val() !== value) {
+						if (input.val() != value) {
 							input.val(value);
 						}
 					});
@@ -1069,7 +1070,7 @@
 				this.repaint = function () {
 					var input = $('.ui-colorpicker-a .ui-colorpicker-number', e),
 						value = Math.round(inst.color.getAlpha() * 100);
-					if (!input.is(':focus') && input.val() !== value) {
+					if (input.val() != value) {
 						input.val(value);
 					}
 				};
