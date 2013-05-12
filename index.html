@@ -17,6 +17,7 @@
 		<script src="i18n/jquery.ui.colorpicker-nl.js"></script>
 		<script src="swatches/jquery.ui.colorpicker-pantone.js"></script>
 		<script src="parts/jquery.ui.colorpicker-rgbslider.js"></script>
+		<script src="parts/jquery.ui.colorpicker-memory.js"></script>
 
 		<script>
 			$(function() {
@@ -45,7 +46,7 @@
 			  <li><a href="#tab-layout">Custom layout</a></li>
 			  <li><a href="#tab-pantone">Custom swatches</a></li>
 			  <li><a href="#tab-hidden-input">Hidden input</a></li>
-			  <li><a href="#tab-rgb-slider">RGB slider</a></li>
+			  <li><a href="#tab-plugins">Plugins</a></li>
 			</ul>
 
 			<div id="tab-input">
@@ -146,11 +147,14 @@
 				<button id="cp-hidden-input-open">Open</button>
 			</div>
 
-			<div id="tab-rgb-slider">
-				<h2>RGB Slider input</h2>
-				Custom RGB slider part, included in dialog along original parts.<br/>
+			<div id="tab-plugins">
+				<h2>Plugins</h2>
 				Demonstrates how to extend the set of parts with plugins.<br/>
-				<input type="text" class="cp-rgb-slider" value="#abc123"/>
+				<ol>
+					<li>RGB Slider - Individual RGB sliders</li>
+					<li>Memory - store and retrieve colors with cookies</li>
+				</ol>
+				<input type="text" class="cp-plugins" value="#18b7af"/>
 			</div>
 		</div>
 		
@@ -293,12 +297,13 @@
 					dialogHidden.colorpicker('open');
 				});
 
-                $('.cp-rgb-slider').colorpicker({
-					parts:	['header', 'preview', 'hex', 'rgbslider', 'footer'],
+                $('.cp-plugins').colorpicker({
+					parts:	['header', 'preview', 'hex', 'rgbslider', 'memory', 'footer'],
 					layout: {
 						preview:	[0, 0, 1, 1],
 						hex:		[1, 0, 1, 1],
-						rgbslider:	[0, 1, 2, 1]
+						rgbslider:	[0, 1, 2, 1],
+						memory:		[0, 2, 2, 1]
 					}
 				});
 			});
