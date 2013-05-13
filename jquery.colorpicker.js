@@ -1545,7 +1545,7 @@
 					};
 				};
 
-			this.set = true;
+			this.set = false;
 
 			this.setAlpha = function(_a) {
 				if (_a !== null) {
@@ -1795,10 +1795,12 @@
 			if (args.length == 2) {
 				this.setSpaces(args[0]);
 				this.setAlpha(args[1] === 0 ? 0 : args[1] || 1);
+				this.set = true;
 			}
 			if (args.length > 2) {
 				this.setRGB(args[0], args[1], args[2]);
 				this.setAlpha(args[3] === 0 ? 0 : args[3] || 1);
+				this.set = true;
 			}
 		};
 	};
@@ -2015,6 +2017,7 @@
 					switch (property) {
 						case 'color':
 						case 'background-color':
+						case 'backgroundColor':
 						case 'outline-color':
 						case 'border-color':
 							$(this.options.altField).css(property, this.color.set? this.color.toCSS() : '');
@@ -2323,9 +2326,9 @@
 			// update input element content
 			if (!this.inline) {
 				if (!this.color.set) {
-					this.element.val('');
+					this.element.val('').change();
 				} else if (!this.color.equals(this._parseColor(this.element.val()))) {
-					this.element.val(this._formatColor(this.options.colorFormat, this.color));
+					this.element.val(this._formatColor(this.options.colorFormat, this.color)).change();
 				}
 
 				this._setImageBackground();
