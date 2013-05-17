@@ -763,7 +763,7 @@
 
 					case 'a':
 						y = (1 - inst.color.getAlpha()) * div.height();
-						$(e).css('background-color', inst.color.copy().normalize().toCSS());
+						$(e).css('background-color', inst.color.copy().toCSS());
 						break;
 					}
 
@@ -982,7 +982,6 @@
 				this.update = function () {
 					this.repaint();
 				};
-
 			},
 
 			cmyk: function (inst) {
