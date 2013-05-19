@@ -1027,7 +1027,6 @@
 				this.update = function () {
 					this.repaint();
 				};
-
 			},
 
 			alpha: function (inst) {
@@ -1864,7 +1863,7 @@
 
 			++_colorpicker_index;
 
-			that.widgetEventPrefix = 'color';
+			that.widgetEventPrefix = 'colorpicker';
 
 			that.opened		= false;
 			that.generated	= false;
