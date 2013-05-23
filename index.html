@@ -206,6 +206,15 @@
 										},
 						close:			function(event, color) {
 											addToEventLog('Close', color.formatted + ' r:' + color.rgb.r + ' g:' + color.rgb.g + ' b:' + color.rgb.b + ' a:' + color.a);
+										},
+						ok:         	function(event, color) {
+											addToEventLog('Ok', color.formatted + ' r:' + color.rgb.r + ' g:' + color.rgb.g + ' b:' + color.rgb.b + ' a:' + color.a);
+										},
+						open:         	function(event, color) {
+											addToEventLog('Open', color.formatted + ' r:' + color.rgb.r + ' g:' + color.rgb.g + ' b:' + color.rgb.b + ' a:' + color.a);
+										},
+						cancel:			function(event, color) {
+											addToEventLog('Cancel', color.formatted + ' r:' + color.rgb.r + ' g:' + color.rgb.g + ' b:' + color.rgb.b + ' a:' + color.a);
 										}
 					});
 				}
