@@ -1199,9 +1199,7 @@
 					});
 
 					$('.ui-colorpicker-cancel', part).button().click(function () {
-						inst.color = inst.currentColor.copy();
-						inst._change(inst.color.set);
-						inst.close();
+						inst.close(true);   //cancel
 					});
 
 					//inst._getRegional('transparent')
@@ -1851,9 +1849,11 @@
 			swatchesWidth:		84,			// width (in number of pixels) of swatches box.
 			title:				null,
 
-			close:              null,
+			cancel:             null,
+            close:              null,
 			init:				null,
 			select:             null,
+            ok:                 null,
 			open:               null
 		},
 
@@ -2201,11 +2201,16 @@
 			}
 		},
 
-		close: function () {
+		close: function (cancel) {
 			var that = this;
 
-			that.currentColor	= that.color.copy();
-			that.changed		= false;
+            if (cancel) {
+                that._change(that.currentColor.set);
+                that._callback('cancel', true);
+            } else {
+                that.changed		= false;
+                that._callback('ok', true);
+            }
 
 			// tear down the interface
 			that._effectHide(that.dialog, function () {
@@ -2324,9 +2329,9 @@
 			// update input element content
 			if (!this.inline) {
 				if (!this.color.set) {
-					this.element.val('').change();
+					this.element.val('');
 				} else if (!this.color.equals(this._parseColor(this.element.val()))) {
-					this.element.val(this._formatColor(this.options.colorFormat, this.color)).change();
+					this.element.val(this._formatColor(this.options.colorFormat, this.color));
 				}
 
 				this._setImageBackground();
