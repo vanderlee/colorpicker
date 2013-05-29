@@ -107,7 +107,8 @@
 			cell = layout[index = 0];
 			for (y = 0; y < height; ++y) {
 				html += '<tr>';
-				for (x = 0; x < width; x) {
+                x = 0;
+                while (x < width) {
 					if (typeof cell !== 'undefined' && x == cell.pos[0] && y == cell.pos[1]) {
 						// Create a "real" cell
 						html += callback(cell, x, y);
@@ -1900,6 +1901,8 @@
 					// Check if clicked on button
 					var p,
 						parents = $(event.target).parents();
+                    // add the event.target in case of buttonImageOnly and closeOnOutside both are set to true
+                    parents.push(event.target);
 					for (p = 0; p <= parents.length; ++p) {
 						if (that.button !== null && parents[p] === that.button[0]) {
 							return;
@@ -1932,7 +1935,8 @@
 						that.image = $('<img/>').attr({
 							'src':		that.options.buttonImage,
 							'alt':		text,
-							'title':	text
+							'title':	text,
+                            'class':    (text + '_image').toLowerCase()
 						});
 
 						that._setImageBackground();
