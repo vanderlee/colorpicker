@@ -1876,9 +1876,8 @@
 			that.overlay	= null;
 
 			that.mode		= that.options.mode;
-
-			if (this.element[0].nodeName.toLowerCase() === 'input' || !that.options.inline) {
-				that._setColor(that.element.val());
+			if (that.element.is('input') || !that.options.inline) {
+				that._setColor(that.element.is('input') ? that.element.val() : that.options.color);
 
 				this._callback('init');
 
@@ -2050,7 +2049,8 @@
 				layout_parts;
 
 			// Set color based on element?
-			that._setColor(that.inline? that.options.color : that.element.val());
+
+			that._setColor(that.inline || !that.element.is('input') ? that.options.color : that.element.val());
 
 			// Determine the parts to include in this colorpicker
 			if (typeof that.options.parts === 'string') {
