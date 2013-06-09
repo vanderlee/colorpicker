@@ -954,7 +954,7 @@
 
 					part = $(html()).appendTo($('.ui-colorpicker-lab-container', inst.dialog));
 
-					$('.ui-colorpicker-number', part).on('change keyup', function (event) {
+					$('.ui-colorpicker-number', part).bind('change keyup', function (event) {
 						inst.color.setLAB(
 							parseInt($('.ui-colorpicker-lab-l .ui-colorpicker-number', part).val(), 10) / 100,
 							(parseInt($('.ui-colorpicker-lab-a .ui-colorpicker-number', part).val(), 10) + 128) / 255,
@@ -1003,7 +1003,7 @@
 				this.init = function () {
 					part = $(html()).appendTo($('.ui-colorpicker-cmyk-container', inst.dialog));
 
-					$('.ui-colorpicker-number', part).on('change keyup', function (event) {
+					$('.ui-colorpicker-number', part).bind('change keyup', function (event) {
 						inst.color.setCMYK(
 							parseInt($('.ui-colorpicker-cmyk-c .ui-colorpicker-number', part).val(), 10) / 100,
 							parseInt($('.ui-colorpicker-cmyk-m .ui-colorpicker-number', part).val(), 10) / 100,
@@ -1920,7 +1920,7 @@
 				});
 
 				if (that.options.showOn === 'focus' || that.options.showOn === 'both') {
-					that.element.on('focus click', function () {
+					that.element.bind('focus click', function () {
 						that.open();
 					});
 				}
@@ -2205,12 +2205,14 @@
 			var that = this;
 
             if (cancel) {
+				that.color = that.currentColor.copy();
                 that._change(that.currentColor.set);
                 that._callback('cancel', true);
             } else {
-                that.changed		= false;
+				that.currentColor	= that.color.copy();
                 that._callback('ok', true);
             }
+			that.changed		= false;
 
 			// tear down the interface
 			that._effectHide(that.dialog, function () {
@@ -2325,7 +2327,7 @@
 					this.color.setRGB(swatch.r, swatch.g, swatch.b);
 					break;
 			}
-
+			
 			// update input element content
 			if (!this.inline) {
 				if (!this.color.set) {
