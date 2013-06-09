@@ -1810,6 +1810,7 @@
 			altOnChange:		true,		// true to update on each change, false to update only on close.
 			altProperties:		'background-color',	// comma separated list of any of 'background-color', 'color', 'border-color', 'outline-color'
 			autoOpen:			false,		// Open dialog automatically upon creation
+			buttonClass:		null,		// If set, the button will get this/these classname(s).
 			buttonColorize:		false,
 			buttonImage:		'images/ui-colorpicker.png',
 			buttonImageOnly:	false,
@@ -1934,9 +1935,11 @@
 						that.image = $('<img/>').attr({
 							'src':		that.options.buttonImage,
 							'alt':		text,
-							'title':	text,
-                            'class':    (text + '_image').toLowerCase()
+							'title':	text
 						});
+						if (that.options.buttonClass) {
+							that.image.attr('class', that.options.buttonClass);
+						}
 
 						that._setImageBackground();
 					}

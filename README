@@ -36,6 +36,10 @@ Options:
 	autoOpen:			false
 		If true, the dialog opens automatically upon page load.
 
+	buttonClass:		null
+		If this option is set to a string, the button will be assigned the
+		class specified.
+
 	buttonColorize:		false
 		If a buttonimage is specified, change the background color of the
 		image when the color is changed.
