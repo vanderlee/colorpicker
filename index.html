@@ -48,6 +48,7 @@
 			  <li><a href="#tab-pantone">Custom swatches</a></li>
 			  <li><a href="#tab-hidden-input">Hidden input</a></li>
 			  <li><a href="#tab-plugins">Plugins</a></li>
+			  <li><a href="#tab-buttonImageOnly">buttonImageOnly</a></li>
 			</ul>
 
 			<div id="tab-input">
@@ -157,6 +158,11 @@
 				</ol>
 				<input type="text" class="cp-plugins" value="#18b7af"/>
 			</div>
+
+			<div id="tab-buttonImageOnly">
+				<h2>Only a button image</h2>
+				<input type="text" class="cp-buttonImageOnly" value="#18b7af"/>
+			</div>
 		</div>
 
 		<script>
@@ -168,7 +174,8 @@
 					showOn: 'both',
 					buttonColorize: true,
 					showNoneButton: true,
-					alpha: true
+					alpha: true,
+					colorFormat: 'RGBA'
 				});
 
 				$('.cp-i18n').colorpicker({
@@ -315,6 +322,11 @@
 						rgbslider:	[0, 1, 2, 1],
 						memory:		[0, 2, 2, 1]
 					}
+				});
+
+                $('.cp-buttonImageOnly').colorpicker({
+					showOn:				'both',
+					buttonImageOnly:	true
 				});
 			});
 		</script>
