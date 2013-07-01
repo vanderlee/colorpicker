@@ -1848,7 +1848,7 @@
 			showCancelButton:	true,
 			showNoneButton:		false,
 			showCloseButton:	true,
-			showOn:				'focus',	// 'focus', 'click', 'button', 'both'
+			showOn:				'focus click',	// 'focus', 'click', 'button', 'both'
 			showOptions:		{},
 			swatches:			null,		// null for default or kv-object or names swatches set
 			swatchesWidth:		84,			// width (in number of pixels) of swatches box.
@@ -1881,7 +1881,7 @@
 			that.overlay	= null;
 
 			that.mode		= that.options.mode;
-			if (that.element.is('input') || !that.options.inline) {
+			if (that.element.is('input') || that.options.inline === false) {
 				that._setColor(that.element.is('input') ? that.element.val() : that.options.color);
 
 				this._callback('init');
@@ -1926,17 +1926,17 @@
 					}
 				});
 
-				if (that.options.showOn === 'focus' || that.options.showOn === 'both') {
+				if (/\bfocus|both\b/.test(that.options.showOn)) {
 					that.element.bind('focus', function () {
 						that.open();
 					});
 				}
-				if (that.options.showOn === 'click' || that.options.showOn === 'both') {
+				if (/\bclick|both\b/.test(that.options.showOn)) {
 					that.element.bind('click', function () {
 						that.open();
 					});
 				}
-				if (that.options.showOn === 'button' || that.options.showOn === 'both') {
+				if (/\bbutton|both\b/.test(that.options.showOn)) {
 					if (that.options.buttonImage !== '') {
 						text = that.options.buttonText || that._getRegional('button');
 
