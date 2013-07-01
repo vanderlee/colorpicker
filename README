@@ -189,9 +189,9 @@ Options:
 	showNoneButton:		false
 		Show the None/Revert button if buttonpane is visible.
 
-	showOn:				'focus'
+	showOn:				'focus click'
 		Same as jQueryUI DatePicker.
-		Optionally 'click', 'button' or 'both'
+		Optionally 'focus', 'click', 'button' and/or 'both'
 
 	showOptions:		{}
 		Same as jQueryUI DatePicker.

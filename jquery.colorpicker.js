@@ -2358,6 +2358,9 @@
 				this._setAltField();
 			}
 
+			// update color option
+			this.options.color = this.color.set ? this.color.toCSS() : '';
+
 			if (this.opened) {
 				this._repaintAllParts();
 			}
