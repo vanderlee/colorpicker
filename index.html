@@ -107,9 +107,9 @@
 				<h2>Dialog with Colorpicker popup (demonstrates z-index)</h2>
 				<button id="cp-dialog-open">Open dialog</button>
 				<div id="cp-dialog-modal" title="Basic modal dialog">
-					Basic &lt;input&gt; example, without any options: <input type="text" class="cp-basic" value="fe9810"/>
+					Basic &lt;input&gt; example, without any options: <input type="text" class="cp-onclick" value="fe9810"/>
 					<br/>
-					Basic element example, without any options: <span class="cp-basic" style="display: inline-block; vertical-align: top;"></span>
+					Basic element example, without any options: <span class="cp-onclick" style="display: inline-block; vertical-align: top;"></span>
 				</div>
 			</div>
 
@@ -256,6 +256,10 @@
 										$(this).dialog('close');
 									}
 								}
+				});
+                $('.cp-onclick').colorpicker({
+					showOn:			'click',
+					inlineFrame:	false
 				});
 				$('#cp-dialog-open').click(function() {
 					dialogModal.dialog('open');

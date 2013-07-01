@@ -125,6 +125,10 @@ Options:
 		a popup instead of inline. Make sure you handle events to catch the
 		color change, otherwise you can't use the color.
 
+	inlineFrame			true
+		If enabled, shows a border and background when inline. Disabling may
+		allow closer integration.
+
 	layout:				{ ... }
 		Set the position of elements in a table layout.
 		You could create any layout possible with HTML tables by specifying
@@ -187,7 +191,7 @@ Options:
 
 	showOn:				'focus'
 		Same as jQueryUI DatePicker.
-		Also opens on clicks for non-focusable elements.
+		Optionally 'click', 'button' or 'both'
 
 	showOptions:		{}
 		Same as jQueryUI DatePicker.

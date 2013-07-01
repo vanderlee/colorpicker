@@ -19,7 +19,9 @@
 
 		_container_popup = '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
 
-		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
+		_container_inlineFrame = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
+
+		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline"></div>',
 
 		_parts_lists = {
 			'full':			['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'lab', 'cmyk', 'preview', 'swatches', 'footer'],
@@ -1823,6 +1825,7 @@
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
 			inline:				true,		// Show any divs as inline by default
+			inlineFrame:		true,		// Show a border and background when inline.
 			layout: {
 				map:		[0, 0, 1, 5],	// Left, Top, Width, Height (in table cells).
 				bar:		[1, 0, 1, 5],
@@ -1845,7 +1848,7 @@
 			showCancelButton:	true,
 			showNoneButton:		false,
 			showCloseButton:	true,
-			showOn:				'focus',	// 'focus', 'button', 'both'
+			showOn:				'focus',	// 'focus', 'click', 'button', 'both'
 			showOptions:		{},
 			swatches:			null,		// null for default or kv-object or names swatches set
 			swatchesWidth:		84,			// width (in number of pixels) of swatches box.
@@ -1924,7 +1927,12 @@
 				});
 
 				if (that.options.showOn === 'focus' || that.options.showOn === 'both') {
-					that.element.bind('focus click', function () {
+					that.element.bind('focus', function () {
+						that.open();
+					});
+				}
+				if (that.options.showOn === 'click' || that.options.showOn === 'both') {
+					that.element.bind('click', function () {
 						that.open();
 					});
 				}
@@ -1973,7 +1981,7 @@
 			} else {
 				that.inline = true;
 
-				$(this.element).html(_container_inline);
+				$(this.element).html(that.options.inlineFrame ? _container_inlineFrame : _container_inline);
 				that.dialog = $('.ui-colorpicker', this.element);
 
 				that._generate();
@@ -2091,7 +2099,7 @@
 					}
 				});
 
-				$(_layoutTable(layout_parts, function(cell, x, y) {
+				var table = $(_layoutTable(layout_parts, function(cell, x, y) {
 					var classes = ['ui-colorpicker-' + cell.part + '-container'];
 
 					if (x > 0) {
@@ -2106,7 +2114,10 @@
 						+ (cell.pos[2] > 1 ? ' colspan="' + cell.pos[2] + '"' : '')
 						+ (cell.pos[3] > 1 ? ' rowspan="' + cell.pos[3] + '"' : '')
 						+ ' valign="top"></td>';
-				})).appendTo(that.dialog).addClass('ui-dialog-content ui-widget-content');
+				})).appendTo(that.dialog);
+				if (that.options.inlineFrame) {
+					table.addClass('ui-dialog-content ui-widget-content');
+				}
 
 				that._initAllParts();
 				that._updateAllParts();
