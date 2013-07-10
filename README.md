@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-v0.9.9
+v0.10.0
 
 Copyright (c) 2011-2013 Martijn W. van der Lee
 Licensed under the MIT.
@@ -259,26 +259,48 @@ Colorpicker is extensible with several types of plugins. A number of plugins
 is provided for use. The plugins are constructed such that you only need to
 load the javascript file after the Colorpicker plugin itself is loaded.
 
-###	regional
-Regional (in the i18n directory) plugins contain localized texts
-(a.k.a. translations). A number of languages is provided.
+### parsers
+Parser take a textual representation of a color and return a Color
+object. If no match is found, nothing is returned and the next parser
+is tried. Parsers are tried in order of appearance.
+
+Included plugins:
+*	``cmyk-parser``				Parses a ``cmyk(c, y, m, k)`` format, similar to rgba.
+*	``cmyk-percentage-parser``	Parses a ``cmyk(c%, y%, m%, k%)`` format with percentages.
 
 ###	parts
 You can add additional visual parts, usually controls, that interact
 with the rest of Colorpicker framework.
 
+Included plugins:
+*	``memory``		Cookie-based memory nodes.
+*	``rgbsliders``	Set of three red/green/blue sliders with dynamically adjusted gradients.
+
+###	regional
+Regional (in the i18n directory) plugins contain localized texts
+(a.k.a. translations). A number of languages is provided.
+
+Included regionals:
+*	``de``		German (Deutsch).
+*	``en``		English (default).
+*	``fr``		French (Francais).
+*	``nl``		Dutch (Nederlands).
+*	``pt-br``	Brazilian Portuguese.
+
 ###	swatches
 Swatches are collections of predefined and named colors. By default the
-standard HTML colors are loaded.
+standard ``html`` colors are loaded.
+
+Included plugins:
+*	``crayola``		Crayola pencil color names
+*	``pantone``		Pantone color codes
+*	``ral-classic``	Classic RAL paint numbers
 
 ###	writers
 Writers take a Color object and output a textual representation of the
 color. Writers are used for the colorFormat option.
 
-### parsers
-Parser take a textual representation of a color and return a Color
-object. If no match is found, nothing is returned and the next parser
-is tried. Parsers are tried in order of appearance.
+No plugins included.
 
 Objects
 -------
