@@ -14,21 +14,21 @@ display correctly.
 
 Options
 -------
-	alpha (false)
+*	alpha (false)
 		Whether or not to show the inputs for alpha.
 
-	altAlpha (true)
+*	altAlpha (true)
 		Change the opacity of the altField element(s) according to the alpha
 		setting.
 
-	altField ('')
+*	altField ('')
 		Change the background color of the elements specified in this element.
 
-	altOnChange (true)
+*	altOnChange (true)
 		If true, the altField element(s) are updated on every change, otherwise
 		only upon closing.
 
-	altProperties (background-color)
+*	altProperties (background-color)
 		Comma-separated list of CSS properties to set color of in the altField.
 		The following properties are allowed, all others are ignored.
 			background-color
