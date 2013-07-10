@@ -1,4 +1,4 @@
-jQuery(function($) {
+;jQuery(function($) {
 	/**
 	 * Set a horizontal gradient background image on an element.
 	 * Uses the now-deprecated $.browser

@@ -1,4 +1,4 @@
-jQuery(function($) {	
+;jQuery(function($) {	
 	$.colorpicker.parts.memory = function (inst) {
 		var that		= this,
 			container,

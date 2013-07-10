@@ -1,4 +1,4 @@
-jQuery(function($) {
+;jQuery(function($) {
 	$.colorpicker.regional['en'] = {
 		ok:				'OK',
 		cancel:			'Cancel',

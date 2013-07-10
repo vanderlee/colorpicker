@@ -1,4 +1,4 @@
-jQuery(function($) {
+;jQuery(function($) {
 	$.colorpicker.swatches['crayola'] = {
 		'Almond': {r: 0.937254901960784, g: 0.858823529411765, b: 0.772549019607843},
 		'Antique Brass': {r: 0.803921568627451, g: 0.584313725490196, b: 0.458823529411765},
