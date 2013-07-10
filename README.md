@@ -9,17 +9,15 @@ Full-featured colorpicker for jQueryUI with full theming support.
 Most images from jPicker by Christopher T. Tillman.
 Sourcecode created from scratch by Martijn W. van der Lee.
 
-IE support; make sure you have a doctype defined, or the colorpicker will not
-display correctly.
+IE support; make sure you have a doctype defined, or the colorpicker will not display correctly.
 
 Options
 -------
-*	alpha (false)
-		Whether or not to show the inputs for alpha.
+* alpha (false)
+> > Whether or not to show the inputs for alpha.
 
-*	altAlpha (true)
-		Change the opacity of the altField element(s) according to the alpha
-		setting.
+* altAlpha (true)
+> > Change the opacity of the altField element(s) according to the alpha setting.
 
 *	altField ('')
 		Change the background color of the elements specified in this element.
