@@ -1848,7 +1848,7 @@
 			showCancelButton:	true,
 			showNoneButton:		false,
 			showCloseButton:	true,
-			showOn:				'focus click',	// 'focus', 'click', 'button', 'both'
+			showOn:				'focus click alt',		// 'focus', 'click', 'button', 'alt', 'both'
 			showOptions:		{},
 			swatches:			null,		// null for default or kv-object or names swatches set
 			swatchesWidth:		84,			// width (in number of pixels) of swatches box.
@@ -1901,13 +1901,18 @@
 						return;
 					}
 
-					// Check if clicked on button
+					// Check if clicked on known external elements
 					var p,
 						parents = $(event.target).parents();
                     // add the event.target in case of buttonImageOnly and closeOnOutside both are set to true
                     parents.push(event.target);
 					for (p = 0; p <= parents.length; ++p) {
+						// button
 						if (that.button !== null && parents[p] === that.button[0]) {
+							return;
+						}
+						// showOn alt
+						if (/\balt|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
 							return;
 						}
 					}
@@ -1926,16 +1931,21 @@
 					}
 				});
 
+				// showOn focus
 				if (/\bfocus|both\b/.test(that.options.showOn)) {
 					that.element.bind('focus', function () {
 						that.open();
 					});
 				}
+
+				// showOn click
 				if (/\bclick|both\b/.test(that.options.showOn)) {
 					that.element.bind('click', function () {
 						that.open();
 					});
 				}
+
+				// showOn button
 				if (/\bbutton|both\b/.test(that.options.showOn)) {
 					if (that.options.buttonImage !== '') {
 						text = that.options.buttonText || that._getRegional('button');
@@ -1960,6 +1970,13 @@
 					}
 					that.button.insertAfter(that.element).click(function () {
 						that[that.opened ? 'close' : 'open']();
+					});
+				}
+
+				// showOn alt
+				if (/\balt|both\b/.test(that.options.showOn)) {
+					$(that.options.altField).bind('click', function () {
+						that.open();
 					});
 				}
 

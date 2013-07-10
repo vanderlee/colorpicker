@@ -1,4 +1,6 @@
-jQuery.colorpicker v0.9.9
+jQuery.colorpicker
+==================
+v0.9.9
 
 Copyright (c) 2011-2013 Martijn W. van der Lee
 Licensed under the MIT.
@@ -10,22 +12,23 @@ Sourcecode created from scratch by Martijn W. van der Lee.
 IE support; make sure you have a doctype defined, or the colorpicker will not
 display correctly.
 
-Options:
-	alpha:				false
+Options
+-------
+	alpha (false)
 		Whether or not to show the inputs for alpha.
 
-	altAlpha:			true
+	altAlpha (true)
 		Change the opacity of the altField element(s) according to the alpha
 		setting.
 
-	altField:			''
+	altField ('')
 		Change the background color of the elements specified in this element.
 
-	altOnChange:		true
+	altOnChange (true)
 		If true, the altField element(s) are updated on every change, otherwise
 		only upon closing.
 
-	altProperties:		'background-color'
+	altProperties (background-color)
 		Comma-separated list of CSS properties to set color of in the altField.
 		The following properties are allowed, all others are ignored.
 			background-color
@@ -33,33 +36,33 @@ Options:
 			border-color
 			outline-color
 
-	autoOpen:			false
+	autoOpen (false)
 		If true, the dialog opens automatically upon page load.
 
-	buttonClass:		null
+	buttonClass (null)
 		If this option is set to a string, the button will be assigned the
 		class specified.
 
-	buttonColorize:		false
+	buttonColorize (false)
 		If a buttonimage is specified, change the background color of the
 		image when the color is changed.
 
-	buttonImage:		'images/ui-colorpicker.png'
+	buttonImage ('images/ui-colorpicker.png')
 		Same as jQueryUI DatePicker.
 
-	buttonImageOnly:	false
+	buttonImageOnly (false)
 		Same as jQueryUI DatePicker.
 
-	buttonText:			null
+	buttonText (null)
 		Same as jQueryUI DatePicker. If null, use language default.
 
-	closeOnEscape:		true
+	closeOnEscape (true)
 		Close the window when pressing the Escape key on the keyboard.
 
-	closeOnOutside:		true
+	closeOnOutside (true)
 		Close the window when clicking outside the colorpicker display.
 
-	color:				'#00FF00'
+	color ('#00FF00')
 		Initial color. Formats recognized are:
 			#rrggbb
 			rrggbb (same as previous, but without the #)
@@ -69,7 +72,7 @@ Options:
 			rgba(rrr%,ggg%,bbb%,aaa%)
 			w3c-defined color name
 
-	colorFormat:		'HEX'
+	colorFormat ('HEX')
 		Specifies the format of the color string returned in callbacks.
 		You can either specify one of the predefined formats:
 			#HEX	#112233
@@ -110,57 +113,57 @@ Options:
 		HEX3 format if possible or HEX format otherwise:
 			['HEX3', 'HEX']
 
-	dragggable:			true
+	dragggable (true)
 		Make the dialog draggable if the header is visible and the dialog is
 		not inline.
 
-	duration:			'fast'
+	duration ('fast')
 		Same as jQueryUI DatePicker.
 
-	hsv:				true
+	hsv (true)
 		Whether or not to show the inputs for HSV.
 
-	inline:				true
+	inline (true)
 		If set to false, attaching to a non-input will still make the dialog
 		a popup instead of inline. Make sure you handle events to catch the
 		color change, otherwise you can't use the color.
 
-	inlineFrame			true
+	inlineFrame (true)
 		If enabled, shows a border and background when inline. Disabling may
 		allow closer integration.
 
-	layout:				{ ... }
+	layout ({ ... })
 		Set the position of elements in a table layout.
 		You could create any layout possible with HTML tables by specifying
 		cell position and size of each part.
 		@todo document how this works.
 
-	limit:				''
+	limit ('')
 		Limit the selectable colors to any of the predefined limits:
-				''			No limitations, allow 8bpp color for a palette of
-							all 16 million colors.
-				'websafe'	Set of 216 colors composed of 00, 33, 66, 99, cc
-							and ff color channel values in #rrggbb.
-				'nibble'	4 bits per color, can be easily converted to #rgb
-							format.
-							The palette is limited to 4096 colors.
-				'binary'	Allow only #00 or #ff as color channel values for
-							primary	colors only; only 8 colors are available
-							with this limit.
-				'name'		Limit to closest color name.
+			''			No limitations, allow 8bpp color for a palette of
+						all 16 million colors.
+			'websafe'	Set of 216 colors composed of 00, 33, 66, 99, cc
+						and ff color channel values in #rrggbb.
+			'nibble'	4 bits per color, can be easily converted to #rgb
+						format.
+						The palette is limited to 4096 colors.
+			'binary'	Allow only #00 or #ff as color channel values for
+						primary	colors only; only 8 colors are available
+						with this limit.
+			'name'		Limit to closest color name.
 
-	modal:
+	modal (false)
 		Ensures no other controls on screen can be used while the dialog is
 		opened.
 		Also look at showCancelButton and closeOnEscape to use in combination
 		with the modal option. closeOnOutside is redundant when used with modal.
 
-	mode:				'h'
+	mode ('h')
 		Determines the functionality of the map and bar components. Allowed
 		values are; 'h', 's', 'l', 'r', 'g', 'b' or 'a', for hue, saturation,
 		luminosity, red, green, blue and alpha respectively.
 
-	parts:				''
+	parts ('')
 		Determine which parts to display.
 		Use any of the preset names ('full', 'popup' or 'inline') or specify
 		an array of part names (i.e. ['header', 'map', 'bar', 'hex', 'hsv',
@@ -169,52 +172,61 @@ Options:
 		preset 'popup' or 'inline' depending on the context in which the
 		colorpicker is used.
 
-	rgb:				true,		// Show RGB controls and modes
+	rgb (true)
 		Whether or not to show the inputs for RGB.
 
-	regional:			'',
+	regional ('')
 		Sets the language to use. Note that you must load the appropriate
 		language file from the i18n directory. '' is included by default.
 
-	showAnim:			'fadeIn'
+	showAnim ('fadeIn')
 		Same as jQueryUI DatePicker.
 
-	showCancelButton:	true
+	showCancelButton (true)
 		Show the Cancel button if buttonpane is visible.
 
-	showCloseButton:	true
+	showCloseButton (true)
 		Show the Close button if the header is visible.
 		If the dialog is inline, the close button is never shown.
 
-	showNoneButton:		false
+	showNoneButton (false)
 		Show the None/Revert button if buttonpane is visible.
 
-	showOn:				'focus click'
-		Same as jQueryUI DatePicker.
-		Optionally 'focus', 'click', 'button' and/or 'both'
+	showOn ('focus click alt')
+		Specifies what user events will show the
+		colorpicker if not inline. Specify multiple events by seperating with
+		space.
+		Optionally 'focus', 'click', 'alt', 'button' and/or 'both'
+			'focus'		When the element comes into focus (either tab or click)
+			'click'		When the element is clicked (for non-inputs)
+			'alt'		When clicking on an element specified with as altField
+			'button'	When clicking on the button created if this event is
+						specified.
+			'both'		selects all possible triggers
 
-	showOptions:		{}
+	showOptions ({})
 		Same as jQueryUI DatePicker.
 
-	swatches:			null
+	swatches (null)
 		'null' to show swatches of HTML colors or provide your own object
 		with colornames and {r:1, g:1, b:1} array.
 		For example { 'red': {r:1, g:0, b:0}, 'blue': {r:0, g:0, b:1} }
 		Alternatively, load a predefined set of swatches and specify the name.
 		For example, for the pantone set, specify 'pantone'.
 
-	swatchesWidth:		84
+	swatchesWidth (84)
 		Width of the swatches display in pixels.
 
-	title:				null
+	title (null)
 		Title to display in the header. If null, use language default.
 
-Events:
-	init:			null
+Events
+------
+	init
 		Triggered on initially setting the color. Called only once.
 		Callbacks recieve same data as select event.
 
-	close:			null
+	close
 		Triggered when the popup is closed.
 		Callbacks recieve same data as select event and an additional number
 		of fields containing the current color in all supported color spaces.
@@ -222,7 +234,7 @@ Events:
 		Most values are floating point numbers in range [0,1] for accuracy.
 		The a and b values in the lab color space have range [-1,1].
 
-	select:			null
+	select
 		Triggered on each change, confirmation (click on OK button) and
 		cancellation (click on Cancel, outside window or window close button)
 		respectively.
@@ -235,7 +247,8 @@ Events:
 		the mouse accross the map or bar and may be triggered without a change
 		in color upon specific user interactions.
 
-Methods:
+Methods
+-------
 	open
 		Open the dialog
 
