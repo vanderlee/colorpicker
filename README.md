@@ -261,3 +261,36 @@ Methods
 	setColor
 		Set the current color to the specified color. Accepts any
 		CSS-confirmant color specification.
+
+Plugins
+-------
+Colorpicker is extensible with several types of plugins. A number of plugins
+is provided for use. The plugins are constructed such that you only need to
+load the javascript file after the Colorpicker plugin itself is loaded.
+
+	regional
+		Regional (in the i18n directory) plugins contain localized texts
+		(a.k.a. translations). A number of languages is provided.
+
+	parts
+		You can add additional visual parts, usually controls, that interact
+		with the rest of Colorpicker framework.
+
+	swatches
+		Swatches are collections of predefined and named colors. By default the
+		standard HTML colors are loaded.
+
+	writers
+		Writers take a Color object and output a textual representation of the
+		color. Writers are used for the colorFormat option.
+
+	parsers
+		Parser take a textual representation of a color and return a Color
+		object. If no match is found, nothing is returned and the next parser
+		is tried. Parsers are tried in order of appearance.
+
+Objects
+-------
+Colorpicker uses a Color object internally to represent a color and convert
+between the supported color models.
+You can create a new Color object through $.colorpicker.Color.
