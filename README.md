@@ -29,10 +29,10 @@ only upon closing.
 ### altProperties (background-color)
 Comma-separated list of CSS properties to set color of in the altField.
 The following properties are allowed, all others are ignored.
-* background-color
-* color
-* border-color
-* outline-color
+*	``background-color``
+*	``color``
+*	``border-color``
+*	``outline-color``
 
 ###	autoOpen (false)
 If true, the dialog opens automatically upon page load.
@@ -73,33 +73,33 @@ Initial color. Formats recognized are:
 ###	colorFormat ('HEX')
 Specifies the format of the color string returned in callbacks.
 You can either specify one of the predefined formats:
-*	#HEX	#112233
-*	#HEX3	#123 if possible, otherwise false.
-*	HEX		112233
-*	HEX3	123 if possible, otherwise false.
-*	RGB		rgb(123,45,67) if opaque, otherwise false.
-*	RGBA	rgba(123,45,67,0.123%)
-*	RGB%	rgb(12%,34%,56%) if opaque, otherwise false.
-*	RGBA%	rgba(12%,34%,56%,0.123%)
-*	HSL		hsl(123,45,67) if opaque, otherwise false.
-*	HSLA	hsla(123,45,67,0.123%)
-*	HSL%	hsl(12%,34%,56%) if opaque, otherwise false.
-*	HSLA%	hsla(12%,34%,56%,0.123%)
-*	NAME	Closest color name
-*	EXACT	Exact name if possible, otherwise false.
+*	``#HEX``	#112233
+*	``#HEX3``	#123 if possible, otherwise false.
+*	``HEX``		112233
+*	``HEX3``	123 if possible, otherwise false.
+*	``RGB``		rgb(123,45,67) if opaque, otherwise false.
+*	``RGBA``	rgba(123,45,67,0.123%)
+*	``RGB%``	rgb(12%,34%,56%) if opaque, otherwise false.
+*	``RGBA%``	rgba(12%,34%,56%,0.123%)
+*	``HSL``		hsl(123,45,67) if opaque, otherwise false.
+*	``HSLA``	hsla(123,45,67,0.123%)
+*	``HSL%``	hsl(12%,34%,56%) if opaque, otherwise false.
+*	``HSLA%``	hsla(12%,34%,56%,0.123%)
+*	``NAME``	Closest color name
+*	``EXACT``	Exact name if possible, otherwise false.
 or specify your own format...
 Each color channel is specified as a pair of two characters.
 The first character determines the color channel:
-*	a			Alpha
-*	r, g, b		RGB color space; red, green and blue
-*	h, s, v		HSV color space; hue, saturation and value
-*	c, m, y, k	CMYK color space; cyan, magenta, yellow and black
-*	L, A, B		LAB color space; Luminosity, *A and *B.
+*	``a``			Alpha
+*	``r, g, b``		RGB color space; red, green and blue
+*	``h, s, v``		HSV color space; hue, saturation and value
+*	``c, m, y, k``	CMYK color space; cyan, magenta, yellow and black
+*	``L, A, B``		LAB color space; Luminosity, *A and *B.
 The second character specifies the data type:
-*	x			Two-digit hexadecimal notation.
-*	d			Decimal (0-255) notation.
-*	f			Floating point (0-1) notation, not rounded.
-*	p			Percentage (0-100) notation, not rounded.
+*	``x``			Two-digit hexadecimal notation.
+*	``d``			Decimal (0-255) notation.
+*	``f``			Floating point (0-1) notation, not rounded.
+*	``p``			Percentage (0-100) notation, not rounded.
 If you prefix a valid pair with a backslash, it won't be replaced.
 All patterns are case sensitive.
 For example, to create the common hex color format, use "#rxgxbx".
@@ -109,7 +109,7 @@ You can also specify an array of formats where the first non-FALSE one
 is returned. Note that the only formats able to return FALSE are the
 predefined formats HEX3 and EXACT. For example, this array will output
 HEX3 format if possible or HEX format otherwise:
-*	['HEX3', 'HEX']
+*	``['HEX3', 'HEX']``
 
 ###	dragggable (true)
 Make the dialog draggable if the header is visible and the dialog is
@@ -138,11 +138,11 @@ cell position and size of each part.
 
 ###	limit ('')
 Limit the selectable colors to any of the predefined limits:
-*	''			No limitations, allow 8bpp color for a palette of all 16 million colors.
-*	'websafe'	Set of 216 colors composed of 00, 33, 66, 99, cc and ff color channel values in #rrggbb.
-*	'nibble'	4 bits per color, can be easily converted to #rgb format. The palette is limited to 4096 colors.
-*	'binary'	Allow only #00 or #ff as color channel values for primary colors only; only 8 colors are available with this limit.
-*	'name'		Limit to closest color name.
+*	``''``		No limitations, allow 8bpp color for a palette of all 16 million colors.
+*	``websafe``	Set of 216 colors composed of 00, 33, 66, 99, cc and ff color channel values in #rrggbb.
+*	``nibble``	4 bits per color, can be easily converted to #rgb format. The palette is limited to 4096 colors.
+*	``binary``	Allow only #00 or #ff as color channel values for primary colors only; only 8 colors are available with this limit.
+*	``name``	Limit to closest color name.
 
 ###	modal (false)
 Ensures no other controls on screen can be used while the dialog is
@@ -189,21 +189,21 @@ Specifies what user events will show the
 colorpicker if not inline. Specify multiple events by seperating with
 space.
 Optionally 'focus', 'click', 'alt', 'button' and/or 'both'
-*	'focus'		When the element comes into focus (either tab or click)
-*	'click'		When the element is clicked (for non-inputs)
-*	'alt'		When clicking on an element specified with as altField
-*	'button'	When clicking on the button created if this event is specified.
-*	'both'		selects all possible triggers
+*	``focus``	When the element comes into focus (either tab or click)
+*	``click``	When the element is clicked (for non-inputs)
+*	``alt``		When clicking on an element specified with as altField
+*	``button``	When clicking on the button created if this event is specified.
+*	``both``	selects all possible triggers
 
 ###	showOptions ({})
-		Same as jQueryUI DatePicker.
+Same as jQueryUI DatePicker.
 
 ###	swatches (null)
-		'null' to show swatches of HTML colors or provide your own object
-		with colornames and {r:1, g:1, b:1} array.
-		For example { 'red': {r:1, g:0, b:0}, 'blue': {r:0, g:0, b:1} }
-		Alternatively, load a predefined set of swatches and specify the name.
-		For example, for the pantone set, specify 'pantone'.
+'null' to show swatches of HTML colors or provide your own object
+with colornames and {r:1, g:1, b:1} array.
+For example { 'red': {r:1, g:0, b:0}, 'blue': {r:0, g:0, b:1} }
+Alternatively, load a predefined set of swatches and specify the name.
+For example, for the pantone set, specify 'pantone'.
 
 ###	swatchesWidth (84)
 Width of the swatches display in pixels.
@@ -259,26 +259,26 @@ Colorpicker is extensible with several types of plugins. A number of plugins
 is provided for use. The plugins are constructed such that you only need to
 load the javascript file after the Colorpicker plugin itself is loaded.
 
-	regional
-		Regional (in the i18n directory) plugins contain localized texts
-		(a.k.a. translations). A number of languages is provided.
+###	regional
+Regional (in the i18n directory) plugins contain localized texts
+(a.k.a. translations). A number of languages is provided.
 
-	parts
-		You can add additional visual parts, usually controls, that interact
-		with the rest of Colorpicker framework.
+###	parts
+You can add additional visual parts, usually controls, that interact
+with the rest of Colorpicker framework.
 
-	swatches
-		Swatches are collections of predefined and named colors. By default the
-		standard HTML colors are loaded.
+###	swatches
+Swatches are collections of predefined and named colors. By default the
+standard HTML colors are loaded.
 
-	writers
-		Writers take a Color object and output a textual representation of the
-		color. Writers are used for the colorFormat option.
+###	writers
+Writers take a Color object and output a textual representation of the
+color. Writers are used for the colorFormat option.
 
-	parsers
-		Parser take a textual representation of a color and return a Color
-		object. If no match is found, nothing is returned and the next parser
-		is tried. Parsers are tried in order of appearance.
+### parsers
+Parser take a textual representation of a color and return a Color
+object. If no match is found, nothing is returned and the next parser
+is tried. Parsers are tried in order of appearance.
 
 Objects
 -------
