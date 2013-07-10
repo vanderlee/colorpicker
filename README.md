@@ -13,26 +13,26 @@ IE support; make sure you have a doctype defined, or the colorpicker will not di
 
 Options
 -------
-* alpha (false)
-> > Whether or not to show the inputs for alpha.
+*	alpha (false)
+	*	Whether or not to show the inputs for alpha.
 
-* altAlpha (true)
-> > Change the opacity of the altField element(s) according to the alpha setting.
+*	altAlpha (true)
+	*	Change the opacity of the altField element(s) according to the alpha setting.
 
 *	altField ('')
-		Change the background color of the elements specified in this element.
+	*	Change the background color of the elements specified in this element.
 
 *	altOnChange (true)
-		If true, the altField element(s) are updated on every change, otherwise
+	*	If true, the altField element(s) are updated on every change, otherwise
 		only upon closing.
 
 *	altProperties (background-color)
-		Comma-separated list of CSS properties to set color of in the altField.
+	*	Comma-separated list of CSS properties to set color of in the altField.
 		The following properties are allowed, all others are ignored.
-			background-color
-			color
-			border-color
-			outline-color
+		*	background-color
+		*	color
+		*	border-color
+		*	outline-color
 
 	autoOpen (false)
 		If true, the dialog opens automatically upon page load.
