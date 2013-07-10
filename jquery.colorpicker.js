@@ -31,7 +31,7 @@
 		},
 
 		_intToHex = function (dec) {
-			var result = Math.round(dec).toString(16);
+			var result = Math.floor(dec).toString(16);
 			if (result.length === 1) {
 				result = ('0' + result);
 			}
@@ -2557,7 +2557,7 @@
 			var that		= this,
 				text		= null,
 				types		= {	'x':	function(v) {return _intToHex(v * 255);}
-							,	'd':	function(v) {return Math.round(v * 255);}
+							,	'd':	function(v) {return Math.floor(v * 255);}
 							,	'f':	function(v) {return v;}
 							,	'p':	function(v) {return v * 100;}
 							},
@@ -2598,9 +2598,9 @@
 						}
 		,	'HEX3':		function(color, that) {
 							var rgb = color.getRGB(),
-								r = Math.round(rgb.r * 255),
-								g = Math.round(rgb.g * 255),
-								b = Math.round(rgb.b * 255);
+								r = Math.floor(rgb.r * 255),
+								g = Math.floor(rgb.g * 255),
+								b = Math.floor(rgb.b * 255);
 
 							if (((r >>> 4) == (r &= 0xf))
 							 && ((g >>> 4) == (g &= 0xf))
