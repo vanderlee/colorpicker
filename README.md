@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-v0.10.0
+v1.0.1
 
 Copyright (c) 2011-2013 Martijn W. van der Lee
 Licensed under the MIT.
