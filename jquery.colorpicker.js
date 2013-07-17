@@ -1613,7 +1613,7 @@
 						b: hue_to_rgb(var_1, var_2, hsl.h - (1 / 3))
 					};
 				},
-				_xyz_to_lab = function(xyz) {					
+				_xyz_to_lab = function(xyz) {
 					var x = xyz.x / illuminant[0],
 						y = xyz.y / illuminant[1],
 						z = xyz.z / illuminant[2];
@@ -1914,10 +1914,10 @@
 				var a = this.getRGB(),
 					b = color.getRGB();
 
-				return this.getAlpha() == color.getAlpha()
-					&& a.r == b.r
-					&& a.g == b.g
-					&& a.b == b.b;
+				return this.getAlpha() === color.getAlpha()
+					&& a.r === b.r
+					&& a.g === b.g
+					&& a.b === b.b;
 			};
 
 			this.limit = function(steps) {
@@ -1945,13 +1945,13 @@
 			};
 
 			this.copy = function() {
-				var spaces = this.getSpaces(),
-					a = this.getAlpha();
-				return new $.colorpicker.Color(spaces, a);
+				var color = new $.colorpicker.Color(this.getSpaces(), this.getAlpha());
+				color.set = this.set;
+				return color;
 			};
 
 			// Construct
-			if (args.length == 2) {
+			if (args.length === 2) {
 				this.setSpaces(args[0]);
 				this.setAlpha(args[1] === 0 ? 0 : args[1] || 1);
 				this.set = true;
@@ -2400,7 +2400,7 @@
 
             if (cancel) {
 				that.color = that.currentColor.copy();
-                that._change(that.currentColor.set);
+                that._change(that.color.set);
                 that._callback('cancel', true);
             } else {
 				that.currentColor	= that.color.copy();
@@ -2521,7 +2521,7 @@
 					this.color.setRGB(swatch.r, swatch.g, swatch.b);
 					break;
 			}
-			
+
 			// update input element content
 			if (!this.inline) {
 				if (!this.color.set) {
@@ -2587,7 +2587,7 @@
 			if (swatches[name] !== undefined) {
 				return swatches[name];
 			}
-			
+
 			$.each(swatches, function(swatchName, current) {
 				if (swatchName.toLowerCase() == name.toLowerCase()) {
 					swatch = current;
@@ -2595,7 +2595,7 @@
 				}
 				return true;
 			});
-			
+
 			return swatch;
         },
 
