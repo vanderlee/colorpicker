@@ -18,17 +18,8 @@
 	var _colorpicker_index = 0,
 
 		_container_popup = '<div class="ui-colorpicker ui-colorpicker-dialog ui-dialog ui-widget ui-widget-content ui-corner-all" style="display: none;"></div>',
-
 		_container_inlineFrame = '<div class="ui-colorpicker ui-colorpicker-inline ui-dialog ui-widget ui-widget-content ui-corner-all"></div>',
-
 		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline"></div>',
-
-		_parts_lists = {
-			'full':			['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'lab', 'cmyk', 'preview', 'swatches', 'footer'],
-			'popup':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
-			'draggable':	['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
-			'inline':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
-		},
 
 		_intToHex = function (dec) {
 			var result = Math.floor(dec).toString(16);
@@ -480,6 +471,29 @@
 							}
 						}
 		};
+
+		this.partslists = {
+			'full':			['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'lab', 'cmyk', 'preview', 'swatches', 'footer'],
+			'popup':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
+			'draggable':	['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
+			'inline':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
+		},
+
+		this.limits = {
+			'websafe':		function(color) {
+								color.limit(6);
+							},
+			'nibble':		function(color) {
+								color.limit(16);
+							},
+			'binary':		function(color) {
+								color.limit(2);
+							},
+			'name':			function(color, that) {
+								var swatch = that._getSwatch(that._closestName(color));
+								color.setRGB(swatch.r, swatch.g, swatch.b);
+							}
+		},
 
 		this.parts = {
 			header: function (inst) {
@@ -2241,17 +2255,15 @@
 				parts_list,
 				layout_parts;
 
-			// Set color based on element?
-
 			that._setColor(that.inline || !that.element.is('input') ? that.options.color : that.element.val());
 
 			// Determine the parts to include in this colorpicker
 			if (typeof that.options.parts === 'string') {
-				if (_parts_lists[that.options.parts]) {
-					parts_list = _parts_lists[that.options.parts];
+				if ($.colorpicker.partslists[that.options.parts]) {
+					parts_list = $.colorpicker.partslists[that.options.parts];
 				} else {
 					// automatic
-					parts_list = _parts_lists[that.inline ? 'inline' : 'popup'];
+					parts_list = $.colorpicker.partslists[that.inline ? 'inline' : 'popup'];
 				}
 			} else {
 				parts_list = that.options.parts;
@@ -2505,23 +2517,8 @@
 			this.changed = true;
 
 			// Limit color palette
-			switch (this.options.limit) {
-				case 'websafe':
-					this.color.limit(6);
-					break;
-
-				case 'nibble':
-					this.color.limit(16);
-					break;
-
-				case 'binary':
-					this.color.limit(2);
-					break;
-
-				case 'name':
-					var swatch = this._getSwatch(this._closestName(this.color));
-					this.color.setRGB(swatch.r, swatch.g, swatch.b);
-					break;
+			if (this.options.limit && $.colorpicker.limits[this.options.limit]) {
+				$.colorpicker.limits[this.options.limit](this.color, this);
 			}
 
 			// update input element content

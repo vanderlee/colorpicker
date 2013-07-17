@@ -266,6 +266,11 @@ Colorpicker is extensible with several types of plugins. A number of plugins
 is provided for use. The plugins are constructed such that you only need to
 load the javascript file after the Colorpicker plugin itself is loaded.
 
+###	limits
+Limits let you limit the possible colors, as used by the 'limit' option.
+
+No plugins included.
+
 ### parsers
 Parser take a textual representation of a color and return a Color object.
 If no match is found, nothing is returned and the next parser is tried.
@@ -282,6 +287,11 @@ with the rest of Colorpicker framework.
 Included plugins:
 *	``memory``		Cookie-based memory nodes.
 *	``rgbsliders``	Set of three red/green/blue sliders with dynamically adjusted gradients.
+
+###	partslists
+Partslists are a convenient way to select multiple parts at once without having to specify each one individually.
+
+No plugins included.
 
 ###	regional
 Regional (in the i18n directory) plugins contain localized texts
