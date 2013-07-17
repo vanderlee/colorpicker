@@ -505,7 +505,7 @@
 					inst._focusable(close);
 					close.click(function(event) {
 						event.preventDefault();
-						inst.close();
+						inst.close(inst.options.revert);
 					});
 
 					if (!inst.inline && inst.options.draggable) {
@@ -2003,6 +2003,7 @@
 			mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
 			parts:				'',			// leave empty for automatic selection
 			regional:			'',
+			revert:				false,		// Revert color upon non
 			rgb:				true,		// Show RGB controls and modes
 			showAnim:			'fadeIn',
 			showCancelButton:	true,
@@ -2049,7 +2050,7 @@
 				$('body').append(_container_popup);
 				that.dialog = $('.ui-colorpicker:last');
 
-				// Click outside/inside
+				// Close on clicking outside window and controls
 				$(document).delegate('html', 'touchstart click', function (event) {
 					if (!that.opened || event.target === that.element[0] || that.overlay) {
 						return;
@@ -2082,12 +2083,13 @@
 						return;
 					}
 
-					that.close();
+					that.close(that.options.revert);
 				});
 
+				// close on ESC key
 				$(document).keydown(function (event) {
 					if (event.keyCode == 27 && that.opened && that.options.closeOnEscape) {
-						that.close();
+						that.close(that.options.revert);
 					}
 				});
 

@@ -1,5 +1,4 @@
 Separate into a pure dialog and a "caller" plugin.
-Re: #45, click on document, but not scrollbar to close.
 Implement a getColor method.
 	Use preconfigured/default output color.
 	Allow optional manual specification of color.

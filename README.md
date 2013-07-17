@@ -157,19 +157,26 @@ luminosity, red, green, blue and alpha respectively.
 
 ###	parts ('')
 Determine which parts to display.
-Use any of the preset names ('full', 'popup' or 'inline') or specify
-an array of part names (i.e. ['header', 'map', 'bar', 'hex', 'hsv',
+Use any of the preset names ('full', 'popup' or 'inline') or specify an array
+of part names (i.e. ['header', 'map', 'bar', 'hex', 'hsv',
 'rgb', 'alpha', 'lab', 'cmyk', 'preview', 'swatches', 'footer']).
 If an empty string is given, the parts will be automatically chosen as
 preset 'popup' or 'inline' depending on the context in which the
 colorpicker is used.
 
+###	regional ('')
+Sets the language to use. Note that you must load the appropriate language file
+from the i18n directory. '' is included by default.
+
+### revert (false)
+If enabled, closing the dialog through any means but the OK button will revert
+the color back to the previous state, as if pressing the Cancel button.
+The revert option changes the behaviour of the [X] button in the header, the
+Escape keyboard button and clicking outside the dialog, when any of these
+features are enabled.
+
 ###	rgb (true)
 Whether or not to show the inputs for RGB.
-
-###	regional ('')
-Sets the language to use. Note that you must load the appropriate
-language file from the i18n directory. '' is included by default.
 
 ###	showAnim ('fadeIn')
 Same as jQueryUI DatePicker.
@@ -260,9 +267,9 @@ is provided for use. The plugins are constructed such that you only need to
 load the javascript file after the Colorpicker plugin itself is loaded.
 
 ### parsers
-Parser take a textual representation of a color and return a Color
-object. If no match is found, nothing is returned and the next parser
-is tried. Parsers are tried in order of appearance.
+Parser take a textual representation of a color and return a Color object.
+If no match is found, nothing is returned and the next parser is tried.
+Parsers are tried in order of appearance.
 
 Included plugins:
 *	``cmyk-parser``				Parses a ``cmyk(c, y, m, k)`` format, similar to rgba.
@@ -297,8 +304,8 @@ Included plugins:
 *	``ral-classic``	Classic RAL paint numbers
 
 ###	writers
-Writers take a Color object and output a textual representation of the
-color. Writers are used for the colorFormat option.
+Writers take a Color object and output a textual representation of the color.
+Writers are used for the colorFormat option.
 
 No plugins included.
 
