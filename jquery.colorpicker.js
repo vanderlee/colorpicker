@@ -975,9 +975,8 @@
 
 					$('.ui-colorpicker-preview-initial', e).click(function () {
 						inst.color = inst.currentColor.copy();
-						inst._change();
+						inst._change(inst.color.set);
 					});
-
 				};
 
 				this.update = function () {
@@ -991,9 +990,9 @@
 				};
 
 				this.repaint = function () {
-					$('.ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.toCSS()).attr('title', inst.currentColor.toHex());
+					$('.ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.set ? inst.currentColor.toCSS() : '').attr('title', inst.currentColor.set ? inst.currentColor.toCSS() : '');
 					$('.ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.getAlpha());
-					$('.ui-colorpicker-preview-current', e).css('background-color', inst.color.toCSS()).attr('title', inst.color.toHex());
+					$('.ui-colorpicker-preview-current', e).css('background-color', inst.color.set ? inst.color.toCSS() : '').attr('title', inst.color.set ? inst.color.toCSS() : '');
 					$('.ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.getAlpha());
 				};
 			},
