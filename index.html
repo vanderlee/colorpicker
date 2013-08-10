@@ -52,6 +52,7 @@
 			  <li><a href="#tab-plugins">Plugins</a></li>
 			  <li><a href="#tab-buttonImageOnly">buttonImageOnly</a></li>
 			  <li><a href="#tab-revert">Revert</a></li>
+			  <li><a href="#tab-okonenter">Close on enter</a></li>
 			</ul>
 
 			<div id="tab-input">
@@ -420,6 +421,20 @@
 							revert:				true,
 							parts:				'full',
 							showNoneButton:		true
+						});
+					});
+				</script>
+			</div>
+
+			<div id="tab-okonenter">
+				<h2>Close OK on enter</h2>
+				Close the popup by pressing the enter key, keeping the selected color.
+				<input type="text" class="cp-okonenter" value="a83b19"/>
+
+				<script>
+					$(function() {
+						$('.cp-okonenter').colorpicker({
+							okOnEnter: true
 						});
 					});
 				</script>

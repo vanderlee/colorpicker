@@ -155,6 +155,9 @@ Determines the functionality of the map and bar components. Allowed
 values are; 'h', 's', 'l', 'r', 'g', 'b' or 'a', for hue, saturation,
 luminosity, red, green, blue and alpha respectively.
 
+###	okOnEnter (false)
+Close the window when pressing the Enter key on the keyboard, keeping the selected color.
+
 ###	parts ('')
 Determine which parts to display.
 Use any of the preset names ('full', 'popup' or 'inline') or specify an array

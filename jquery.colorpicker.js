@@ -2014,6 +2014,7 @@
 			limit:				'',			// Limit color "resolution": '', 'websafe', 'nibble', 'binary', 'name'
 			modal:				false,		// Modal dialog?
 			mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
+			okOnEnter:			false,		// Close (with OK) when pressing the enter key
 			parts:				'',			// leave empty for automatic selection
 			regional:			'',
 			revert:				false,		// Revert color upon non
@@ -2236,13 +2237,19 @@
 				that.close(that.options.revert);
 			});
 
-			// close on ESC key
 			$(document).keydown(function (event) {
-				if (event.keyCode == 27 && that.opened && that.options.closeOnEscape) {
+				// close on ESC key
+				if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
 					that.close(that.options.revert);
 				}
+				
+				// OK on Enter key
+				if (that.opened && event.keyCode === 13 && that.options.okOnEnter) {
+					that.close();
+				}
 			});
-			
+
+			// Close (with OK) on tab key in element
 			that.element.keydown(function (event) {
 				if (event.keyCode === 9) {
 					that.close();
