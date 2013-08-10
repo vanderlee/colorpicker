@@ -331,9 +331,9 @@
 								g = Math.floor(rgb.g * 255),
 								b = Math.floor(rgb.b * 255);
 
-							if (((r >>> 4) == (r &= 0xf))
-							 && ((g >>> 4) == (g &= 0xf))
-							 && ((b >>> 4) == (b &= 0xf))) {
+							if (((r >>> 4) === (r &= 0xf))
+							 && ((g >>> 4) === (g &= 0xf))
+							 && ((b >>> 4) === (b &= 0xf))) {
 								return r.toString(16)+g.toString(16)+b.toString(16);
 							}
 							return false;
@@ -380,7 +380,7 @@
 
 		this.parsers = {
 			'':			function(color) {
-				            if (color == '') {
+				            if (color === '') {
 								return new $.colorpicker.Color();
 							}
 						}
@@ -444,9 +444,9 @@
 							var m = /^#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
 							if (m) {
 								return new $.colorpicker.Color(
-								   parseInt(m[1] + m[1], 16) / 255,
-								   parseInt(m[2] + m[2], 16) / 255,
-								   parseInt(m[3] + m[3], 16) / 255
+								   parseInt(String(m[1]) + m[1], 16) / 255,
+								   parseInt(String(m[2]) + m[2], 16) / 255,
+								   parseInt(String(m[3]) + m[3], 16) / 255
 								);
 							}
 						}
@@ -464,9 +464,9 @@
 							var m = /^([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
 							if (m) {
 								return new $.colorpicker.Color(
-								   parseInt(m[1] + m[1], 16) / 255,
-								   parseInt(m[2] + m[2], 16) / 255,
-								   parseInt(m[3] + m[3], 16) / 255
+								   parseInt(String(m[1]) + m[1], 16) / 255,
+								   parseInt(String(m[2]) + m[2], 16) / 255,
+								   parseInt(String(m[3]) + m[3], 16) / 255
 								);
 							}
 						}
@@ -1398,7 +1398,7 @@
 				this.repaint = function () {
 					if (!inst.color.set) {
 						$('.ui-colorpicker-special-none', part).attr('checked', true).button( "refresh" );
-					} else if (inst.color.getAlpha() == 0) {
+					} else if (inst.color.getAlpha() === 0) {
 						$('.ui-colorpicker-special-transparent', part).attr('checked', true).button( "refresh" );
 					} else {
 						$('input', part).attr('checked', false).button( "refresh" );
@@ -1693,7 +1693,7 @@
 						K = cmy.y;
 					}
 
-					if (K == 1) {
+					if (K === 1) {
 						return {
 							c: 0,
 							m: 0,
@@ -2055,56 +2055,11 @@
 			that.overlay	= null;
 
 			that.mode		= that.options.mode;
+
 			if (that.element.is('input') || that.options.inline === false) {
+				// Initial color
 				that._setColor(that.element.is('input') ? that.element.val() : that.options.color);
-
-				this._callback('init');
-
-				$('body').append(_container_popup);
-				that.dialog = $('.ui-colorpicker:last');
-
-				// Close on clicking outside window and controls
-				$(document).delegate('html', 'touchstart click', function (event) {
-					if (!that.opened || event.target === that.element[0] || that.overlay) {
-						return;
-					}
-
-					// Check if clicked on any part of dialog
-					if (that.dialog.is(event.target) || that.dialog.has(event.target).length > 0) {
-						that.element.blur();	// inside window!
-						return;
-					}
-
-					// Check if clicked on known external elements
-					var p,
-						parents = $(event.target).parents();
-                    // add the event.target in case of buttonImageOnly and closeOnOutside both are set to true
-                    parents.push(event.target);
-					for (p = 0; p <= parents.length; ++p) {
-						// button
-						if (that.button !== null && parents[p] === that.button[0]) {
-							return;
-						}
-						// showOn alt
-						if (/\balt|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
-							return;
-						}
-					}
-
-					// no closeOnOutside
-					if (!that.options.closeOnOutside) {
-						return;
-					}
-
-					that.close(that.options.revert);
-				});
-
-				// close on ESC key
-				$(document).keydown(function (event) {
-					if (event.keyCode == 27 && that.opened && that.options.closeOnEscape) {
-						that.close(that.options.revert);
-					}
-				});
+				that._callback('init');
 
 				// showOn focus
 				if (/\bfocus|both\b/.test(that.options.showOn)) {
@@ -2158,26 +2113,10 @@
 				if (that.options.autoOpen) {
 					that.open();
 				}
-
-				that.element.keydown(function (event) {
-					if (event.keyCode === 9) {
-						that.close();
-					}
-				}).keyup(function (event) {
-					var color = that._parseColor(that.element.val());
-					if (!that.color.equals(color)) {
-						that.color = color;
-						that._change();
-					}
-				});
 			} else {
 				that.inline = true;
 
-				$(this.element).html(that.options.inlineFrame ? _container_inlineFrame : _container_inline);
-				that.dialog = $('.ui-colorpicker', this.element);
-
 				that._generate();
-
 				that.opened = true;
 			}
 
@@ -2247,6 +2186,76 @@
 			this._change(this.color.set);
 		},
 
+		_generateInline: function() {
+			var that = this;
+
+			$(that.element).html(that.options.inlineFrame ? _container_inlineFrame : _container_inline);
+
+			that.dialog = $('.ui-colorpicker', that.element);
+		},
+
+		_generatePopup: function() {
+			var that = this;
+
+			$('body').append(_container_popup);
+			that.dialog = $('.ui-colorpicker:last');
+
+			// Close on clicking outside window and controls
+			$(document).delegate('html', 'touchstart click', function (event) {
+				if (!that.opened || event.target === that.element[0] || that.overlay) {
+					return;
+				}
+
+				// Check if clicked on any part of dialog
+				if (that.dialog.is(event.target) || that.dialog.has(event.target).length > 0) {
+					that.element.blur();	// inside window!
+					return;
+				}
+
+				// Check if clicked on known external elements
+				var p,
+					parents = $(event.target).parents();
+				// add the event.target in case of buttonImageOnly and closeOnOutside both are set to true
+				parents.push(event.target);
+				for (p = 0; p <= parents.length; ++p) {
+					// button
+					if (that.button !== null && parents[p] === that.button[0]) {
+						return;
+					}
+					// showOn alt
+					if (/\balt|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
+						return;
+					}
+				}
+
+				// no closeOnOutside
+				if (!that.options.closeOnOutside) {
+					return;
+				}
+
+				that.close(that.options.revert);
+			});
+
+			// close on ESC key
+			$(document).keydown(function (event) {
+				if (event.keyCode == 27 && that.opened && that.options.closeOnEscape) {
+					that.close(that.options.revert);
+				}
+			});
+			
+			that.element.keydown(function (event) {
+				if (event.keyCode === 9) {
+					that.close();
+				}
+			}).keyup(function (event) {
+				var color = that._parseColor(that.element.val());
+				if (!that.color.equals(color)) {
+					that.color = color;
+					that._change();
+				}
+			});
+		},
+
 		_generate: function () {
 			var that = this,
 				index,
@@ -2255,6 +2264,8 @@
 				layout_parts;
 
 			that._setColor(that.inline || !that.element.is('input') ? that.options.color : that.element.val());
+
+			that[that.inline ? '_generateInline' : '_generatePopup']();
 
 			// Determine the parts to include in this colorpicker
 			if (typeof that.options.parts === 'string') {
@@ -2423,7 +2434,8 @@
 
 			// tear down the interface
 			that._effectHide(that.dialog, function () {
-				that.dialog.empty();
+				that.dialog.remove();
+				that.dialog	= null;
 				that.generated	= false;
 
 				that.opened		= false;
