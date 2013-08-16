@@ -49,20 +49,18 @@
 
 		_layoutTable = function(layout, callback) {
 			var bitmap,
-				x,
-				y,
+				x, y,
 				width, height,
 				columns, rows,
 				index,
 				cell,
 				html,
-				w,
-				h,
+				w, h,
 				colspan,
 				walked;
 
 			layout.sort(function(a, b) {
-				if (a.pos[1] == b.pos[1]) {
+				if (a.pos[1] === b.pos[1]) {
 					return a.pos[0] - b.pos[0];
 				}
 				return a.pos[1] - b.pos[1];
@@ -102,7 +100,7 @@
 				html += '<tr>';
                 x = 0;
                 while (x < width) {
-					if (typeof cell !== 'undefined' && x == cell.pos[0] && y == cell.pos[1]) {
+					if (typeof cell !== 'undefined' && x === cell.pos[0] && y === cell.pos[1]) {
 						// Create a "real" cell
 						html += callback(cell, x, y);
 
@@ -119,7 +117,7 @@
 						colspan = 0;
 						walked = false;
 
-						while (x < width && bitmap[x][y] === undefined && (cell === undefined || y < cell.pos[1] || (y == cell.pos[1] && x < cell.pos[0]))) {
+						while (x < width && bitmap[x][y] === undefined && (cell === undefined || y < cell.pos[1] || (y === cell.pos[1] && x < cell.pos[0]))) {
 							if (columns[x] === true) {
 								colspan += 1;
 							}
@@ -477,7 +475,7 @@
 			'popup':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
 			'draggable':	['header', 'map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview', 'footer'],
 			'inline':		['map', 'bar', 'hex', 'hsv', 'rgb', 'alpha', 'preview']
-		},
+		};
 
 		this.limits = {
 			'websafe':		function(color) {
@@ -493,7 +491,7 @@
 								var swatch = that._getSwatch(that._closestName(color));
 								color.setRGB(swatch.r, swatch.g, swatch.b);
 							}
-		},
+		};
 
 		this.parts = {
 			header: function (inst) {
@@ -1041,7 +1039,7 @@
 					$.each(hsv, function (index, value) {
 						var input = $('.ui-colorpicker-hsv-' + index + ' .ui-colorpicker-number', e);
 						value = Math.round(value);
-						if (parseInt(input.val()) !== value) {
+						if (parseInt(input.val(), 10) !== value) {
 							input.val(value);
 						}
 					});
@@ -1096,7 +1094,7 @@
 					$.each(inst.color.getRGB(), function (index, value) {
 						var input = $('.ui-colorpicker-rgb-' + index + ' .ui-colorpicker-number', e);
 						value = Math.floor(value * 255);
-						if (parseInt(input.val()) !== value) {
+						if (parseInt(input.val(), 10) !== value) {
 							input.val(value);
 						}
 					});
@@ -1149,7 +1147,7 @@
 					$.each(lab, function (index, value) {
 						var input = $('.ui-colorpicker-lab-' + index + ' .ui-colorpicker-number', part);
 						value = Math.round(value);
-						if (parseInt(input.val()) !== value) {
+						if (parseInt(input.val(), 10) !== value) {
 							input.val(value);
 						}
 					});
@@ -1194,7 +1192,7 @@
 					$.each(inst.color.getCMYK(), function (index, value) {
 						var input = $('.ui-colorpicker-cmyk-' + index + ' .ui-colorpicker-number', part);
 						value = Math.round(value * 100);
-						if (parseInt(input.val()) !== value) {
+						if (parseInt(input.val(), 10, 10) !== value) {
 							input.val(value);
 						}
 					});
@@ -1244,7 +1242,7 @@
 				this.repaint = function () {
 					var input = $('.ui-colorpicker-a .ui-colorpicker-number', e),
 						value = Math.round(inst.color.getAlpha() * 100);
-					if (parseInt(input.val()) !== value) {
+					if (parseInt(input.val(), 10) !== value) {
 						input.val(value);
 					}
 				};
@@ -1975,7 +1973,7 @@
 				this.set = true;
 			}
 		};
-	};
+	}();
 
 	$.widget("vanderlee.colorpicker", {
 		options: {
@@ -2268,7 +2266,9 @@
 				index,
 				part,
 				parts_list,
-				layout_parts;
+				layout_parts,
+				table,
+				classes;
 
 			that._setColor(that.inline || !that.element.is('input') ? that.options.color : that.element.val());
 
@@ -2306,8 +2306,8 @@
 					}
 				});
 
-				var table = $(_layoutTable(layout_parts, function(cell, x, y) {
-					var classes = ['ui-colorpicker-' + cell.part + '-container'];
+				table = $(_layoutTable(layout_parts, function(cell, x, y) {
+					classes = ['ui-colorpicker-' + cell.part + '-container'];
 
 					if (x > 0) {
 						classes.push('ui-colorpicker-padding-left');
@@ -2360,19 +2360,17 @@
 		open: function() {
 			var that = this,
 				offset,
-				bottom,
-				right,
-				height,
-				width,
-				x,
-				y,
-				zIndex;
+				bottom, right,
+				height, width,
+				x, y,
+				zIndex,
+				hiddenPlaceholder;
 
 			if (!that.opened) {
 				that._generate();
 
 				if (that.element.is(':hidden')) {
-					var hiddenPlaceholder = $('<div/>').insertBefore(that.element);
+					hiddenPlaceholder = $('<div/>').insertBefore(that.element);
 					offset	= hiddenPlaceholder.offset();
 					hiddenPlaceholder.remove();
 				} else {
@@ -2404,7 +2402,7 @@
 				$(that.element[0]).parents().each(function() {
 					var z = $(this).css('z-index');
 					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
-						zIndex = parseInt(z);
+						zIndex = parseInt(z, 10);
 						return false;
 					}
 				});
@@ -2657,7 +2655,7 @@
 				d = color.distance(new $.colorpicker.Color(swatch.r, swatch.g, swatch.b));
 				if (d < distance || distance === null) {
 					name = n;
-					if (d == 0) {
+					if (d === 0) {
 						return false;	// can't get much closer than 0
 					}
 					distance = d;
