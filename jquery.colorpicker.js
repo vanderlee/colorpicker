@@ -2619,7 +2619,8 @@
 				c;
 
 			$.each($.colorpicker.parsers, function(name, parser) {
-				if (c = parser(color, that)) {
+				c = parser(color, that);
+				if (c) {
 					return false;
 				}
 			});
