@@ -2380,10 +2380,10 @@
 				}
 				bottom	= $(window).height() + $(window).scrollTop();
 				right	= $(window).width() + $(window).scrollLeft();
-				height	= that.dialog.outerHeight();
+				height	= that.dialog.outerHeight(false);
 				width	= that.dialog.outerWidth();
 				x		= offset.left;
-				y		= offset.top + that.element.outerHeight();
+				y		= offset.top + that.element.outerHeight(false);
 
 				if (x + width > right) {
 					x = Math.max(0, right - width);
