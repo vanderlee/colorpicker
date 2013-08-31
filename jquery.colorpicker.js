@@ -1,13 +1,13 @@
 /*jslint devel: true, bitwise: true, regexp: true, browser: true, confusion: true, unparam: true, eqeq: true, white: true, nomen: true, plusplus: true, maxerr: 50, indent: 4 */
 /*globals jQuery,Color */
 
-/*
+/*!
  * ColorPicker
  *
  * Copyright (c) 2011-2013 Martijn W. van der Lee
  * Licensed under the MIT.
- *
- * Full-featured colorpicker for jQueryUI with full theming support.
+ */
+/* Full-featured colorpicker for jQueryUI with full theming support.
  * Most images from jPicker by Christopher T. Tillman.
  * Sourcecode created from scratch by Martijn W. van der Lee.
  */
