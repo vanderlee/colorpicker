@@ -670,7 +670,7 @@
 					case 'h':
 						x = inst.color.getHSV().s * div.width();
 						y = (1 - inst.color.getHSV().v) * div.width();
-						$(e).css('background-color', inst.color.copy().normalize().toCSS());
+						$(e).css('background-color', inst.color.copy().setHSV(null, 1, 1).toCSS());
 						break;
 
 					case 's':
@@ -907,12 +907,12 @@
 					case 's':
 						y = (1 - inst.color.getHSV().s) * div.height();
 						$('.ui-colorpicker-bar-layer-2', e).css('opacity', 1 - inst.color.getHSV().v);
-						$(e).css('background-color', inst.color.copy().normalize().toCSS());
+						$(e).css('background-color', inst.color.copy().setHSV(null, 1, null).toCSS());
 						break;
 
 					case 'v':
 						y = (1 - inst.color.getHSV().v) * div.height();
-						$(e).css('background-color', inst.color.copy().normalize().toCSS());
+						$(e).css('background-color', inst.color.copy().setHSV(null, null, 1).toCSS());
 						break;
 
 					case 'r':
@@ -1948,11 +1948,6 @@
 
 			this.toCSS = function() {
 				return '#' + this.toHex();
-			};
-
-			this.normalize = function() {
-				this.setHSV(null, 1, 1);
-				return this;
 			};
 
 			this.copy = function() {
