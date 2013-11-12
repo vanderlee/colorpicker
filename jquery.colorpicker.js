@@ -2235,7 +2235,7 @@
 				if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
 					that.close(that.options.revert);
 				}
-				
+
 				// OK on Enter key
 				if (that.opened && event.keyCode === 13 && that.options.okOnEnter) {
 					that.close();
@@ -2403,7 +2403,7 @@
 				});
 
 				//@todo zIndexOffset option, to raise above other elements?
-				that.dialog.css('z-index', zIndex += 2);
+				that.dialog.css('z-index', zIndex += 20);
 
 				that.overlay = that.options.modal ? new $.ui.dialog.overlay(that) : null;
 
@@ -2474,7 +2474,8 @@
 
 			if (that.color.set) {
 				data = {
-					formatted: that._formatColor(that.options.colorFormat, that.color)
+					formatted: that._formatColor(that.options.colorFormat, that.color),
+					colorPicker: that
 				};
 
 				lab = that.color.getLAB();
@@ -2493,7 +2494,8 @@
 				return that._trigger(callback, null, data);
 			} else {
 				return that._trigger(callback, null, {
-					formatted: ''
+					formatted: '',
+					colorPicker: that
 				});
 			}
 		},
