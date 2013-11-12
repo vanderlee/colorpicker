@@ -2397,15 +2397,33 @@
 				$(that.element[0]).parents().each(function() {
 					var z = $(this).css('z-index');
 					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
-						zIndex = parseInt(z, 10);
-						return false;
+						if (z > zIndex) {
+							zIndex = parseInt(z, 10);
+							return false;
+						}
+					}
+					else {
+						$(this).siblings().each(function() {
+							var z = $(this).css('z-index');
+							if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
+								if (z > zIndex) {
+									zIndex = parseInt(z, 10);
+								}
+							}
+						});
 					}
 				});
 
 				//@todo zIndexOffset option, to raise above other elements?
-				that.dialog.css('z-index', zIndex += 20);
+				that.dialog.css('z-index', zIndex += 2);
 
 				that.overlay = that.options.modal ? new $.ui.dialog.overlay(that) : null;
+				if (that.overlay !== null) {
+					var z = that.overlay.$el.css('z-index');
+					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
+						that.dialog.css('z-index', zIndex + z + 2);
+					}
+				}
 
 				that._effectShow(this.dialog);
 				that.opened = true;
