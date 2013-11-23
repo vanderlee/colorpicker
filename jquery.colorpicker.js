@@ -2235,7 +2235,7 @@
 				if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
 					that.close(that.options.revert);
 				}
-				
+
 				// OK on Enter key
 				if (that.opened && event.keyCode === 13 && that.options.okOnEnter) {
 					that.close();
@@ -2397,8 +2397,20 @@
 				$(that.element[0]).parents().each(function() {
 					var z = $(this).css('z-index');
 					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
-						zIndex = parseInt(z, 10);
-						return false;
+						if (z > zIndex) {
+							zIndex = parseInt(z, 10);
+							return false;
+						}
+					}
+					else {
+						$(this).siblings().each(function() {
+							var z = $(this).css('z-index');
+							if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
+								if (z > zIndex) {
+									zIndex = parseInt(z, 10);
+								}
+							}
+						});
 					}
 				});
 
@@ -2406,6 +2418,12 @@
 				that.dialog.css('z-index', zIndex += 2);
 
 				that.overlay = that.options.modal ? new $.ui.dialog.overlay(that) : null;
+				if (that.overlay !== null) {
+					var z = that.overlay.$el.css('z-index');
+					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
+						that.dialog.css('z-index', zIndex + z + 2);
+					}
+				}
 
 				that._effectShow(this.dialog);
 				that.opened = true;
@@ -2474,7 +2492,8 @@
 
 			if (that.color.set) {
 				data = {
-					formatted: that._formatColor(that.options.colorFormat, that.color)
+					formatted: that._formatColor(that.options.colorFormat, that.color),
+					colorPicker: that
 				};
 
 				lab = that.color.getLAB();
@@ -2493,7 +2512,8 @@
 				return that._trigger(callback, null, data);
 			} else {
 				return that._trigger(callback, null, {
-					formatted: ''
+					formatted: '',
+					colorPicker: that
 				});
 			}
 		},
