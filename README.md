@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-v1.0.5
+v1.0.6
 
 Copyright (c) 2011-2013 Martijn W. van der Lee
 Licensed under the MIT.
@@ -223,11 +223,11 @@ Title to display in the header. If null, use language default.
 
 Events
 ------
-###	init
+###	init(formatted, colorPicker)
 Triggered on initially setting the color. Called only once.
 Callbacks recieve same data as select event.
 
-###	close
+###	close(formatted, colorPicker)
 Triggered when the popup is closed.
 Callbacks recieve same data as select event and an additional number
 of fields containing the current color in all supported color spaces.
@@ -235,14 +235,14 @@ These are rgb{}, hsv{}, cmyk{}, lab{}, hsl{} and a.
 Most values are floating point numbers in range [0,1] for accuracy.
 The a and b values in the lab color space have range [-1,1].
 
-###	select
+###	select(formatted, colorPicker)
 Triggered on each change, confirmation (click on OK button) and
 cancellation (click on Cancel, outside window or window close button)
 respectively.
 
-The event recieves a jQuery event object and a data object containing
-the elements 'formatted' (with the color formatted according to
-formatColor).
+The event recieves a jQuery event object, a data object containing the elements
+'formatted' (with the color formatted according to formatColor) and the
+Colorpicker element that triggered the event.
 
 Note that select may be triggered in rapid succession when dragging
 the mouse accross the map or bar and may be triggered without a change
