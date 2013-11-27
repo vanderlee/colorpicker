@@ -371,7 +371,7 @@
 		,	'NAME':		function(color, that) {
 							return that._closestName(color);
 						}
-		,	'EXACT':	function(color, that) {		//@todo experimental. Implement a good fallback list
+		,	'EXACT':	function(color, that) {		// @todo experimental. Implement a good fallback list
 							return that._exactName(color);
 						}
 		};
@@ -2414,7 +2414,7 @@
 					}
 				});
 
-				//@todo zIndexOffset option, to raise above other elements?
+				// @todo zIndexOffset option, to raise above other elements?
 				that.dialog.css('z-index', zIndex += 2);
 
 				that.overlay = that.options.modal ? new $.ui.dialog.overlay(that) : null;
