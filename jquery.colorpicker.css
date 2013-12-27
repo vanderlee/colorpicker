@@ -78,6 +78,7 @@
 .ui-colorpicker-map-pointer,
 .ui-colorpicker-bar-pointer {
     position:				absolute;
+	left:					0;
 }
 /* Map */
 .ui-colorpicker-map,
@@ -91,6 +92,17 @@
 .ui-colorpicker-map-layer-1,
 .ui-colorpicker-map-layer-2 {
 	background:				url(images/map.png) no-repeat;
+}
+
+.ui-colorpicker-map-128,
+.ui-colorpicker-map-128 > * {
+	width:					128px;
+	height:					128px;
+}
+
+.ui-colorpicker-map-128 .ui-colorpicker-map-layer-1,
+.ui-colorpicker-map-128 .ui-colorpicker-map-layer-2 {
+	background:				url(images/128/map.png) no-repeat;
 }
 
 .ui-colorpicker-map-layer-alpha {
@@ -114,11 +126,23 @@
     background-repeat:		repeat-x;
 }
 
+.ui-colorpicker-bar-128,
+.ui-colorpicker-bar-128 > * {
+	height:					128px;
+}
+
 .ui-colorpicker-bar-layer-1,
 .ui-colorpicker-bar-layer-2,
 .ui-colorpicker-bar-layer-3,
 .ui-colorpicker-bar-layer-4 {
 	background:				url(images/bar.png) repeat-x;
+}
+
+.ui-colorpicker-bar-128 .ui-colorpicker-bar-layer-1,
+.ui-colorpicker-bar-128 .ui-colorpicker-bar-layer-2,
+.ui-colorpicker-bar-128 .ui-colorpicker-bar-layer-3,
+.ui-colorpicker-bar-128 .ui-colorpicker-bar-layer-4 {
+	background:				url(images/128/bar.png) repeat-x;
 }
 
 .ui-colorpicker-bar-layer-alpha {
@@ -127,6 +151,10 @@
 
 .ui-colorpicker-bar-layer-alphabar {
 	background:				url(images/bar-alpha.png);
+}
+
+.ui-colorpicker-bar-128 .ui-colorpicker-bar-layer-alphabar {
+	background:				url(images/128/bar-alpha.png);
 }
 
 .ui-colorpicker-bar-pointer {
@@ -139,6 +167,7 @@
 /* Preview */
 .ui-colorpicker-preview {
 	text-align:				center;
+	height:					20px;
 }
 
 .ui-colorpicker-preview-initial {
