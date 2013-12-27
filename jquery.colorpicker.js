@@ -616,7 +616,7 @@
 				};
 
 				_html = function () {
-					var html = '<div class="ui-colorpicker-map ui-colorpicker-border">'
+					var html = '<div class="ui-colorpicker-map ui-colorpicker-map-'+(inst.options.part.map.size || 256)+' ui-colorpicker-border">'
 							+ '<span class="ui-colorpicker-map-layer-1">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-map-layer-2">&nbsp;</span>'
 							+ (inst.options.alpha ? '<span class="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
@@ -625,6 +625,8 @@
 				};
 
 				this.update = function () {
+					var step = ((inst.options.part.map.size || 256) * 65 / 64);
+
 					switch (inst.mode) {
 					case 'h':
 						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
@@ -633,29 +635,29 @@
 
 					case 's':
 					case 'a':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'v':
 						$(e).css('background-color', 'black');
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
 						$('.ui-colorpicker-map-layer-2', e).hide();
 						break;
 
 					case 'r':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'g':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'b':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
 						break;
 					}
 					that.repaint();
@@ -808,7 +810,7 @@
 				};
 
 				_html = function () {
-					var html = '<div class="ui-colorpicker-bar ui-colorpicker-border">'
+					var html = '<div class="ui-colorpicker-bar ui-colorpicker-bar-'+(inst.options.part.bar.size || 256)+'  ui-colorpicker-border">'
 							+ '<span class="ui-colorpicker-bar-layer-1">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-bar-layer-2">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-bar-layer-3">&nbsp;</span>'
@@ -825,6 +827,8 @@
 				};
 
 				this.update = function () {
+					var step = ((inst.options.part.bar.size || 256) * 65 / 64);
+
 					switch (inst.mode) {
 					case 'h':
 					case 's':
@@ -851,38 +855,38 @@
 						break;
 
 					case 's':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -260px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
 						$('.ui-colorpicker-bar-layer-3', e).hide();
 						$('.ui-colorpicker-bar-layer-4', e).hide();
 						break;
 
 					case 'v':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -520px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
 						$('.ui-colorpicker-bar-layer-2', e).hide();
 						$('.ui-colorpicker-bar-layer-3', e).hide();
 						$('.ui-colorpicker-bar-layer-4', e).hide();
 						break;
 
 					case 'r':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -1560px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -1300px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -780px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -1040px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'g':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -2600px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -2340px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -1820px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -2080px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step*10)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'b':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 -3640px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 -3380px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 -2860px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 -3120px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step*14)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 '+(-step*13)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 '+(-step*11)+'px', 'opacity': ''}).show();
+						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 '+(-step*12)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'a':
@@ -2009,6 +2013,10 @@
 			mode:				'h',		// Initial editing mode, h, s, v, r, g, b or a
 			okOnEnter:			false,		// Close (with OK) when pressing the enter key
 			parts:				'',			// leave empty for automatic selection
+			part: {
+				map:		{ size: 256 },
+				bar:		{ size: 256 }
+			},			// options per part
 			regional:			'',
 			revert:				false,		// Revert color upon non
 			rgb:				true,		// Show RGB controls and modes
