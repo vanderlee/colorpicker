@@ -1,8 +1,8 @@
 jQuery.colorpicker
 ==================
-v1.0.6
+v1.0.7
 
-Copyright (c) 2011-2013 Martijn W. van der Lee
+Copyright &copy; 2011-2013 Martijn W. van der Lee (http://martijn.vanderlee.com).
 Licensed under the MIT.
 
 Full-featured colorpicker for jQueryUI with full theming support.
@@ -10,6 +10,52 @@ Most images from jPicker by Christopher T. Tillman.
 Sourcecode created from scratch by Martijn W. van der Lee.
 
 IE support; make sure you have a doctype defined, or the colorpicker will not display correctly.
+
+Features
+--------
+-	jQueryUI (themeroller-based) look & feel
+-	Familiar interface layout
+-	Highly configurable
+	-	Control parts
+	-	Layout
+	-	Input/output formats
+	-	Swatches
+	-	Many more
+-	Accurate color model
+-	Supports localization
+	-	English, Dutch, French, etc.
+	-	Easily translateable (https://www.transifex.com/projects/p/jquery-colorpicker/)
+-	Smart window alignment
+-	Complete API with events and methods
+-	Easily extendable with plugins
+	-	Many examples included: RGB-Sliders with CSS gradients, Per-user cookie memory for colors.
+-	Documented
+-	Limited Unit tests (QUnit-based)
+
+Download
+--------
+jQuery v1.7.1 or higher required. (Will not work with v1.6 or before).
+
+jQueryUI v1.8.0 or higher required.
+
+Current version: https://github.com/vanderlee/tristate/archive/master.zip
+
+Sourcecode on Github: https://github.com/vanderlee/tristate
+
+Browser support
+---------------
+Tested with v1.0.7
+
+-	Chrome 31
+-	FireFox 25
+-	Opera 17
+-	Internet Explorer 10
+
+Documentation
+=============
+`.colorpicker(options)`
+--------------------
+Turns an element into a colorpicker.
 
 Options
 -------
@@ -29,6 +75,7 @@ only upon closing.
 ### altProperties (background-color)
 Comma-separated list of CSS properties to set color of in the altField.
 The following properties are allowed, all others are ignored.
+
 *	``background-color``
 *	``color``
 *	``border-color``
@@ -62,6 +109,7 @@ Close the window when clicking outside the colorpicker display.
 
 ###	color ('#00FF00')
 Initial color. Formats recognized are:
+
 *	#rrggbb
 *	rrggbb (same as previous, but without the #)
 *	rgb(rrr,ggg,bbb)
@@ -73,6 +121,7 @@ Initial color. Formats recognized are:
 ###	colorFormat ('HEX')
 Specifies the format of the color string returned in callbacks.
 You can either specify one of the predefined formats:
+
 *	``#HEX``	#112233
 *	``#HEX3``	#123 if possible, otherwise false.
 *	``HEX``		112233
@@ -87,19 +136,24 @@ You can either specify one of the predefined formats:
 *	``HSLA%``	hsla(12%,34%,56%,0.123%)
 *	``NAME``	Closest color name
 *	``EXACT``	Exact name if possible, otherwise false.
+
 or specify your own format...
 Each color channel is specified as a pair of two characters.
 The first character determines the color channel:
+
 *	``a``			Alpha
 *	``r, g, b``		RGB color space; red, green and blue
 *	``h, s, v``		HSV color space; hue, saturation and value
 *	``c, m, y, k``	CMYK color space; cyan, magenta, yellow and black
 *	``L, A, B``		LAB color space; Luminosity, *A and *B.
+
 The second character specifies the data type:
+
 *	``x``			Two-digit hexadecimal notation.
 *	``d``			Decimal (0-255) notation.
 *	``f``			Floating point (0-1) notation, not rounded.
 *	``p``			Percentage (0-100) notation, not rounded.
+
 If you prefix a valid pair with a backslash, it won't be replaced.
 All patterns are case sensitive.
 For example, to create the common hex color format, use "#rxgxbx".
@@ -109,6 +163,7 @@ You can also specify an array of formats where the first non-FALSE one
 is returned. Note that the only formats able to return FALSE are the
 predefined formats HEX3 and EXACT. For example, this array will output
 HEX3 format if possible or HEX format otherwise:
+
 *	``['HEX3', 'HEX']``
 
 ###	dragggable (true)
@@ -138,6 +193,7 @@ cell position and size of each part.
 
 ###	limit ('')
 Limit the selectable colors to any of the predefined limits:
+
 *	``''``		No limitations, allow 8bpp color for a palette of all 16 million colors.
 *	``websafe``	Set of 216 colors composed of 00, 33, 66, 99, cc and ff color channel values in #rrggbb.
 *	``nibble``	4 bits per color, can be easily converted to #rgb format. The palette is limited to 4096 colors.
@@ -157,6 +213,10 @@ luminosity, red, green, blue and alpha respectively.
 
 ###	okOnEnter (false)
 Close the window when pressing the Enter key on the keyboard, keeping the selected color.
+
+### part
+Use the part option to specify options specific to parts (including plugin parts).
+By default, the following part options are available:
 
 ###	parts ('')
 Determine which parts to display.
@@ -199,6 +259,7 @@ Specifies what user events will show the
 colorpicker if not inline. Specify multiple events by seperating with
 space.
 Optionally 'focus', 'click', 'alt', 'button' and/or 'both'
+
 *	``focus``	When the element comes into focus (either tab or click)
 *	``click``	When the element is clicked (for non-inputs)
 *	``alt``		When clicking on an element specified with as altField
