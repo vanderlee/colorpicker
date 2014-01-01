@@ -54,6 +54,7 @@
 			  <li><a href="#tab-revert">Revert</a></li>
 			  <li><a href="#tab-okonenter">Close on enter</a></li>
 			  <li><a href="#tab-128">128-pixel map and bar</a></li>
+			  <li><a href="#tab-customcolor">Custom color format</a></li>
 			</ul>
 
 			<div id="tab-input">
@@ -457,6 +458,34 @@
 								map:		{ size: 128 },
 								bar:		{ size: 128 }
 							}
+						});
+					});
+				</script>
+			</div>
+
+			<div id="tab-customcolor">
+				<h2>Custom color format</h2>
+				<input type="text" size="80" class="cp-customcolor" value="0;83.782958984375;83.782958984375;4.736328125" style="display: inline-block; vertical-align: top;"/>
+
+				<script>
+					$(function() {
+						$.colorpicker.parsers['csv-cmyk'] = function (color) {
+								var m = /^(\d+(?:\.\d+)?)\s*[,;]\s*(\d+(?:\.\d+)?)\s*[,;]\s*(\d+(?:\.\d+)?)\s*[,;]\s*(\d+(?:\.\d+)?)/.exec(color);
+								if (m) {
+										return (new $.colorpicker.Color()).setCMYK(
+												m[1] / 100,
+												m[2] / 100,
+												m[3] / 100,
+												m[4] / 100
+										);
+								}
+						};
+
+						$('.cp-customcolor').colorpicker({
+							showOn: 'both',
+							colorFormat: ['cp,mp,yp,kp'],
+							buttonImageOnly: true,
+							buttonColorize: true,
 						});
 					});
 				</script>
