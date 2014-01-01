@@ -977,7 +977,7 @@
 
 					$('.ui-colorpicker-preview-initial', e).click(function () {
 						inst.color = inst.currentColor.copy();
-						inst._change(inst.color.set);
+						inst._change();
 					});
 				};
 
@@ -1388,7 +1388,8 @@
 					});
 
 					$('#'+id_none, part).click(function () {
-						inst._change(false);
+						inst.color.set = false;
+						inst._change();
 					});
 
 					$('#'+id_transparent, part).click(function () {
@@ -1725,6 +1726,7 @@
 				if (_a !== null) {
 					a = _clip(_a);
 				}
+				this.set = true;
 
 				return this;
 			};
@@ -1744,6 +1746,7 @@
 				if (b !== null) {
 					spaces.rgb.b = _clip(b);
 				}
+				this.set = true;
 
 				return this;
 			};
@@ -1759,6 +1762,7 @@
 				if (v !== null)	{
 					spaces.hsv.v = _clip(v);
 				}
+				this.set = true;
 
 				return this;
 			};
@@ -1774,6 +1778,7 @@
 				if (l !== null) {
 					spaces.hsl.l = _clip(l);
 				}
+				this.set = true;
 
 				return this;
 			};
@@ -1789,6 +1794,7 @@
 				if (b !== null) {
 					spaces.lab.b = _clip(b);
 				}
+				this.set = true;
 
 				return this;
 			};
@@ -1807,6 +1813,7 @@
 				if (k !== null) {
 					spaces.cmyk.k = _clip(k);
 				}
+				this.set = true;
 
 				return this;
 			};
@@ -1905,11 +1912,6 @@
 				return $.extend(true, {}, spaces);
 			};
 
-			this.setSpaces = function(new_spaces) {
-				spaces = new_spaces;
-				return this;
-			};
-
 			this.distance = function(color) {
 				var space	= 'lab',
 					getter	= 'get'+space.toUpperCase(),
@@ -1962,7 +1964,7 @@
 
 			// Construct
 			if (args.length === 2) {
-				this.setSpaces(args[0]);
+				spaces = args[0];
 				this.setAlpha(args[1] === 0 ? 0 : args[1] || 1);
 				this.set = true;
 			}
@@ -2185,7 +2187,7 @@
 
 		setColor: function(text) {
 			this._setColor(text);
-			this._change(this.color.set);
+			this._change();
 		},
 
 		_generateInline: function() {
@@ -2450,7 +2452,7 @@
 
             if (cancel) {
 				that.color = that.currentColor.copy();
-                that._change(that.color.set);
+                that._change();
                 that._callback('cancel', true);
             } else {
 				that.currentColor	= that.color.copy();
@@ -2550,9 +2552,7 @@
 			});
 		},
 
-		_change: function (set /* = true */) {
-			this.color.set = (set !== false);
-
+		_change: function () {
 			this.changed = true;
 
 			// Limit color palette
