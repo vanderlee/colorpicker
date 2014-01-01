@@ -2190,6 +2190,10 @@
 			this._change();
 		},
 
+		getColor: function(format) {
+			return this._formatColor(format || this.options.colorFormat, this.color);
+		},
+
 		_generateInline: function() {
 			var that = this;
 
