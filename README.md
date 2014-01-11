@@ -38,9 +38,9 @@ jQuery v1.7.1 or higher required. (Will not work with v1.6 or before).
 
 jQueryUI v1.8.0 or higher required.
 
-Current version: https://github.com/vanderlee/tristate/archive/master.zip
+Current version: https://github.com/vanderlee/colorpicker/archive/master.zip
 
-Sourcecode on Github: https://github.com/vanderlee/tristate
+Sourcecode on Github: https://github.com/vanderlee/colorpicker
 
 Browser support
 ---------------
