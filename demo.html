@@ -48,6 +48,7 @@
 			  <li><a href="#tab-no-inline">Any element to popup</a></li>
 			  <li><a href="#tab-layout">Custom layout</a></li>
 			  <li><a href="#tab-pantone">Custom swatches</a></li>
+			  <li><a href="#tab-swatches-array">Custom swatches - array</a></li>
 			  <li><a href="#tab-hidden-input">Hidden input</a></li>
 			  <li><a href="#tab-plugins">Plugins</a></li>
 			  <li><a href="#tab-buttonImageOnly">buttonImageOnly</a></li>
@@ -346,6 +347,50 @@
 											},
 							select:			function(event, color) {
 												$('.cp-pantone-output').text(color.formatted);
+											}
+						});
+					});
+				</script>
+			</div>
+
+			<div id="tab-swatches-array">
+				<h2>Custom swatches - array</h2>
+				Use an array of swatches<br/>
+				<input type="text" class="cp-custom-array" value="666666"/>
+				<span class="cp-custom-array-output"></span>
+
+				<script>
+					$(function() {
+						/** Correctly handles the order of swatches.
+						*/
+						jQuery.colorpicker.swatches.custom_array = [
+							{name: '000000', r: 0, g: 0, b: 0},
+							{name: '444444', r: 0.266666666666667, g: 0.266666666666667, b:
+								0.266666666666667},
+							{name: '666666', r: 0.4, g: 0.4, b: 0.4},
+							{name: '999999', r: 0.6, g: 0.6, b: 0.6}
+						];
+						/** This is supported, but does not respect the order in chrome.
+						Black appears at the end of the list of swatches. */
+						jQuery.colorpicker.swatches.custom = {
+							'000000': {r: 0, g: 0, b: 0},
+							'444444': {r: 0.266666666666667, g: 0.266666666666667, b:
+								0.266666666666667},
+							'666666': {r: 0.4, g: 0.4, b: 0.4},
+							'999999': {r: 0.6, g: 0.6, b: 0.6}
+						};
+
+						$('.cp-custom-array').colorpicker({
+							parts:			'full',
+							swatches:		'custom_array',
+							colorFormat:	'NAME',
+							swatchesWidth:	173,
+							limit:			'name',
+							init:			function(event, color) {
+												$('.cp-custom-array-output').text(color.formatted);
+											},
+							select:			function(event, color) {
+												$('.cp-custom-array-output').text(color.formatted);
 											}
 						});
 					});

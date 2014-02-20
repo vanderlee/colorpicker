@@ -1318,7 +1318,7 @@
 					html = function () {
 						var html = '';
 
-						$.each(inst._getSwatches(), function (name, color) {
+						inst._eachSwatch(function (name, color) {
 							var c = new $.colorpicker.Color(color.r, color.g, color.b),
 								css = c.toCSS();
 							html += '<div class="ui-colorpicker-swatch" style="background-color:' + css + '" title="' + name + '"></div>';
@@ -2622,15 +2622,23 @@
 			return $.colorpicker.swatches.html;
 		},
 
+		_eachSwatch: function (callback) {
+			var currentSwatches = this._getSwatches();
+			var name;
+			$.each(currentSwatches, function (nameOrIndex, swatch) {
+				if ($.isArray(currentSwatches)) {
+					name = swatch.name;
+				} else {
+					name = nameOrIndex;
+				}
+				callback(name, swatch);
+			});
+		},
+
 		_getSwatch: function(name) {
-			var swatches = this._getSwatches(),
-				swatch = false;
+			var swatch = false;
 
-			if (swatches[name] !== undefined) {
-				return swatches[name];
-			}
-
-			$.each(swatches, function(swatchName, current) {
+			this._eachSwatch(function(swatchName, current) {
 				if (swatchName.toLowerCase() == name.toLowerCase()) {
 					swatch = current;
 					return false;
@@ -2662,7 +2670,7 @@
 		_exactName: function(color) {
 			var name	= false;
 
-			$.each(this._getSwatches(), function(n, swatch) {
+			this._eachSwatch(function(n, swatch) {
 				if (color.equals(new $.colorpicker.Color(swatch.r, swatch.g, swatch.b))) {
 					name = n;
 					return false;
@@ -2679,7 +2687,7 @@
 				name		= false,
 				d;
 
-			$.each(this._getSwatches(), function(n, swatch) {
+			this._eachSwatch(function(n, swatch) {
 				d = color.distance(new $.colorpicker.Color(swatch.r, swatch.g, swatch.b));
 				if (d < distance || distance === null) {
 					name = n;
