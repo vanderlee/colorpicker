@@ -77,9 +77,11 @@ Comma-separated list of CSS properties to set color of in the altField.
 The following properties are allowed, all others are ignored.
 
 *	``background-color``
-*	``color``
 *	``border-color``
+*	``color``
+*	``fill``
 *	``outline-color``
+*	``stroke``
 
 ###	autoOpen (false)
 If true, the dialog opens automatically upon page load.
