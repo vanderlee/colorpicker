@@ -2163,6 +2163,7 @@
 					switch (property) {
 						case 'color':
 						case 'fill':
+						case 'stroke':
 						case 'background-color':
 						case 'backgroundColor':
 						case 'outline-color':
