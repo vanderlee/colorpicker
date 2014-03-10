@@ -168,9 +168,13 @@ HEX3 format if possible or HEX format otherwise:
 
 *	``['HEX3', 'HEX']``
 
-###	dragggable (true)
+###	draggable (true)
 Make the dialog draggable if the header is visible and the dialog is
 not inline.
+
+###	containment (null)
+If the dialog is draggable, constrains dragging to within the bounds of the
+specified element or region. Same as jQueryUI Draggable.
 
 ###	duration ('fast')
 Same as jQueryUI DatePicker.
