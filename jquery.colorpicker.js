@@ -521,9 +521,13 @@
 					});
 
 					if (!inst.inline && inst.options.draggable) {
-						inst.dialog.draggable({
-							handle: e
-						});
+						var draggableOptions = {
+							handle: e,
+						}
+						if (inst.options.containment) {
+							draggableOptions.containment = inst.options.containment;
+						}
+						inst.dialog.draggable(draggableOptions);
 					}
 				};
 			},
@@ -1994,6 +1998,7 @@
 			color:				'#00FF00',	// Initial color (for inline only)
 			colorFormat:		'HEX',		// Format string for output color format
 			draggable:			true,		// Make popup dialog draggable if header is visible.
+			containment:		null,		// Constrains dragging to within the bounds of the specified element or region.
 			duration:			'fast',
 			hsv:				true,		// Show HSV controls and modes
 			inline:				true,		// Show any divs as inline by default
