@@ -29,16 +29,27 @@
 							container.append($node);
 						},
 			getMemory	= function() {
-							return (document.cookie.match(/\bcolorpicker-memory=([^;]*)/) || [0, ''])[1].split(',');
+							if (window.localStorage) {
+								var memory = localStorage.getItem('colorpicker-memory');
+								if (memory) {
+									return JSON.parse(memory);
+								}
+							}
+							return $.map((document.cookie.match(/\bcolorpicker-memory=([^;]*)/) || [0, ''])[1].split(','),unescape);
 						};
 			setMemory	= function() {
 							var colors = [];
 							$('> *', container).each(function() {
-								colors.push(escape($(this).css('backgroundColor')));
+								colors.push($(this).css('backgroundColor'));
 							});
-							var expdate=new Date();
-							expdate.setDate(expdate.getDate() + (365 * 10));
-							document.cookie = 'colorpicker-memory='+colors.join()+";expires="+expdate.toUTCString();
+							if (window.localStorage) {
+								localStorage.setItem('colorpicker-memory',JSON.stringify(colors));
+							}
+							else {
+								var expdate=new Date();
+								expdate.setDate(expdate.getDate() + (365 * 10));
+								document.cookie = 'colorpicker-memory='+$.map(colors,escape).join()+';expires='+expdate.toUTCString();
+							}
 						};
 
 		this.init = function () {
@@ -52,7 +63,7 @@
 							.appendTo($('.ui-colorpicker-memory-container', inst.dialog));
 
 			$.each(getMemory(), function() {
-				addNode(unescape(this));
+				addNode(this);
 			});
 
 			container.mousedown(function(e) {
