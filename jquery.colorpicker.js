@@ -1438,7 +1438,8 @@
 					return Math.max(0, Math.min(v, 1));
 				},
 				_hexify = function (number) {
-					var digits = '0123456789abcdef',
+					var number = Math.round(number),
+						digits = '0123456789abcdef',
 						lsd = number % 16,
 						msd = (number - lsd) / 16,
 						hexified = digits.charAt(msd) + digits.charAt(lsd);
@@ -2638,7 +2639,7 @@
 				} else {
 					name = nameOrIndex;
 				}
-				callback(name, swatch);
+				return callback(name, swatch);
 			});
 		},
 
@@ -2650,7 +2651,6 @@
 					swatch = current;
 					return false;
 				}
-				return true;
 			});
 
 			return swatch;
@@ -2682,7 +2682,6 @@
 					name = n;
 					return false;
 				}
-				return true;
 			});
 
 			return name;
@@ -2698,12 +2697,11 @@
 				d = color.distance(new $.colorpicker.Color(swatch.r, swatch.g, swatch.b));
 				if (d < distance || distance === null) {
 					name = n;
-					if (d === 0) {
+					if (d <= 1e-20) {	// effectively 0 by maximum rounding error
 						return false;	// can't get much closer than 0
 					}
-					distance = d;
+					distance = d;	// safety net
 				}
-				return true;
 			});
 
 			return name;
@@ -2725,7 +2723,7 @@
 
 			$.each(formats, function(index, format) {
 				if ($.colorpicker.writers[format]) {
-					text = $.colorpicker.writers[format](color, that);
+					text = $.colorpicker.writers[format](color, that);		
 					return (text === false);
 				} else {
 					text = format.replace(/\\?[argbhsvcmykLAB][xdfp]/g, function(m) {
