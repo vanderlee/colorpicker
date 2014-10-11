@@ -2631,14 +2631,10 @@
 		},
 
 		_eachSwatch: function (callback) {
-			var currentSwatches = this._getSwatches();
-			var name;
+			var currentSwatches = this._getSwatches(),
+				name;
 			$.each(currentSwatches, function (nameOrIndex, swatch) {
-				if ($.isArray(currentSwatches)) {
-					name = swatch.name;
-				} else {
-					name = nameOrIndex;
-				}
+				name = $.isArray(currentSwatches) ? swatch.name : nameOrIndex;
 				return callback(name, swatch);
 			});
 		},
