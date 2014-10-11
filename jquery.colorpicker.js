@@ -4,7 +4,7 @@
 /*!
  * ColorPicker
  *
- * Copyright (c) 2011-2013 Martijn W. van der Lee
+ * Copyright (c) 2011-2014 Martijn W. van der Lee
  * Licensed under the MIT.
  */
 /* Full-featured colorpicker for jQueryUI with full theming support.
