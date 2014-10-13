@@ -1335,7 +1335,7 @@
 					part = $(html()).appendTo($('.ui-colorpicker-swatches-container', inst.dialog));
 
 					$('.ui-colorpicker-swatch', part).click(function () {
-						inst.color	= inst._parseColor($(this).css('background-color'));
+						inst.color	= inst._parseColor($(this).css('background-color')) || new $.colorpicker.Color();
 						inst._change();
 					});
 				};
@@ -1933,13 +1933,16 @@
 			};
 
 			this.equals = function(color) {
-				var a = this.getRGB(),
-					b = color.getRGB();
+				if (color) {
+					var a = this.getRGB(),
+						b = color.getRGB();
 
-				return this.getAlpha() === color.getAlpha()
-					&& a.r === b.r
-					&& a.g === b.g
-					&& a.b === b.b;
+					return this.getAlpha() === color.getAlpha()
+						&& a.r === b.r
+						&& a.g === b.g
+						&& a.b === b.b;
+				}
+				return false;
 			};
 
 			this.limit = function(steps) {
@@ -2186,7 +2189,7 @@
 		},
 
 		_setColor: function(text) {
-			this.color			= this._parseColor(text);
+			this.color			= this._parseColor(text) || new $.colorpicker.Color();
 			this.currentColor	= this.color.copy();
 
 			this._setImageBackground();
@@ -2271,7 +2274,7 @@
 				}
 			}).keyup(function (event) {
 				var color = that._parseColor(that.element.val());
-				if (!that.color.equals(color)) {
+				if (color && !that.color.equals(color)) {
 					that.color = color;
 					that._change();
 				}
@@ -2667,7 +2670,7 @@
 				return c;
 			}
 
-			return new $.colorpicker.Color();
+			return false;
         },
 
 		_exactName: function(color) {
@@ -2703,13 +2706,13 @@
 			return name;
 		},
 
-		_formatColor: function (formats, color) {
+		_formatColor: function (formats, color) {			
 			var that		= this,
 				text		= null,
 				types		= {	'x':	function(v) {return _intToHex(v * 255);}
 							,	'd':	function(v) {return Math.floor(v * 255);}
 							,	'f':	function(v) {return v;}
-							,	'p':	function(v) {return v * 100;}
+							,	'p':	function(v) {return v * 100.;}
 							},
 				channels	= color.getChannels();
 
@@ -2731,7 +2734,7 @@
 					return false;
 				}
 			});
-
+			
 			return text;
 		}
 	});
