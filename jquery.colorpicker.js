@@ -2654,20 +2654,123 @@
 
 			return swatch;
         },
+		
+		_parseFormat: function(format, text) {
+			var that = this,
+				typeRegexps = {
+					x:	function() {return '([0-9a-fA-F]{2})';}
+				,	d:	function() {return '([12]?[0-9]{1,2})';}
+				,	f:	function() {return '([0-9]*\\.?[0-9]*)';}	//@todo proper FP-regex: 0, 0., 0.123, .123
+				,	p:	function() {return '([0-9]*\\.?[0-9]*)';}	//@todo as above
+				},
+				typeConverters = {
+					x:	function(v)	{return parseToInt(v, 16);}
+				,	d:	function(v)	{return v / 255.;}
+				,	f:	function(v)	{return v;}
+				,	p:	function(v)	{return v * 0.01;}
+				},
+				setters = {
+					r:	'setRGB'
+				,	g:	'setRGB'
+				,	b:	'setRGB'
+				,	h:	'setHSV'
+				,	s:	'setHSV'
+				,	v:	'setHSV'
+				,	c:	'setCMYK'
+				,	m:	'setCMYK'
+				,	y:	'setCMYK'
+				,	k:	'setCMYK'
+				,	L:	'setLAB'
+				,	A:	'setLAB'
+				,	B:	'setLAB'
+				},
+				setterChannels = {
+					setRGB:		[ 'r', 'g', 'b']
+				,	setHSV:		[ 'h', 's', 'v' ]
+				,	setCMYK:	[ 'c', 'm', 'y', 'k' ]
+				,	setLAB:		[ 'L', 'A', 'B' ]
+				},
+				channels = [],
+				converters = [],						
+				setter = null,
+				color,
+				pattern;
 
-        _parseColor: function(color) {
+			// Construct pattern
+			pattern = format.replace(/[()\\^$.|?*+[\]]/g, function(m) {
+				return '\\'+m;
+			});
+
+			pattern = pattern.replace(/\\?[argbhsvcmykLAB][xdfp]/g, function(variable) {
+				if (variable.match(/^\\/)) {
+					return variable.slice(1);
+				}
+
+				var channel = variable.charAt(0),
+					type = variable.charAt(1);
+
+				channels.push(channel);
+				converters.push(typeConverters[type]);
+				if (setters[channel]) {
+					setter = setters[channel];
+				}
+
+				return typeRegexps[type]();
+			});
+
+			if (setter) {
+				var values = text.match(new RegExp(pattern));
+				if (values) {
+					var args = [],
+						channelIndex;
+					
+					values.shift();
+									
+					$.each(setterChannels[setter], function(index, channel) {
+						channelIndex = $.inArray(channel, channels);
+						args[index] = converters[channelIndex](values[channelIndex]);
+					});
+
+					color = new $.colorpicker.Color();
+					color[setter].apply(color, args);
+				}
+			}
+			
+			return color;
+		},
+
+        _parseColor: function(text) {
             var that = this,
-				c;
-
-			$.each($.colorpicker.parsers, function(name, parser) {
-				c = parser(color, that);
-				if (c) {
+				color;
+		
+			var formats = $.isArray(that.options.colorFormat)
+					? that.options.colorFormat
+					: [ that.options.colorFormat ];
+			
+			$.each(formats, function(index, format) {
+				if ($.colorpicker.parsers[format]) {
+					color = $.colorpicker.parsers[format](text, that);
+				} else {
+					color = that._parseFormat(format, text);
+				}
+			
+				if (color) {
 					return false;
 				}
 			});
+			
+			if (!color) {
+				// fallback; check all registered parsers
+				$.each($.colorpicker.parsers, function(name, parser) {
+					color = parser(text, that);
+					if (color) {
+						return false;
+					}
+				});
+			}
 
-			if (c) {
-				return c;
+			if (color) {
+				return color;
 			}
 
 			return false;
