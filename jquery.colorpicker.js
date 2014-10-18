@@ -2049,9 +2049,9 @@
 			open:               null
 		},
 		
-		_generatePopup_document_keydown:	null,
-		_generatePopup_document_click:		null,
-		open_overlay_resize_handler:		null,
+		__generatePopup_document_keydown:	null,
+		__generatePopup_document_click:		null,
+		_open_overlay_resize_handler:		null,
 
 		_create: function () {
 			var that = this,
@@ -2225,7 +2225,7 @@
 
 
 			// Close on clicking outside window and controls
-			$(document).delegate('html', 'touchstart click', that._generatePopup_document_click = function (event) {
+			$(document).delegate('html', 'touchstart click', that.__generatePopup_document_click = function (event) {
 				if (!that.opened || event.target === that.element[0] || that.overlay) {
 					return;
 				}
@@ -2260,7 +2260,7 @@
 				that.close(that.options.revert);
 			});
 
-			$(document).keydown(that._generatePopup_document_keydown = function (event) {
+			$(document).keydown(that.__generatePopup_document_keydown = function (event) {
 				// close on ESC key
 				if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
 					that.close(that.options.revert);
@@ -2451,7 +2451,7 @@
 				if (that.options.modal) {
 					that.overlay = $('<div class="ui-widget-overlay"></div>').appendTo('body').css('z-index', zIndex - 1);
 					
-					$(window).resize(that.open_overlay_resize_handler = function() {
+					$(window).resize(that._open_overlay_resize_handler = function() {
 						if (that.overlay) {
 							that.overlay.width($(document).width());
 							that.overlay.height($(document).height());					
