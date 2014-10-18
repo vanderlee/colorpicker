@@ -2048,6 +2048,10 @@
             ok:                 null,
 			open:               null
 		},
+		
+		_generatePopup_document_keydown:	null,
+		_generatePopup_document_click:		null,
+		open_overlay_resize_handler:		null,
 
 		_create: function () {
 			var that = this,
@@ -2219,8 +2223,9 @@
 			$('body').append(_container_popup);
 			that.dialog = $('.ui-colorpicker:last');
 
+
 			// Close on clicking outside window and controls
-			$(document).delegate('html', 'touchstart click', function (event) {
+			$(document).delegate('html', 'touchstart click', that._generatePopup_document_click = function (event) {
 				if (!that.opened || event.target === that.element[0] || that.overlay) {
 					return;
 				}
@@ -2255,7 +2260,7 @@
 				that.close(that.options.revert);
 			});
 
-			$(document).keydown(function (event) {
+			$(document).keydown(that._generatePopup_document_keydown = function (event) {
 				// close on ESC key
 				if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
 					that.close(that.options.revert);
@@ -2440,14 +2445,18 @@
 				});
 
 				// @todo zIndexOffset option, to raise above other elements?
-				that.dialog.css('z-index', zIndex += 2);
-
-				that.overlay = that.options.modal ? new $.ui.dialog.overlay(that) : null;
-				if (that.overlay !== null) {
-					var z = that.overlay.$el.css('z-index');
-					if ((typeof(z) === 'number' || typeof(z) === 'string') && z !== '' && !isNaN(z)) {
-						that.dialog.css('z-index', zIndex + z + 2);
-					}
+				zIndex += 2;
+				that.dialog.css('z-index', zIndex);
+								
+				if (that.options.modal) {
+					that.overlay = $('<div class="ui-widget-overlay"></div>').appendTo('body').css('z-index', zIndex - 1);
+					
+					$(window).resize(that.open_overlay_resize_handler = function() {
+						if (that.overlay) {
+							that.overlay.width($(document).width());
+							that.overlay.height($(document).height());					
+						}
+					});
 				}
 
 				that._effectShow(this.dialog);
@@ -2475,6 +2484,10 @@
             }
 			that.changed		= false;
 
+			if (that.overlay) {
+				that.overlay.remove();
+			}
+			
 			// tear down the interface
 			that._effectHide(that.dialog, function () {
 				that.dialog.remove();
@@ -2484,29 +2497,25 @@
 				that.opened		= false;
 				that._callback('close', true);
 			});
-
-			if (that.overlay) {
-				that.overlay.destroy();
-			}
 		},
 
 		destroy: function() {
 			this.element.unbind();
 
+			if (this.overlay) {
+				this.overlay.remove();
+			}
+			
+			if (this.dialog !== null) {
+				this.dialog.remove();
+			}
+			
 			if (this.image !== null) {
 				this.image.remove();
 			}
 
 			if (this.button !== null) {
 				this.button.remove();
-			}
-
-			if (this.dialog !== null) {
-				this.dialog.remove();
-			}
-
-			if (this.overlay) {
-				this.overlay.destroy();
 			}
 		},
 
