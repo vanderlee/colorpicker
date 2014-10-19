@@ -2407,15 +2407,16 @@
 					if (position.of === 'element') {
 						position.of = element;
 					}
-					that.dialog.position(position);
 				} else {					
-					that.dialog.position({
+					position = {
 						my:			'left top',
 						at:			'left bottom',
 						of:			element,
 						collision:	'flip'
-					});						
+					};
 				}
+				
+				that.dialog.position(position);				
 				
 				if (that.element.is(':hidden')) {
 					element.remove();
