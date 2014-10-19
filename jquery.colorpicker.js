@@ -2028,6 +2028,7 @@
 				map:		{ size: 256 },
 				bar:		{ size: 256 }
 			},			// options per part
+			position:			null,
 			regional:			'',
 			revert:				false,		// Revert color upon non
 			rgb:				true,		// Show RGB controls and modes
@@ -2389,39 +2390,37 @@
 				height, width,
 				x, y,
 				zIndex,
-				hiddenPlaceholder;
+				element,
+				position;
 
 			if (!that.opened) {
 				that._generate();
-
+				
 				if (that.element.is(':hidden')) {
-					hiddenPlaceholder = $('<div/>').insertBefore(that.element);
-					offset	= hiddenPlaceholder.offset();
-					hiddenPlaceholder.remove();
+					element = $('<div/>').insertBefore(that.element);
 				} else {
-					offset	= that.element.offset();
+					element = that.element;
 				}
-				bottom	= $(window).height() + $(window).scrollTop();
-				right	= $(window).width() + $(window).scrollLeft();
-				height	= that.dialog.outerHeight(false);
-				width	= that.dialog.outerWidth();
-				x		= offset.left;
-				y		= offset.top + that.element.outerHeight(false);
-
-				if (x + width > right) {
-					x = Math.max(0, right - width);
-				}
-
-				if (y + height > bottom) {
-					if (offset.top - height >= $(window).scrollTop()) {
-						y = offset.top - height;
-					} else {
-						y = Math.max(0, bottom - height);
+				
+				if (that.options.position) {
+					position = $.extend({}, that.options.position);
+					if (position.of === 'element') {
+						position.of = element;
 					}
+					that.dialog.position(position);
+				} else {					
+					that.dialog.position({
+						my:			'left top',
+						at:			'left bottom',
+						of:			element,
+						collision:	'flip'
+					});						
 				}
-
-				that.dialog.css({'left': x, 'top': y});
-
+				
+				if (that.element.is(':hidden')) {
+					element.remove();
+				}
+				
 				// Automatically find highest z-index.
 				zIndex = 0;
 				$(that.element[0]).parents().each(function() {
@@ -2449,8 +2448,10 @@
 				that.dialog.css('z-index', zIndex);
 								
 				if (that.options.modal) {
-					that.overlay = $('<div class="ui-widget-overlay"></div>').appendTo('body').css('z-index', zIndex - 1);
-					
+					that.overlay = $('<div class="ui-widget-overlay"></div>').appendTo('body').css('z-index', zIndex - 1);					
+					that.overlay.width($(document).width());
+					that.overlay.height($(document).height());					
+										
 					$(window).resize(that._open_overlay_resize_handler = function() {
 						if (that.overlay) {
 							that.overlay.width($(document).width());

@@ -56,6 +56,7 @@
 			  <li><a href="#tab-okonenter">Close on enter</a></li>
 			  <li><a href="#tab-128">128-pixel map and bar</a></li>
 			  <li><a href="#tab-customcolor">Custom color format</a></li>
+			  <li><a href="#tab-position">Centered in window</a></li>
 			</ul>
 
 			<div id="tab-input">
@@ -532,6 +533,24 @@
 							colorFormat: ['cp,mp,yp,kp'],
 							buttonImageOnly: true,
 							buttonColorize: true,
+						});
+					});
+				</script>
+			</div>
+			
+			<div id="tab-position">
+				<h2>Centered using position option</h2>
+				<input type="text" class="cp-position"/>
+
+				<script>
+					$(function() {
+						$('.cp-position').colorpicker({
+							position: {
+								my: 'center',
+								at: 'center',
+								of: window
+							},
+							modal: true
 						});
 					});
 				</script>

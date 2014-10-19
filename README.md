@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-v1.0.12
+v1.0.13
 
 Copyright &copy; 2011-2014 Martijn W. van der Lee (http://martijn.vanderlee.com).
 Licensed under the MIT.
@@ -232,6 +232,16 @@ of part names (i.e. ['header', 'map', 'bar', 'hex', 'hsv',
 If an empty string is given, the parts will be automatically chosen as
 preset 'popup' or 'inline' depending on the context in which the
 colorpicker is used.
+
+###	position (null)
+Specify the position of the dialog as a jQueryUI position object.
+See [jQueryUI .position() API documentation](http://api.jqueryui.com/position/)
+for information on how to use.
+ColorPicker adds an additional option to the `of` option; the value `'element'`
+will refer to the element to which the ColorPicker is attached, including if it
+is invisible).
+By default, the dialog will attached to the bottom-left of the element, flipping
+on collision.
 
 ###	regional ('')
 Sets the language to use. Note that you must load the appropriate language file
