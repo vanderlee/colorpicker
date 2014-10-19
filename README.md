@@ -129,9 +129,9 @@ You can either specify one of the predefined formats:
 *	``HEX``		112233 (RRGGBB)
 *	``HEX3``	123 (RGB) if possible, otherwise false.
 *	``#HEXA``	#11223344 (#RRGGBBAA)
-*	``#HEX3A``	#1234 (#RGBA) if possible, otherwise false.
+*	``#HEXA4``	#1234 (#RGBA) if possible, otherwise false.
 *	``HEXA``	11223344 (RRGGBBAA)
-*	``HEXA3``	1234 (RGBA) if possible, otherwise false.
+*	``HEXA4	``	1234 (RGBA) if possible, otherwise false.
 *	``RGB``		rgb(123,45,67) if opaque, otherwise false.
 *	``RGBA``	rgba(123,45,67,0.123%)
 *	``RGB%``	rgb(12%,34%,56%) if opaque, otherwise false.

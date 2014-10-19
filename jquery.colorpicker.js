@@ -317,7 +317,7 @@
 							return that._formatColor('#rxgxbx', color);
 						}
 		,	'#HEX3':	function(color, that) {
-							var hex3 = $.colorpicker.writers.HEXA3(color);
+							var hex3 = $.colorpicker.writers.HEX3(color);
 							return hex3 === false? false : '#'+hex3;
 						}
 		,	'HEX':		function(color, that) {
@@ -339,14 +339,14 @@
 		,	'#HEXA':	function(color, that) {
 							return that._formatColor('#rxgxbxax', color);
 						}						
-		,	'#HEXA3':	function(color, that) {
-							var hexa3 = $.colorpicker.writers.HEXA3(color, that);
-							return hexa3 === false? false : '#'+hexa3;
+		,	'#HEXA4':	function(color, that) {
+							var hexa4 = $.colorpicker.writers.HEXA4(color, that);
+							return hexa4 === false? false : '#'+hexa4;
 						}						
 		,	'HEXA':	function(color, that) {
 							return that._formatColor('rxgxbxax', color);
 						}		
-		,	'HEXA3':		function(color, that) {
+		,	'HEXA4':		function(color, that) {
 							var a = Math.floor(color.getAlpha() * 255);
 						
 							if ((a >>> 4) === (a &= 0xf)) {
@@ -497,7 +497,7 @@
 								);
 							}
 						}
-		,	'#HEX3A':	function(color) {
+		,	'#HEXA4':	function(color) {
 							var m = /^#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
 							if (m) {
 								return new $.colorpicker.Color(
@@ -519,7 +519,7 @@
 								);
 							}
 						}
-		,	'HEXA3':	function(color) {
+		,	'HEXA4':	function(color) {
 							var m = /^([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
 							if (m) {
 								return new $.colorpicker.Color(
