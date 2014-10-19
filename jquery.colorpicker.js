@@ -317,7 +317,7 @@
 							return that._formatColor('#rxgxbx', color);
 						}
 		,	'#HEX3':	function(color, that) {
-							var hex3 = $.colorpicker.writers.HEX3(color);
+							var hex3 = $.colorpicker.writers.HEXA3(color);
 							return hex3 === false? false : '#'+hex3;
 						}
 		,	'HEX':		function(color, that) {
@@ -336,6 +336,24 @@
 							}
 							return false;
 						}
+		,	'#HEXA':	function(color, that) {
+							return that._formatColor('#rxgxbxax', color);
+						}						
+		,	'#HEXA3':	function(color, that) {
+							var hexa3 = $.colorpicker.writers.HEXA3(color, that);
+							return hexa3 === false? false : '#'+hexa3;
+						}						
+		,	'HEXA':	function(color, that) {
+							return that._formatColor('rxgxbxax', color);
+						}		
+		,	'HEXA3':		function(color, that) {
+							var a = Math.floor(color.getAlpha() * 255);
+						
+							if ((a >>> 4) === (a &= 0xf)) {
+								return $.colorpicker.writers.HEX3(color, that)+a.toString(16);
+							}
+							return false;
+						}						
 		,	'RGB':		function(color, that) {
 							return color.getAlpha() >= 1
 									? that._formatColor('rgb(rd,gd,bd)', color)
@@ -465,6 +483,50 @@
 								   parseInt(String(m[1]) + m[1], 16) / 255,
 								   parseInt(String(m[2]) + m[2], 16) / 255,
 								   parseInt(String(m[3]) + m[3], 16) / 255
+								);
+							}
+						}
+		,	'#HEXA':	function(color) {
+							var m = /^#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/.exec(color);
+							if (m) {
+								return new $.colorpicker.Color(
+									parseInt(m[1], 16) / 255,
+									parseInt(m[2], 16) / 255,
+									parseInt(m[3], 16) / 255,
+									parseInt(m[4], 16) / 255
+								);
+							}
+						}
+		,	'#HEX3A':	function(color) {
+							var m = /^#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
+							if (m) {
+								return new $.colorpicker.Color(
+								   parseInt(String(m[1]) + m[1], 16) / 255,
+								   parseInt(String(m[2]) + m[2], 16) / 255,
+								   parseInt(String(m[3]) + m[3], 16) / 255,
+								   parseInt(String(m[4]) + m[4], 16) / 255
+								);
+							}
+						}
+		,	'HEXA':		function(color) {
+							var m = /^([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/.exec(color);
+							if (m) {
+								return new $.colorpicker.Color(
+									parseInt(m[1], 16) / 255,
+									parseInt(m[2], 16) / 255,
+									parseInt(m[3], 16) / 255,
+									parseInt(m[4], 16) / 255
+								);
+							}
+						}
+		,	'HEXA3':	function(color) {
+							var m = /^([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/.exec(color);
+							if (m) {
+								return new $.colorpicker.Color(
+								   parseInt(String(m[1]) + m[1], 16) / 255,
+								   parseInt(String(m[2]) + m[2], 16) / 255,
+								   parseInt(String(m[3]) + m[3], 16) / 255,
+								   parseInt(String(m[4]) + m[4], 16) / 255
 								);
 							}
 						}

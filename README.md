@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-v1.0.13
+v1.0.14
 
 Copyright &copy; 2011-2014 Martijn W. van der Lee (http://martijn.vanderlee.com).
 Licensed under the MIT.
@@ -124,10 +124,14 @@ Initial color. Formats recognized are:
 Specifies the format of the color string returned in callbacks.
 You can either specify one of the predefined formats:
 
-*	``#HEX``	#112233
-*	``#HEX3``	#123 if possible, otherwise false.
-*	``HEX``		112233
-*	``HEX3``	123 if possible, otherwise false.
+*	``#HEX``	#112233 (#RRGGBB)
+*	``#HEX3``	#123 (#RGB) if possible, otherwise false.
+*	``HEX``		112233 (RRGGBB)
+*	``HEX3``	123 (RGB) if possible, otherwise false.
+*	``#HEXA``	#11223344 (#RRGGBBAA)
+*	``#HEX3A``	#1234 (#RGBA) if possible, otherwise false.
+*	``HEXA``	11223344 (RRGGBBAA)
+*	``HEXA3``	1234 (RGBA) if possible, otherwise false.
 *	``RGB``		rgb(123,45,67) if opaque, otherwise false.
 *	``RGBA``	rgba(123,45,67,0.123%)
 *	``RGB%``	rgb(12%,34%,56%) if opaque, otherwise false.
