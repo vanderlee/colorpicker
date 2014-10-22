@@ -2112,10 +2112,6 @@
 			select:             null
 		},
 		
-		__generatePopup_document_keydown:	null,
-		__generatePopup_document_click:		null,
-		_open_overlay_resize_handler:		null,
-
 		_create: function () {
 			var that = this,
 				text;
@@ -2133,6 +2129,12 @@
 			that.button		= null;
 			that.image		= null;
 			that.overlay	= null;
+			
+			that.events = {
+				window_resize:			null,
+				document_keydown:		null,
+				document_click_html:	null
+			};
 
 			that.mode		= that.options.mode;
 
@@ -2283,12 +2285,11 @@
 		_generatePopup: function() {
 			var that = this;
 
-			$('body').append(_container_popup);
-			that.dialog = $('.ui-colorpicker:last');
-
+			that.dialog = $(_container_popup).appendTo('body');
 
 			// Close on clicking outside window and controls
-			$(document).delegate('html', 'touchstart click', that.__generatePopup_document_click = function (event) {
+			if (that.events.document_click_html === null) {
+				$(document).delegate('html', 'touchstart click', that.events.document_click_html = function (event) {
 				if (!that.opened || event.target === that.element[0] || that.overlay) {
 					return;
 				}
@@ -2322,8 +2323,10 @@
 
 				that.close(that.options.revert);
 			});
+			}
 
-			$(document).keydown(that.__generatePopup_document_keydown = function (event) {
+			if (that.events.document_keydown === null) {
+				$(document).bind('keydown', that.events.document_keydown = function (event) {
 				// close on ESC key
 				if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
 					that.close(that.options.revert);
@@ -2334,6 +2337,7 @@
 					that.close();
 				}
 			});
+			}
 
 			// Close (with OK) on tab key in element
 			that.element.keydown(function (event) {
@@ -2444,7 +2448,7 @@
 		_effectHide: function(element, callback) {
 			this._effectGeneric(element, 'hide', 'slideUp', 'fadeOut', callback);
 		},
-
+				
 		open: function() {
 			var that = this,
 				offset,
@@ -2511,16 +2515,21 @@
 				that.dialog.css('z-index', zIndex);
 								
 				if (that.options.modal) {
-					that.overlay = $('<div class="ui-widget-overlay"></div>').appendTo('body').css('z-index', zIndex - 1);					
-					that.overlay.width($(document).width());
-					that.overlay.height($(document).height());					
-										
-					$(window).resize(that._open_overlay_resize_handler = function() {
+					that.overlay = $('<div class="ui-widget-overlay"></div>').appendTo('body').css('z-index', zIndex - 1);										
+
+					if (that.events.window_resize !== null) {
+						$(window).unbind('resize', that.events.window_resize);					
+					}
+					
+					that.events.window_resize = function() {
 						if (that.overlay) {
 							that.overlay.width($(document).width());
 							that.overlay.height($(document).height());					
 						}
-					});
+					},
+															
+					$(window).bind('resize', that.events.window_resize);
+					that.events.window_resize();			
 				}
 
 				that._effectShow(this.dialog);
@@ -2549,6 +2558,7 @@
 			that.changed		= false;
 
 			if (that.overlay) {
+				$(window).unbind('resize', that.events.window_resize);					
 				that.overlay.remove();
 			}
 			
@@ -2564,6 +2574,18 @@
 		},
 
 		destroy: function() {
+			if (that.events.document_click_html !== null) {
+				$(document).undelegate('html', 'touchstart click', that.events.document_click_html);
+			}
+			
+			if (that.events.document_keydown !== null) {
+				$(document).unbind('keydown', that.events.document_keydown);
+			}
+			
+			if (that.events.resizeOverlay !== null) {
+				$(window).unbind('resize', that.events.resizeOverlay);					
+			}			
+			
 			this.element.unbind();
 
 			if (this.overlay) {
