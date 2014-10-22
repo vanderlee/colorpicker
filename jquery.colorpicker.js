@@ -2107,9 +2107,9 @@
 			cancel:             null,
             close:              null,
 			init:				null,
-			select:             null,
             ok:                 null,
-			open:               null
+			open:               null,
+			select:             null
 		},
 		
 		__generatePopup_document_keydown:	null,
