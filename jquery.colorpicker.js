@@ -2759,7 +2759,7 @@
 				,	p:	function() {return '([0-9]*\\.?[0-9]*)';}	//@todo as above
 				},
 				typeConverters = {
-					x:	function(v)	{return parseToInt(v, 16);}
+					x:	function(v)	{return parseInt(v, 16);}
 				,	d:	function(v)	{return v / 255.;}
 				,	f:	function(v)	{return v;}
 				,	p:	function(v)	{return v * 0.01;}
