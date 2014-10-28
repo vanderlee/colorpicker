@@ -34,6 +34,8 @@ Features
 
 Download
 --------
+Install with bower using `bower install colorpicker`.
+
 jQuery v1.7.1 or higher required. (Will not work with v1.6 or before).
 
 jQueryUI v1.8.0 or higher required.
