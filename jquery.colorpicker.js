@@ -618,6 +618,7 @@
 						e.unbind('mousedown', _mousedown);
 						$(document).bind('mouseup', _mouseup);
 						$(document).bind('mousemove', _mousemove);
+						inst.mousehold = true;
 						_mousemove(event);
 					}
 				};
@@ -628,6 +629,10 @@
 					$(document).unbind('mouseup', _mouseup);
 					$(document).unbind('mousemove', _mousemove);
 					e.bind('mousedown', _mousedown);
+					inst.mousehold = false;
+					if (!this.selectOnMouseMove) {
+						inst._change();
+					}
 				};
 
 				_mousemove = function (event) {
@@ -814,6 +819,7 @@
 						$(document).bind('mouseup', _mouseup);
 						$(document).bind('mousemove', _mousemove);
 						_mousemove(event);
+						inst.mousehold = true;
 					}
 				};
 
@@ -823,6 +829,10 @@
 					$(document).unbind('mouseup', _mouseup);
 					$(document).unbind('mousemove', _mousemove);
 					e.bind('mousedown', _mousedown);
+					inst.mousehold = false;
+					if (!this.selectOnMouseMove) {
+						inst._change();
+					}
 				};
 
 				_mousemove = function (event) {
@@ -2094,6 +2104,7 @@
 			regional:			'',
 			revert:				false,		// Revert color upon non
 			rgb:				true,		// Show RGB controls and modes
+			selectOnMouseMove:	true,		// Trigger the select event on each mouse move (false to only trigger when mouse is released)
 			showAnim:			'fadeIn',
 			showCancelButton:	true,
 			showNoneButton:		false,
@@ -2124,6 +2135,7 @@
 			that.generated	= false;
 			that.inline		= false;
 			that.changed	= false;
+			that.mousehold	= false;
 
 			that.dialog		= null;
 			that.button		= null;
@@ -2663,6 +2675,8 @@
 		},
 
 		_change: function () {
+			var propagate = this.options.selectOnMouseMove || !this.mousehold;
+
 			this.changed = true;
 
 			// Limit color palette
@@ -2671,7 +2685,7 @@
 			}
 
 			// update input element content
-			if (!this.inline) {
+			if (!this.inline && propagate) {
 				if (!this.color.set) {
 					this.element.val('');
 				} else if (!this.color.equals(this._parseColor(this.element.val()))) {
@@ -2690,7 +2704,9 @@
 			}
 
 			// callback
-			this._callback('select');
+			if (propagate) {
+				this._callback('select');
+			}
 		},
 
 		// This will be deprecated by jQueryUI 1.9 widget
