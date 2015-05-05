@@ -819,6 +819,7 @@
 						$(document).bind('mouseup', _mouseup);
 						$(document).bind('mousemove', _mousemove);
 						_mousemove(event);
+						inst.mousehold = true;
 					}
 				};
 
@@ -828,6 +829,10 @@
 					$(document).unbind('mouseup', _mouseup);
 					$(document).unbind('mousemove', _mousemove);
 					e.bind('mousedown', _mousedown);
+					inst.mousehold = false;
+					if (!this.selectOnMouseMove) {
+						inst._change();
+					}
 				};
 
 				_mousemove = function (event) {
