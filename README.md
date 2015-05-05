@@ -263,6 +263,10 @@ features are enabled.
 ###	rgb (true)
 Whether or not to show the inputs for RGB.
 
+###	selectOnMouseMove (true)
+Triggers the 'select' event each time the mouse is moved on the colorpicker.
+Set to false, to only trigger on mouse button release.
+
 ###	showAnim ('fadeIn')
 Same as jQueryUI DatePicker.
 
