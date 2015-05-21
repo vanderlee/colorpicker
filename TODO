@@ -25,3 +25,4 @@ Most-recently-used swatches
 HSL/HSV distance calculations should take into account cyclic hue.
 Support CSS4 color format draft proposals: http://dev.w3.org/csswg/css-color/
 Add more swatches; i.e. http://en.wikipedia.org/wiki/List_of_8-bit_computer_hardware_palettes
+Allow Cancel button to be enabled even when no change. Extra value for `showCancelButton`?
