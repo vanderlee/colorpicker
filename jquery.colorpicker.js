@@ -628,6 +628,8 @@
 					$(document).unbind('mouseup', _mouseup);
 					$(document).unbind('mousemove', _mousemove);
 					e.bind('mousedown', _mousedown);
+					
+					inst._callback('stop');
 				};
 
 				_mousemove = function (event) {
@@ -678,7 +680,7 @@
 						break;
 					}
 
-					inst._change();
+					inst._change(false);
 				};
 
 				_html = function () {
@@ -823,6 +825,8 @@
 					$(document).unbind('mouseup', _mouseup);
 					$(document).unbind('mousemove', _mousemove);
 					e.bind('mousedown', _mousedown);
+					
+					inst._callback('stop');					
 				};
 
 				_mousemove = function (event) {
@@ -872,7 +876,7 @@
 						break;
 					}
 
-					inst._change();
+					inst._change(false);
 				};
 
 				_html = function () {
@@ -2109,7 +2113,8 @@
 			init:				null,
             ok:                 null,
 			open:               null,
-			select:             null
+			select:             null,
+			stop:				null
 		},
 		
 		_create: function () {
@@ -2661,9 +2666,11 @@
 				}
 			});
 		},
-
-		_change: function () {
-			this.changed = true;
+		
+		_change: function (stop /* = true */) {
+			this.changed = true;	
+			
+			stop = typeof stop !== 'undefined' ? !!stop : true;
 
 			// Limit color palette
 			if (this.options.limit && $.colorpicker.limits[this.options.limit]) {
@@ -2691,6 +2698,9 @@
 
 			// callback
 			this._callback('select');
+			if (stop) {
+				this._callback('stop');
+			}
 		},
 
 		// This will be deprecated by jQueryUI 1.9 widget
