@@ -1,8 +1,8 @@
 jQuery.colorpicker
 ==================
-v1.0.16
+v1.0.17
 
-Copyright &copy; 2011-2014 Martijn W. van der Lee (http://martijn.vanderlee.com).
+Copyright &copy; 2011-2015 Martijn W. van der Lee (http://martijn.vanderlee.com).
 Licensed under the MIT.
 
 Full-featured colorpicker for jQueryUI with full theming support.
@@ -24,7 +24,7 @@ Features
 -	Accurate color model
 -	Supports localization
 	-	English, Dutch, French, etc.
-	-	Easily translateable (https://www.transifex.com/projects/p/jquery-colorpicker/)
+	-	Easily translatable (https://www.transifex.com/projects/p/jquery-colorpicker/)
 -	Smart window alignment
 -	Complete API with events and methods
 -	Easily extendable with plugins
@@ -42,7 +42,7 @@ jQueryUI v1.8.0 or higher required.
 
 Current version: https://github.com/vanderlee/colorpicker/archive/master.zip
 
-Sourcecode on Github: https://github.com/vanderlee/colorpicker
+Source code on Github: https://github.com/vanderlee/colorpicker
 
 Browser support
 ---------------
@@ -93,7 +93,7 @@ If this option is set to a string, the button will be assigned the
 class specified.
 
 ###	buttonColorize (false)
-If a buttonimage is specified, change the background color of the
+If a `buttonImage` is specified, change the background color of the
 image when the color is changed.
 
 ###	buttonImage ('images/ui-colorpicker.png')
@@ -201,7 +201,34 @@ allow closer integration.
 Set the position of elements in a table layout.
 You could create any layout possible with HTML tables by specifying
 cell position and size of each part.
-@todo document how this works.
+
+The layout option takes a map (object) with each property name matching one of
+the available parts (including any possible custom or plugin parts). The value
+is a an array with four coordinates on order `[`left`, `top`, `width`,
+`height`]`.
+
+The coordinates correspond to cells in a table, so if you want to have a part
+at top-left and spanning two rows and three columns, the value would be
+`[0, 0, 3, 2]`.
+
+Care should be taken to ensure no parts overlap (best to just draw out a grid
+on paper first). Behavior is undefined if parts overlap. You need not cover
+the entire rectangular area; any empty cells will be simply remain empty.
+
+The default layout is as follows:
+
+	{
+		map:		[0, 0, 1, 5],
+		bar:		[1, 0, 1, 5],
+		preview:	[2, 0, 1, 1],
+		hsv:		[2, 1, 1, 1],
+		rgb:		[2, 2, 1, 1],
+		alpha:		[2, 3, 1, 1],
+		hex:		[2, 4, 1, 1],
+		lab:		[3, 1, 1, 1],
+		cmyk:		[3, 2, 1, 2],
+		swatches:	[4, 0, 1, 5]
+	}
 
 ###	limit ('')
 Limit the selectable colors to any of the predefined limits:
@@ -256,7 +283,7 @@ from the i18n directory. '' is included by default.
 ### revert (false)
 If enabled, closing the dialog through any means but the OK button will revert
 the color back to the previous state, as if pressing the Cancel button.
-The revert option changes the behaviour of the [X] button in the header, the
+The revert option changes the behavior of the [X] button in the header, the
 Escape keyboard button and clicking outside the dialog, when any of these
 features are enabled.
 
@@ -278,7 +305,7 @@ Show the None/Revert button if buttonpane is visible.
 
 ###	showOn ('focus click alt')
 Specifies what user events will show the
-colorpicker if not inline. Specify multiple events by seperating with
+colorpicker if not inline. Specify multiple events by separating with
 space.
 Optionally 'focus', 'click', 'alt', 'button' and/or 'both'
 
@@ -306,30 +333,49 @@ Title to display in the header. If null, use language default.
 
 Events
 ------
-###	init(formatted, colorPicker)
-Triggered on initially setting the color. Called only once.
-Callbacks recieve same data as select event.
+### cancel (event, {formatted: ..., colorPicker: ...})
+Triggered when the dialog is closed through the cancel button.
 
-###	close(formatted, colorPicker)
+###	close (event, {formatted: ..., colorPicker: ...})
 Triggered when the popup is closed.
-Callbacks recieve same data as select event and an additional number
+
+Callbacks receive same data as select event and an additional number
 of fields containing the current color in all supported color spaces.
-These are rgb{}, hsv{}, cmyk{}, lab{}, hsl{} and a.
+These are `rgb{}`, `hsv{}`, `cmyk{}`, `lab{`, `hsl{}` and `a`.
 Most values are floating point numbers in range [0,1] for accuracy.
 The a and b values in the lab color space have range [-1,1].
 
-###	select(formatted, colorPicker)
+###	init (event, {formatted: ..., colorPicker: ...})
+Triggered on initially setting the color. Called only once.
+Callbacks receive same data as select event.
+
+### ok (event, {formatted: ..., colorPicker: ...})
+Triggered when the dialog is closed through the cancel button.
+
+### open (event, {formatted: ..., colorPicker: ...})
+Triggered whenever the dialog is opened.
+
+###	select (event, {formatted: ..., colorPicker: ...})
 Triggered on each change, confirmation (click on OK button) and
 cancellation (click on Cancel, outside window or window close button)
 respectively.
 
-The event recieves a jQuery event object, a data object containing the elements
-'formatted' (with the color formatted according to formatColor) and the
+The event receives a jQuery event object, a data object containing the elements
+'formatted' (with the color formatted according to `formatColor`) and the
 Colorpicker element that triggered the event.
 
 Note that select may be triggered in rapid succession when dragging
-the mouse accross the map or bar and may be triggered without a change
+the mouse across the map or bar and may be triggered without a change
 in color upon specific user interactions.
+
+### stop(event, {formatted: ..., colorPicker: ...})
+Triggered when the user stops changing a control. This only affects the map
+and bar parts. Where the `select` event will trigger on each mouse move, the
+`stop` event will only trigger when the mouse button is released. For other
+controls, `stop` and `select` are both triggered.
+
+The callback is otherwise identical to `select`. When both are triggered,
+`select` is triggered before `stop`.
 
 Methods
 -------
