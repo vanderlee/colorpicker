@@ -1,4 +1,5 @@
 ;jQuery(function($) {
+	$.colorpicker.swatchesNames['ral-classic'] = 'RAL Classic';	
 	$.colorpicker.swatches['ral-classic'] = [
 		{name:'1000', r:0.80392156862745, g:0.72941176470588, b:0.53333333333333},
 		{name:'1001', r:0.8156862745098, g:0.69019607843137, b:0.51764705882353},

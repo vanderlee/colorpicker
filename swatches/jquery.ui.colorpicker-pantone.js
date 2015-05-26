@@ -1,4 +1,5 @@
 ;jQuery(function($) {
+	$.colorpicker.swatchesNames['pantone'] = 'Pantone';
 	$.colorpicker.swatches['pantone'] = [
 		{name: '100', r: 0.956862745098039, g: 0.929411764705882, b: 0.486274509803922},
 		{name: '101', r: 0.956862745098039, g: 0.929411764705882, b: 0.27843137254902},
