@@ -2680,9 +2680,11 @@
 			// update input element content
 			if (!this.inline) {
 				if (!this.color.set) {
-					this.element.val('');
+					if (this.element.val() !== '') {
+						this.element.val('').change();
+					}
 				} else if (!this.color.equals(this._parseColor(this.element.val()))) {
-					this.element.val(this._formatColor(this.options.colorFormat, this.color));
+					this.element.val(this._formatColor(this.options.colorFormat, this.color)).change();
 				}
 
 				this._setImageBackground();
