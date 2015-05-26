@@ -1401,7 +1401,7 @@
 					part = $(html()).appendTo($('.ui-colorpicker-swatches-container', inst.dialog));
 
 					$('.ui-colorpicker-swatch', part).click(function () {
-						inst.color	= inst._parseColor($(this).css('background-color')) || new $.colorpicker.Color();
+						inst.color	= inst._parseColor($(this).css('background-color')) || new $.colorpicker.Color();						
 						inst._change();
 					});
 				};
@@ -2003,7 +2003,8 @@
 					var a = this.getRGB(),
 						b = color.getRGB();
 
-					return this.getAlpha() === color.getAlpha()
+					return this.set === color.set
+						&& this.getAlpha() === color.getAlpha()
 						&& a.r === b.r
 						&& a.g === b.g
 						&& a.b === b.b;
