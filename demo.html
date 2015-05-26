@@ -17,8 +17,12 @@
 		<link href="jquery.colorpicker.css" rel="stylesheet" type="text/css"/>
 		<script src="i18n/jquery.ui.colorpicker-nl.js"></script>
 		<script src="swatches/jquery.ui.colorpicker-pantone.js"></script>
+		<script src="swatches/jquery.ui.colorpicker-crayola.js"></script>
+		<script src="swatches/jquery.ui.colorpicker-ral-classic.js"></script>
+		<script src="swatches/jquery.ui.colorpicker-x11.js"></script>
 		<script src="parts/jquery.ui.colorpicker-rgbslider.js"></script>
 		<script src="parts/jquery.ui.colorpicker-memory.js"></script>
+		<script src="parts/jquery.ui.colorpicker-swatchesswitcher.js"></script>		
 		<script src="parsers/jquery.ui.colorpicker-cmyk-parser.js"></script>
 		<script src="parsers/jquery.ui.colorpicker-cmyk-percentage-parser.js"></script>
 
@@ -424,19 +428,23 @@
 				Demonstrates how to extend the set of parts with plugins.<br/>
 				<ol>
 					<li>RGB Slider - Individual RGB sliders</li>
-					<li>Memory - store and retrieve colors with cookies</li>
+					<li>Memory - Store and retrieve colors with cookies</li>
+					<li>Swatches Switcher - Switch between different sets of swatches</li>
 				</ol>
 				<input type="text" class="cp-plugins" value="#18b7af"/>
 
 				<script>
 					$(function() {
 						$('.cp-plugins').colorpicker({
-							parts:	['header', 'preview', 'hex', 'rgbslider', 'memory', 'footer'],
+							parts:	['header', 'preview', 'hex', 'rgbslider', 'memory', 'swatches', 'swatchesswitcher', 'footer'],
 							layout: {
-								preview:	[0, 0, 1, 1],
-								hex:		[1, 0, 1, 1],
-								rgbslider:	[0, 1, 2, 1],
-								memory:		[0, 2, 2, 1]
+								preview:			[0, 0, 1, 1],
+								hex:				[1, 0, 1, 1],
+								rgbslider:			[0, 1, 2, 1],
+								memory:				[0, 2, 2, 1],
+								
+								swatchesswitcher:	[2, 0, 1, 1],
+								swatches:			[2, 1, 1, 2]
 							}
 						});
 					});
