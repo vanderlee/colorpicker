@@ -1,15 +1,16 @@
 jQuery.colorpicker
 ==================
-v1.0.18
+v1.0.19
 
-Copyright &copy; 2011-2015 Martijn W. van der Lee (http://martijn.vanderlee.com).
+Copyright &copy; 2011-2015 Martijn W. van der Lee.
 Licensed under the MIT.
 
 Full-featured colorpicker for jQueryUI with full theming support.
 Most images from jPicker by Christopher T. Tillman.
 Sourcecode created from scratch by Martijn W. van der Lee.
 
-IE support; make sure you have a doctype defined, or the colorpicker will not display correctly.
+IE support; make sure you have a doctype defined, or the colorpicker will not
+display correctly.
 
 Features
 --------
@@ -28,7 +29,8 @@ Features
 -	Smart window alignment
 -	Complete API with events and methods
 -	Easily extendable with plugins
-	-	Many examples included: RGB-Sliders with CSS gradients, Per-user cookie memory for colors.
+	-	Many examples included: RGB-Sliders with CSS gradients, Per-user cookie
+		memory for colors.
 -	Documented
 -	Limited Unit tests (QUnit-based)
 
@@ -233,10 +235,14 @@ The default layout is as follows:
 ###	limit ('')
 Limit the selectable colors to any of the predefined limits:
 
-*	``''``		No limitations, allow 8bpp color for a palette of all 16 million colors.
-*	``websafe``	Set of 216 colors composed of 00, 33, 66, 99, cc and ff color channel values in #rrggbb.
-*	``nibble``	4 bits per color, can be easily converted to #rgb format. The palette is limited to 4096 colors.
-*	``binary``	Allow only #00 or #ff as color channel values for primary colors only; only 8 colors are available with this limit.
+*	``''``		No limitations, allow 8bpp color for a palette of all 16 million
+				colors.
+*	``websafe``	Set of 216 colors composed of 00, 33, 66, 99, cc and ff color
+				channel values in #rrggbb.
+*	``nibble``	4 bits per color, can be easily converted to #rgb format. The
+				palette is limited to 4096 colors.
+*	``binary``	Allow only #00 or #ff as color channel values for primary colors
+				only; only 8 colors are available with this limit.
 *	``name``	Limit to closest color name.
 
 ###	modal (false)
@@ -251,11 +257,12 @@ values are; 'h', 's', 'l', 'r', 'g', 'b' or 'a', for hue, saturation,
 luminosity, red, green, blue and alpha respectively.
 
 ###	okOnEnter (false)
-Close the window when pressing the Enter key on the keyboard, keeping the selected color.
+Close the window when pressing the Enter key on the keyboard, keeping the
+selected color.
 
 ### part
-Use the part option to specify options specific to parts (including plugin parts).
-By default, the following part options are available:
+Use the part option to specify options specific to parts (including plugin
+parts). By default, the following part options are available:
 
 ###	parts ('')
 Determine which parts to display.
@@ -409,19 +416,24 @@ If no match is found, nothing is returned and the next parser is tried.
 Parsers are tried in order of appearance.
 
 Included plugins:
-*	``cmyk-parser``				Parses a ``cmyk(c, y, m, k)`` format, similar to rgba.
-*	``cmyk-percentage-parser``	Parses a ``cmyk(c%, y%, m%, k%)`` format with percentages.
+*	``cmyk-parser``				Parses a ``cmyk(c, y, m, k)`` format, similar
+								to rgba.
+*	``cmyk-percentage-parser``	Parses a ``cmyk(c%, y%, m%, k%)`` format with
+								percentages.
 
 ###	parts
 You can add additional visual parts, usually controls, that interact
 with the rest of Colorpicker framework.
 
 Included plugins:
-*	``memory``		Cookie-based memory nodes.
-*	``rgbsliders``	Set of three red/green/blue sliders with dynamically adjusted gradients.
+*	``memory``				Cookie-based memory nodes.
+*	``rgbsliders``			Set of three red/green/blue sliders with dynamically
+adjusted gradients.
+*	``swatchesswitcher``	Switch through all available sets of swatches.
 
 ###	partslists
-Partslists are a convenient way to select multiple parts at once without having to specify each one individually.
+Partslists are a convenient way to select multiple parts at once without having
+to specify each one individually.
 
 No plugins included.
 
@@ -435,15 +447,18 @@ Included regionals:
 *	``fr``		French (Francais).
 *	``nl``		Dutch (Nederlands).
 *	``pt-br``	Brazilian Portuguese.
+*	``ru``		Russian.
 
 ###	swatches
 Swatches are collections of predefined and named colors. By default the
 standard ``html`` colors are loaded.
+Setting `swatches` using the `option` method will switch the displayed swatches.
 
 Included plugins:
 *	``crayola``		Crayola pencil color names
 *	``pantone``		Pantone color codes
 *	``ral-classic``	Classic RAL paint numbers
+*	``x11``			X11 color palette (using "gray", not "grey").
 
 ###	writers
 Writers take a Color object and output a textual representation of the color.
