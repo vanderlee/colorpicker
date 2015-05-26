@@ -167,6 +167,10 @@
 			}
 		};
 
+		this.swatchesNames = {
+			'html':		'HTML'
+		};
+
 		this.swatches = {
 			'html':	[
 				{name: 'black',					r: 0, g: 0, b: 0},
@@ -1384,7 +1388,6 @@
 
 			swatches: function (inst) {
 				var that = this,
-					part = null,
 					html = function () {
 						var html = '';
 
@@ -1398,7 +1401,8 @@
 					};
 
 				this.init = function () {
-					part = $(html()).appendTo($('.ui-colorpicker-swatches-container', inst.dialog));
+					var part = $(html());
+					$('.ui-colorpicker-swatches-container', inst.dialog).html(part);
 
 					$('.ui-colorpicker-swatch', part).click(function () {
 						inst.color	= inst._parseColor($(this).css('background-color')) || new $.colorpicker.Color();						
@@ -2212,19 +2216,22 @@
 		},
 
 		_setOption: function(key, value){
-			var that = this;
-
 			switch (key) {
-			case "disabled":
-				if (value) {
-					that.dialog.addClass('ui-colorpicker-disabled');
-				} else {
-					that.dialog.removeClass('ui-colorpicker-disabled');
-				}
-				break;
+				case 'disabled':
+					if (value) {
+						this.dialog.addClass('ui-colorpicker-disabled');
+					} else {
+						this.dialog.removeClass('ui-colorpicker-disabled');
+					}
+					break;
+
+				case 'swatches':
+					this.options.swatches = value;
+					this.parts.swatches.init();
+					break;
 			}
 
-			$.Widget.prototype._setOption.apply(that, arguments);
+			$.Widget.prototype._setOption.apply(this, arguments);
 		},
 
 		_setImageBackground: function() {
@@ -2740,7 +2747,7 @@
 
 			return $.colorpicker.swatches.html;
 		},
-
+		
 		_eachSwatch: function (callback) {
 			var currentSwatches = this._getSwatches(),
 				name;
