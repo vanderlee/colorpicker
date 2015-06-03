@@ -1084,7 +1084,7 @@
 			hsv: function (inst) {
 				var that = this,
 					e = null,
-					input = {},
+					inputs = {},
 					_html;
 
 				_html = function () {
@@ -1107,15 +1107,15 @@
 						inst._updateAllParts();
 					});
 					
-					input.h = $('.ui-colorpicker-hsv-h .ui-colorpicker-number', e);
-					input.s = $('.ui-colorpicker-hsv-s .ui-colorpicker-number', e);
-					input.v = $('.ui-colorpicker-hsv-v .ui-colorpicker-number', e);
+					inputs.h = $('.ui-colorpicker-hsv-h .ui-colorpicker-number', e);
+					inputs.s = $('.ui-colorpicker-hsv-s .ui-colorpicker-number', e);
+					inputs.v = $('.ui-colorpicker-hsv-v .ui-colorpicker-number', e);
 
 					$('.ui-colorpicker-number', e).bind('change keyup', function () {
 						inst.color.setHSV(
-							input.h.val() / 360,
-							input.s.val() / 100,
-							input.v.val() / 100
+							inputs.h.val() / 360,
+							inputs.s.val() / 100,
+							inputs.v.val() / 100
 						);
 						inst._change();
 					});
@@ -1123,9 +1123,9 @@
 
 				this.repaint = function () {
 					var hsv = inst.color.getHSV();
-					input.h.val(Math.round(hsv.h * 360));
-					input.s.val(Math.round(hsv.s * 100));
-					input.v.val(Math.round(hsv.v * 100));
+					inputs.h.val(Math.round(hsv.h * 360));
+					inputs.s.val(Math.round(hsv.s * 100));
+					inputs.v.val(Math.round(hsv.v * 100));
 				};
 
 				this.update = function () {
@@ -1139,7 +1139,7 @@
 			rgb: function (inst) {
 				var that = this,
 					e = null,
-					input = {},
+					inputs = {},
 					_html;
 
 				_html = function () {
@@ -1162,16 +1162,16 @@
 						inst._updateAllParts();
 					});
 					
-					input.r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', e);
-					input.g = $('.ui-colorpicker-rgb-g .ui-colorpicker-number', e);
-					input.b = $('.ui-colorpicker-rgb-b .ui-colorpicker-number', e);					
+					inputs.r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', e);
+					inputs.g = $('.ui-colorpicker-rgb-g .ui-colorpicker-number', e);
+					inputs.b = $('.ui-colorpicker-rgb-b .ui-colorpicker-number', e);					
 
 					$('.ui-colorpicker-number', e).bind('change keyup', function () {
 						var r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', e).val();
 						inst.color.setRGB(
-							input.r.val() / 255,
-							input.g.val() / 255,
-							input.b.val() / 255
+							inputs.r.val() / 255,
+							inputs.g.val() / 255,
+							inputs.b.val() / 255
 						);
 
 						inst._change();
@@ -1180,9 +1180,9 @@
 
 				this.repaint = function () {
 					var rgb = inst.color.getRGB();
-					input.r.val(Math.floor(rgb.r * 255));
-					input.g.val(Math.floor(rgb.g * 255));
-					input.b.val(Math.floor(rgb.b * 255));
+					inputs.r.val(Math.floor(rgb.r * 255));
+					inputs.g.val(Math.floor(rgb.g * 255));
+					inputs.b.val(Math.floor(rgb.b * 255));
 				};
 
 				this.update = function () {
@@ -1196,7 +1196,7 @@
 			lab: function (inst) {
 				var that = this,
 					part = null,
-					input = {},
+					inputs = {},
 					html = function () {
 						var html = '';
 
@@ -1214,15 +1214,15 @@
 
 					part = $(html()).appendTo($('.ui-colorpicker-lab-container', inst.dialog));
 					
-					input.l = $('.ui-colorpicker-lab-l .ui-colorpicker-number', part);
-					input.a = $('.ui-colorpicker-lab-a .ui-colorpicker-number', part);
-					input.b = $('.ui-colorpicker-lab-b .ui-colorpicker-number', part);
+					inputs.l = $('.ui-colorpicker-lab-l .ui-colorpicker-number', part);
+					inputs.a = $('.ui-colorpicker-lab-a .ui-colorpicker-number', part);
+					inputs.b = $('.ui-colorpicker-lab-b .ui-colorpicker-number', part);
 
 					$('.ui-colorpicker-number', part).bind('change keyup', function (event) {
 						inst.color.setLAB(
-							parseInt(input.l.val(), 10) / 100,
-							(parseInt(input.a.val(), 10) + 128) / 255,
-							(parseInt(input.b.val(), 10) + 128) / 255
+							parseInt(inputs.l.val(), 10) / 100,
+							(parseInt(inputs.a.val(), 10) + 128) / 255,
+							(parseInt(inputs.b.val(), 10) + 128) / 255
 						);
 						inst._change();
 					});
@@ -1230,9 +1230,9 @@
 
 				this.repaint = function () {
 					var lab = inst.color.getLAB();
-					input.l.val(Math.round(lab.l * 100));
-					input.a.val(Math.round(lab.a * 255) - 128);
-					input.b.val(Math.round(lab.b * 255) - 128);
+					inputs.l.val(Math.round(lab.l * 100));
+					inputs.a.val(Math.round(lab.a * 255) - 128);
+					inputs.b.val(Math.round(lab.b * 255) - 128);
 				};
 
 				this.update = function () {
@@ -1243,7 +1243,7 @@
 			cmyk: function (inst) {
 				var that = this,
 					part = null,
-					input = {},
+					inputs = {},
 					html = function () {
 						var html = '';
 
@@ -1260,17 +1260,17 @@
 				this.init = function () {
 					part = $(html()).appendTo($('.ui-colorpicker-cmyk-container', inst.dialog));
 					
-					input.c = $('.ui-colorpicker-cmyk-c .ui-colorpicker-number', part);
-					input.m = $('.ui-colorpicker-cmyk-m .ui-colorpicker-number', part);
-					input.y = $('.ui-colorpicker-cmyk-y .ui-colorpicker-number', part);
-					input.k = $('.ui-colorpicker-cmyk-k .ui-colorpicker-number', part);
+					inputs.c = $('.ui-colorpicker-cmyk-c .ui-colorpicker-number', part);
+					inputs.m = $('.ui-colorpicker-cmyk-m .ui-colorpicker-number', part);
+					inputs.y = $('.ui-colorpicker-cmyk-y .ui-colorpicker-number', part);
+					inputs.k = $('.ui-colorpicker-cmyk-k .ui-colorpicker-number', part);
 					
 					$('.ui-colorpicker-number', part).bind('change keyup', function (event) {
 						inst.color.setCMYK(
-							parseInt(input.c.val(), 10) / 100,
-							parseInt(input.m.val(), 10) / 100,
-							parseInt(input.y.val(), 10) / 100,
-							parseInt(input.k.val(), 10) / 100
+							parseInt(inputs.c.val(), 10) / 100,
+							parseInt(inputs.m.val(), 10) / 100,
+							parseInt(inputs.y.val(), 10) / 100,
+							parseInt(inputs.k.val(), 10) / 100
 						);
 						inst._change();
 					});
@@ -1278,10 +1278,10 @@
 
 				this.repaint = function () {
 					var cmyk = inst.color.getCMYK();
-					input.c.val(Math.round(cmyk.c * 100));
-					input.m.val(Math.round(cmyk.m * 100));
-					input.y.val(Math.round(cmyk.y * 100));
-					input.k.val(Math.round(cmyk.k * 100));
+					inputs.c.val(Math.round(cmyk.c * 100));
+					inputs.m.val(Math.round(cmyk.m * 100));
+					inputs.y.val(Math.round(cmyk.y * 100));
+					inputs.k.val(Math.round(cmyk.k * 100));
 				};
 
 				this.update = function () {
@@ -1334,7 +1334,7 @@
 			hex: function (inst) {
 				var that = this,
 					e = null,
-					input = {},
+					inputs = {},
 					_html;
 
 				_html = function () {
@@ -1352,30 +1352,30 @@
 				this.init = function () {
 					e = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
 
-					input.color = $('.ui-colorpicker-hex-input', e);
-					input.alpha = $('.ui-colorpicker-hex-alpha', e);
+					inputs.color = $('.ui-colorpicker-hex-input', e);
+					inputs.alpha = $('.ui-colorpicker-hex-alpha', e);
 
 					// repeat here makes the invalid input disappear faster
-					input.color.bind('change keydown keyup', function (a, b, c) {
-						if (/[^a-fA-F0-9]/.test(input.color.val())) {
-							input.color.val(input.color.val().replace(/[^a-fA-F0-9]/, ''));
+					inputs.color.bind('change keydown keyup', function (a, b, c) {
+						if (/[^a-fA-F0-9]/.test(inputs.color.val())) {
+							inputs.color.val(inputs.color.val().replace(/[^a-fA-F0-9]/, ''));
 						}
 					});
 
-					input.color.bind('change keyup', function () {
+					inputs.color.bind('change keyup', function () {
 						// repeat here makes sure that the invalid input doesn't get parsed
-						inst.color = _parseHex(input.color.val()).setAlpha(inst.color.getAlpha());
+						inst.color = _parseHex(inputs.color.val()).setAlpha(inst.color.getAlpha());
 						inst._change();
 					});
 
-					input.alpha.bind('change keydown keyup', function () {
-						if (/[^a-fA-F0-9]/.test(input.alpha)) {
-							input.alpha.val(input.alpha.val().replace(/[^a-fA-F0-9]/, ''));
+					inputs.alpha.bind('change keydown keyup', function () {
+						if (/[^a-fA-F0-9]/.test(inputs.alpha)) {
+							inputs.alpha.val(inputs.alpha.val().replace(/[^a-fA-F0-9]/, ''));
 						}
 					});
 
-					input.alpha.bind('change keyup', function () {
-						inst.color.setAlpha(parseInt(input.alpha.val(), 16) / 255);
+					inputs.alpha.bind('change keyup', function () {
+						inst.color.setAlpha(parseInt(inputs.alpha.val(), 16) / 255);
 						inst._change();
 					});
 				};
@@ -1385,12 +1385,12 @@
 				};
 
 				this.repaint = function () {
-					if (!input.color.is(':focus')) {
-						input.color.val(inst.color.toHex(true));
+					if (!inputs.color.is(':focus')) {
+						inputs.color.val(inst.color.toHex(true));
 					}
 
-					if (!input.alpha.is(':focus')) {
-						input.alpha.val(_intToHex(inst.color.getAlpha() * 255));
+					if (!inputs.alpha.is(':focus')) {
+						inputs.alpha.val(_intToHex(inst.color.getAlpha() * 255));
 					}
 				};
 			},
