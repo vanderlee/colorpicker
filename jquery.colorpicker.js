@@ -601,7 +601,7 @@
 			map: function (inst) {
 				var that	= this,
 					e		= null,
-					pointer, width, height,
+					pointer, width, height, layers = {},
 					_mousedown, _mouseup, _mousemove, _html;
 
 				_mousedown = function (event) {
@@ -609,7 +609,7 @@
 						return;
 					}
 
-					var offset	= pointer.offset(),
+					var offset	= layers.p.offset(),
 						x		= event.pageX - offset.left,
 						y		= event.pageY - offset.top;
 
@@ -643,7 +643,7 @@
 					that.x = event.pageX;
 					that.y = event.pageY;
 
-					var offset	= pointer.offset(),
+					var offset	= layers.p.offset(),
 						x		= event.pageX - offset.left,
 						y		= event.pageY - offset.top;
 
@@ -695,10 +695,15 @@
 
 					e.bind('mousedown', _mousedown);
 					
-					// cache
-					pointer	= $('.ui-colorpicker-map-layer-pointer', e);
-					width	= pointer.width();
-					height	= pointer.height();
+					// cache					
+					layers[1]	= $('.ui-colorpicker-map-layer-1', e);
+					layers[2]	= $('.ui-colorpicker-map-layer-2', e);
+					layers.a	= $('.ui-colorpicker-map-layer-alpha', e);
+					layers.p	= $('.ui-colorpicker-map-layer-pointer', e);
+					width		= layers.p.width();
+					height		= layers.p.height();
+					
+					pointer		= $('.ui-colorpicker-map-pointer', e);
 				};
 
 				this.update = function () {
@@ -706,35 +711,35 @@
 
 					switch (inst.mode) {
 					case 'h':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).hide();
+						layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
+						layers[2].hide();
 						break;
 
 					case 's':
 					case 'a':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
+						layers[1].css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
+						layers[2].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'v':
 						e.css('background-color', 'black');
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).hide();
+						layers[1].css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
+						layers[2].hide();
 						break;
 
 					case 'r':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
+						layers[1].css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
+						layers[2].css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'g':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
+						layers[1].css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
+						layers[2].css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'b':
-						$('.ui-colorpicker-map-layer-1', e).css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-map-layer-2', e).css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
+						layers[1].css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
+						layers[2].css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
 						break;
 					}
 					that.repaint();
@@ -757,43 +762,43 @@
 						var hsv = inst.color.getHSV();
 						x = hsv.h * width;
 						y = (1 - hsv.v) * width;
-						$('.ui-colorpicker-map-layer-2', e).css('opacity', 1 - hsv.s);
+						layers[2].css('opacity', 1 - hsv.s);
 						break;
 
 					case 'v':
 						var hsv = inst.color.getHSV();
 						x = hsv.h * width;
 						y = (1 - hsv.s) * width;
-						$('.ui-colorpicker-map-layer-1', e).css('opacity', hsv.v);
+						layers[1].css('opacity', hsv.v);
 						break;
 
 					case 'r':
 						var rgb = inst.color.getRGB()
 						x = rgb.b * width;
 						y = (1 - rgb.g) * width;
-						$('.ui-colorpicker-map-layer-2', e).css('opacity', rgb.r);
+						layers[2].css('opacity', rgb.r);
 						break;
 
 					case 'g':
 						var rgb = inst.color.getRGB();
 						x = rgb.b * width;
 						y = (1 - rgb.r) * width;
-						$('.ui-colorpicker-map-layer-2', e).css('opacity', rgb.g);
+						layers[2].css('opacity', rgb.g);
 						break;
 
 					case 'b':
 						var rgb = inst.color.getRGB()
 						x = rgb.r * width;
 						y = (1 - rgb.g) * width;
-						$('.ui-colorpicker-map-layer-2', e).css('opacity', rgb.b);
+						layers[2].css('opacity', rgb.b);
 						break;
 					}
 
 					if (inst.options.alpha) {
-						$('.ui-colorpicker-map-layer-alpha', e).css('opacity', 1 - inst.color.getAlpha());
+						layers.a.css('opacity', 1 - inst.color.getAlpha());
 					}
 
-					$('.ui-colorpicker-map-pointer', e).css({
+					pointer.css({
 						'left': x - 7,
 						'top': y - 7
 					});
@@ -803,7 +808,7 @@
 			bar: function (inst) {
 				var that		= this,
 					e			= null,
-					pointer, width, height,						
+					pointer, width, height, layers = {},
 					_mousedown, _mouseup, _mousemove, _html;
 
 				_mousedown = function (event) {
@@ -811,7 +816,7 @@
 						return;
 					}
 
-					var offset	= pointer.offset(),
+					var offset	= layers.p.offset(),
 						x		= event.pageX - offset.left,
 						y		= event.pageY - offset.top;
 
@@ -844,7 +849,7 @@
 					}
 					that.y = event.pageY;
 
-					var offset  = pointer.offset(),
+					var offset  = layers.p.offset(),
 						y		= event.pageY - offset.top;
 
 					y = Math.max(0, Math.min(y / height, 1));
@@ -905,10 +910,18 @@
 
 					e.bind('mousedown', _mousedown);
 					
-					// cache
-					pointer	= $('.ui-colorpicker-bar-layer-pointer', e);
-					width	= pointer.width();
-					height	= pointer.height();					
+					// cache				
+					layers[1]	= $('.ui-colorpicker-bar-layer-1', e);
+					layers[2]	= $('.ui-colorpicker-bar-layer-2', e);
+					layers[3]	= $('.ui-colorpicker-bar-layer-3', e);
+					layers[4]	= $('.ui-colorpicker-bar-layer-4', e);
+					layers.a	= $('.ui-colorpicker-bar-layer-alpha', e);
+					layers.ab	= $('.ui-colorpicker-bar-layer-alphabar', e);
+					layers.p	= $('.ui-colorpicker-bar-layer-pointer', e);					
+					width		= layers.p.width();
+					height		= layers.p.height();		
+					
+					pointer		= $('.ui-colorpicker-bar-pointer', e);
 				};
 				
 				this.update = function () {
@@ -921,64 +934,64 @@
 					case 'r':
 					case 'g':
 					case 'b':
-						$('.ui-colorpicker-bar-layer-alpha', e).show();
-						$('.ui-colorpicker-bar-layer-alphabar', e).hide();
+						layers.a.show();
+						layers.ab.hide();
 						break;
 
 					case 'a':
-						$('.ui-colorpicker-bar-layer-alpha', e).hide();
-						$('.ui-colorpicker-bar-layer-alphabar', e).show();
+						layers.a.hide();
+						layers.ab.show();
 						break;
 					}
 
 					switch (inst.mode) {
 					case 'h':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 0', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).hide();
-						$('.ui-colorpicker-bar-layer-3', e).hide();
-						$('.ui-colorpicker-bar-layer-4', e).hide();
+						layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
+						layers[2].hide();
+						layers[3].hide();
+						layers[4].hide();
 						break;
 
 					case 's':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-3', e).hide();
-						$('.ui-colorpicker-bar-layer-4', e).hide();
+						layers[1].css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
+						layers[2].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
+						layers[3].hide();
+						layers[4].hide();
 						break;
 
 					case 'v':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).hide();
-						$('.ui-colorpicker-bar-layer-3', e).hide();
-						$('.ui-colorpicker-bar-layer-4', e).hide();
+						layers[1].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
+						layers[2].hide();
+						layers[3].hide();
+						layers[4].hide();
 						break;
 
 					case 'r':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
+						layers[1].css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
+						layers[2].css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
+						layers[3].css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
+						layers[4].css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'g':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step*10)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
+						layers[1].css({'background-position': '0 '+(-step*10)+'px', 'opacity': ''}).show();
+						layers[2].css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
+						layers[3].css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
+						layers[4].css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'b':
-						$('.ui-colorpicker-bar-layer-1', e).css({'background-position': '0 '+(-step*14)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-2', e).css({'background-position': '0 '+(-step*13)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-3', e).css({'background-position': '0 '+(-step*11)+'px', 'opacity': ''}).show();
-						$('.ui-colorpicker-bar-layer-4', e).css({'background-position': '0 '+(-step*12)+'px', 'opacity': ''}).show();
+						layers[1].css({'background-position': '0 '+(-step*14)+'px', 'opacity': ''}).show();
+						layers[2].css({'background-position': '0 '+(-step*13)+'px', 'opacity': ''}).show();
+						layers[3].css({'background-position': '0 '+(-step*11)+'px', 'opacity': ''}).show();
+						layers[4].css({'background-position': '0 '+(-step*12)+'px', 'opacity': ''}).show();
 						break;
 
 					case 'a':
-						$('.ui-colorpicker-bar-layer-1', e).hide();
-						$('.ui-colorpicker-bar-layer-2', e).hide();
-						$('.ui-colorpicker-bar-layer-3', e).hide();
-						$('.ui-colorpicker-bar-layer-4', e).hide();
+						layers[1].hide();
+						layers[2].hide();
+						layers[3].hide();
+						layers[4].hide();
 						break;
 					}
 					that.repaint();
@@ -995,7 +1008,7 @@
 					case 's':
 						var hsv = inst.color.getHSV();
 						y = (1 - hsv.s) *  height;
-						$('.ui-colorpicker-bar-layer-2', e).css('opacity', 1 - hsv.v);
+						layers[2].css('opacity', 1 - hsv.v);
 						e.css('background-color', inst.color.copy().setHSV(null, 1, null).toCSS());
 						break;
 
@@ -1007,25 +1020,25 @@
 					case 'r':
 						var rgb = inst.color.getRGB();
 						y = (1 - rgb.r) *  height;
-						$('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (rgb.b - rgb.g)));
-						$('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (rgb.g - rgb.b)));
-						$('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(rgb.b, rgb.g));
+						layers[2].css('opacity', Math.max(0, (rgb.b - rgb.g)));
+						layers[3].css('opacity', Math.max(0, (rgb.g - rgb.b)));
+						layers[4].css('opacity', Math.min(rgb.b, rgb.g));
 						break;
 
 					case 'g':
 						var rgb = inst.color.getRGB();
 						y = (1 - rgb.g) *  height;
-						$('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (rgb.b - rgb.r)));
-						$('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (rgb.r - rgb.b)));
-						$('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(rgb.r, rgb.b));
+						layers[2].css('opacity', Math.max(0, (rgb.b - rgb.r)));
+						layers[3].css('opacity', Math.max(0, (rgb.r - rgb.b)));
+						layers[4].css('opacity', Math.min(rgb.r, rgb.b));
 						break;
 
 					case 'b':
 						var rgb = inst.color.getRGB();
 						y = (1 - rgb.b) *  height;
-						$('.ui-colorpicker-bar-layer-2', e).css('opacity', Math.max(0, (rgb.r - rgb.g)));
-						$('.ui-colorpicker-bar-layer-3', e).css('opacity', Math.max(0, (rgb.g - rgb.r)));
-						$('.ui-colorpicker-bar-layer-4', e).css('opacity', Math.min(rgb.r, rgb.g));
+						layers[2].css('opacity', Math.max(0, (rgb.r - rgb.g)));
+						layers[3].css('opacity', Math.max(0, (rgb.g - rgb.r)));
+						layers[4].css('opacity', Math.min(rgb.r, rgb.g));
 						break;
 
 					case 'a':
@@ -1035,16 +1048,19 @@
 					}
 
 					if (inst.mode !== 'a') {
-						$('.ui-colorpicker-bar-layer-alpha', e).css('opacity', 1 - inst.color.getAlpha());
+						layers.a.css('opacity', 1 - inst.color.getAlpha());
 					}
 
-					$('.ui-colorpicker-bar-pointer', e).css('top', y - 3);
+					pointer.css('top', y - 3);
 				};
 			},
 
 			preview: function (inst) {
 				var that = this,
 					e = null,
+					both,
+					initial, initial_alpha,
+					current, current_alpha,
 					_html;
 
 				_html = function () {
@@ -1061,23 +1077,26 @@
 						inst.color = inst.currentColor.copy();
 						inst._change();
 					});
+
+					// cache
+					initial			= $('.ui-colorpicker-preview-initial', e);
+					initial_alpha	= $('.ui-colorpicker-preview-initial-alpha', e);
+					current			= $('.ui-colorpicker-preview-current', e);
+					current_alpha	= $('.ui-colorpicker-preview-current-alpha', e);
+					both			= $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e);					
 				};
 
 				this.update = function () {
-					if (inst.options.alpha) {
-						$('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).show();
-					} else {
-						$('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e).hide();
-					}
+					both[inst.options.alpha ? 'show' : 'hide']();
 
 					this.repaint();
 				};
 
 				this.repaint = function () {
-					$('.ui-colorpicker-preview-initial', e).css('background-color', inst.currentColor.set ? inst.currentColor.toCSS() : '').attr('title', inst.currentColor.set ? inst.currentColor.toCSS() : '');
-					$('.ui-colorpicker-preview-initial-alpha', e).css('opacity', 1 - inst.currentColor.getAlpha());
-					$('.ui-colorpicker-preview-current', e).css('background-color', inst.color.set ? inst.color.toCSS() : '').attr('title', inst.color.set ? inst.color.toCSS() : '');
-					$('.ui-colorpicker-preview-current-alpha', e).css('opacity', 1 - inst.color.getAlpha());
+					initial.css('background-color', inst.currentColor.set ? inst.currentColor.toCSS() : '').attr('title', inst.currentColor.set ? inst.currentColor.toCSS() : '');
+					initial_alpha.css('opacity', 1 - inst.currentColor.getAlpha());
+					current.css('background-color', inst.color.set ? inst.color.toCSS() : '').attr('title', inst.color.set ? inst.color.toCSS() : '');
+					current_alpha.css('opacity', 1 - inst.color.getAlpha());
 				};
 			},
 
@@ -1130,7 +1149,8 @@
 
 				this.update = function () {
 					$('.ui-colorpicker-mode', e).each(function () {
-						$(this).attr('checked', $(this).val() === inst.mode);
+						var $this = $(this);
+						$this.attr('checked', $this.val() === inst.mode);
 					});
 					this.repaint();
 				};
@@ -1187,7 +1207,8 @@
 
 				this.update = function () {
 					$('.ui-colorpicker-mode', e).each(function () {
-						$(this).attr('checked', $(this).val() === inst.mode);
+						var $this = $(this);
+						$this.attr('checked', $this.val() === inst.mode);
 					});
 					this.repaint();
 				};
@@ -1235,9 +1256,7 @@
 					inputs.b.val(Math.round(lab.b * 255) - 128);
 				};
 
-				this.update = function () {
-					this.repaint();
-				};
+				this.update = this.repaint;
 			},
 
 			cmyk: function (inst) {
@@ -1284,9 +1303,7 @@
 					inputs.k.val(Math.round(cmyk.k * 100));
 				};
 
-				this.update = function () {
-					this.repaint();
-				};
+				this.update = this.repaint;
 			},
 
 			alpha: function (inst) {
@@ -1380,10 +1397,6 @@
 					});
 				};
 
-				this.update = function () {
-					this.repaint();
-				};
-
 				this.repaint = function () {
 					if (!inputs.color.is(':focus')) {
 						inputs.color.val(inst.color.toHex(true));
@@ -1393,6 +1406,8 @@
 						inputs.alpha.val(_intToHex(inst.color.getAlpha() * 255));
 					}
 				};
+
+				this.update = this.repaint;
 			},
 
 			swatches: function (inst) {
