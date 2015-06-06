@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-v1.0.20
+Version 1.0.21
 
 Copyright &copy; 2011-2015 Martijn W. van der Lee.
 Licensed under the MIT.
@@ -443,9 +443,10 @@ Regional (in the i18n directory) plugins contain localized texts
 
 Included regionals:
 *	``de``		German (Deutsch).
+*	``el``		Greece.
 *	``en``		English (default).
-*	``fr``		French (Francais).
-*	``nl``		Dutch (Nederlands).
+*	``fr``		French.
+*	``nl``		Dutch.
 *	``pt-br``	Brazilian Portuguese.
 *	``ru``		Russian.
 
