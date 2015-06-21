@@ -393,7 +393,7 @@
 		,	'NAME':		function(color, that) {
 							return that._closestName(color);
 						}
-		,	'EXACT':	function(color, that) {		// @todo experimental. Implement a good fallback list
+		,	'EXACT':	function(color, that) {
 							return that._exactName(color);
 						}
 		};
@@ -2547,7 +2547,6 @@
 					}
 				});
 
-				// @todo zIndexOffset option, to raise above other elements?
 				zIndex += 2;
 				that.dialog.css('z-index', zIndex);
 								
@@ -2799,8 +2798,8 @@
 				typeRegexps = {
 					x:	function() {return '([0-9a-fA-F]{2})';}
 				,	d:	function() {return '([12]?[0-9]{1,2})';}
-				,	f:	function() {return '([0-9]*\\.?[0-9]*)';}	//@todo proper FP-regex: 0, 0., 0.123, .123
-				,	p:	function() {return '([0-9]*\\.?[0-9]*)';}	//@todo as above
+				,	f:	function() {return '([0-9]*\\.?[0-9]*)';}
+				,	p:	function() {return '([0-9]*\\.?[0-9]*)';}
 				},
 				typeConverters = {
 					x:	function(v)	{return parseInt(v, 16);}
