@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-Version 1.0.22
+Version 1.1
 
 Copyright &copy; 2011-2015 Martijn W. van der Lee.
 Licensed under the MIT.
@@ -187,6 +187,17 @@ specified element or region. Same as jQueryUI Draggable.
 ###	duration ('fast')
 Same as jQueryUI DatePicker.
 
+###	hideOn ('button')
+Specifies what user events will hide the colorpicker if not inline.
+Specify multiple events by separating with space.
+
+*	``focus``	When the element goes out of focus (either tab or click)
+*	``click``	When the element is clicked (for non-inputs)
+*	``alt``		When clicking on an element specified with as altField
+*	``button``	When clicking on the button created if this event is specified.
+*	``all``		selects all possible triggers
+*	``both``	same as ``all`` (deprecated, kept backwards compatibility)
+
 ###	hsv (true)
 Whether or not to show the inputs for HSV.
 
@@ -311,16 +322,15 @@ If the dialog is inline, the close button is never shown.
 Show the None/Revert button if buttonpane is visible.
 
 ###	showOn ('focus click alt')
-Specifies what user events will show the
-colorpicker if not inline. Specify multiple events by separating with
-space.
-Optionally 'focus', 'click', 'alt', 'button' and/or 'both'
+Specifies what user events will show the colorpicker if not inline.
+Specify multiple events by separating with space.
 
 *	``focus``	When the element comes into focus (either tab or click)
 *	``click``	When the element is clicked (for non-inputs)
 *	``alt``		When clicking on an element specified with as altField
 *	``button``	When clicking on the button created if this event is specified.
-*	``both``	selects all possible triggers
+*	``all``		selects all possible triggers
+*	``both``	same as ``all`` (deprecated, kept backwards compatibility)
 
 ###	showOptions ({})
 Same as jQueryUI DatePicker.

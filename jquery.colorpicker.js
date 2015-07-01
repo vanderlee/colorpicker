@@ -2099,6 +2099,7 @@
 			draggable:			true,		// Make popup dialog draggable if header is visible.
 			containment:		null,		// Constrains dragging to within the bounds of the specified element or region.
 			duration:			'fast',
+			hideOn:				'button',	// 'focus', 'click', 'button', 'alt', 'all'
 			hsv:				true,		// Show HSV controls and modes
 			inline:				true,		// Show any divs as inline by default
 			inlineFrame:		true,		// Show a border and background when inline.
@@ -2131,7 +2132,7 @@
 			showCancelButton:	true,
 			showNoneButton:		false,
 			showCloseButton:	true,
-			showOn:				'focus click alt',		// 'focus', 'click', 'button', 'alt', 'both'
+			showOn:				'focus click alt',		// 'focus', 'click', 'button', 'alt', 'all'
 			showOptions:		{},
 			swatches:			null,		// null for default or kv-object or names swatches set
 			swatchesWidth:		84,			// width (in number of pixels) of swatches box.
@@ -2178,21 +2179,30 @@
 				that._callback('init');
 
 				// showOn focus
-				if (/\bfocus|both\b/.test(that.options.showOn)) {
+				if (/\bfocus|all|both\b/.test(that.options.showOn)) {
 					that.element.bind('focus', function () {
 						that.open();
 					});
 				}
+				if (/\bfocus|all|both\b/.test(that.options.hideOn)) {
+					that.element.bind('focusout', function (e) {
+						that.close();
+					});
+				}
 
 				// showOn click
-				if (/\bclick|both\b/.test(that.options.showOn)) {
-					that.element.bind('click', function () {
-						that.open();
+				if (/\bclick|all|both\b/.test(that.options.showOn)) {
+					that.element.bind('click', function (e) {						
+						if (that.opened && /\bclick|all|both\b/.test(that.options.hideOn)) {
+							that.close();
+						} else {
+							that.open();
+						}
 					});
 				}
 
 				// showOn button
-				if (/\bbutton|both\b/.test(that.options.showOn)) {
+				if (/\bbutton|all|both\b/.test(that.options.showOn)) {
 					if (that.options.buttonImage !== '') {
 						text = that.options.buttonText || that._getRegional('button');
 
@@ -2215,14 +2225,22 @@
 						that.image = that.image ? $('img', that.button).first() : null;
 					}
 					that.button.insertAfter(that.element).click(function () {
-						that[that.opened ? 'close' : 'open']();
+						if (that.opened && /\bbutton|all|both\b/.test(that.options.hideOn)) {
+							that.close();
+						} else {
+							that.open();
+						}
 					});
 				}
 
 				// showOn alt
-				if (/\balt|both\b/.test(that.options.showOn)) {
+				if (/\balt|all|both\b/.test(that.options.showOn)) {					
 					$(that.options.altField).bind('click', function () {
-						that.open();
+						if (that.opened && /\balt|all|both\b/.test(that.options.hideOn)) {
+							that.close();
+						} else {
+							that.open();
+						}
 					});
 				}
 
@@ -2348,7 +2366,7 @@
 						return;
 					}
 					// showOn alt
-					if (/\balt|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
+					if (/\balt|all|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
 						return;
 					}
 				}
@@ -2583,6 +2601,10 @@
 		close: function (cancel) {
 			var that = this;
 
+			if (!that.opened) {
+				return;
+			}				
+				
             if (cancel) {
 				that.color = that.currentColor.copy();
                 that._change();
@@ -2601,7 +2623,7 @@
 			// tear down the interface
 			that._effectHide(that.dialog, function () {
 				that.dialog.remove();
-				that.dialog	= null;
+				that.dialog		= null;
 				that.generated	= false;
 
 				that.opened		= false;
