@@ -2787,7 +2787,7 @@
 			}
 
 			if ($.isPlainObject(this.options.swatches)) {
-				return this.colorpicker.swatches;
+				return this.options.swatches;
 			}
 
 			return $.colorpicker.swatches.html;
