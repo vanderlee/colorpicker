@@ -2726,7 +2726,7 @@
 			stop = typeof stop !== 'undefined' ? !!stop : true;
 
 			// Limit color palette
-			if (this.options.limit && $.colorpicker.limits[this.options.limit]) {
+			if (this.color.set && this.options.limit && $.colorpicker.limits[this.options.limit]) {
 				$.colorpicker.limits[this.options.limit](this.color, this);
 			}
 
