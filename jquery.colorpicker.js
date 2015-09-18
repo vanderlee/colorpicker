@@ -2521,23 +2521,7 @@
 					element = $('<div/>').insertBefore(that.element);
 				} else {
 					element = that.element;
-				}
-				
-				if (that.options.position) {
-					position = $.extend({}, that.options.position);
-					if (position.of === 'element') {
-						position.of = element;
-					}
-				} else {					
-					position = {
-						my:			'left top',
-						at:			'left bottom',
-						of:			element,
-						collision:	'flip'
-					};
-				}
-				
-				that.dialog.position(position);				
+				}			
 				
 				if (that.element.is(':hidden')) {
 					element.remove();
@@ -2587,6 +2571,22 @@
 				}
 
 				that._effectShow(this.dialog);
+
+				if (that.options.position) {
+					position = $.extend({}, that.options.position);
+					if (position.of === 'element') {
+						position.of = element;
+					}
+				} else {
+					position = {
+						my:			'left top',
+						at:			'left bottom',
+						of:			element,
+						collision:	'flip'
+					};
+				}
+				that.dialog.position(position);
+				
 				that.opened = true;
 				that._callback('open', true);
 
