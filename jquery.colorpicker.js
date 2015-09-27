@@ -11,8 +11,19 @@
  * Most images from jPicker by Christopher T. Tillman.
  * Sourcecode created from scratch by Martijn W. van der Lee.
  */
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
 
-;(function ($) {
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery"
+		], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
+} (function ($) {
 	"use strict";
 
 	var _colorpicker_index = 0,
@@ -3001,4 +3012,5 @@
 			return text;
 		}
 	});
-}(jQuery));
+	return $.vanderlee.colorpicker;
+}));
