@@ -6,7 +6,7 @@
   "authors": [
     "Martijn van der Lee <martijn@vanderlee.com>"
   ],
-  "description": "JQuery colorpicker with themeroller styling, RGB, HSL, CMYK and L*A*B support. Standard look & feel, configurable layout. Works as a popup or inline.",
+  "description": "JQuery colorpicker: themeroller styling, RGB, HSL, CMYK and L*A*B support. Standard look & feel, configurable. Works as a popup or inline.",
   "main": "jquery.colorpicker.js",
   "keywords": [
     "jquery",
