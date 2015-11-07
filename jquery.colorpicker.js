@@ -1857,7 +1857,7 @@
 					spaces.rgb.b = _clip(b);
 				}
 				this.set = true;
-
+				
 				return this;
 			};
 
@@ -2835,7 +2835,7 @@
 				,	p:	function() {return '([0-9]*\\.?[0-9]*)';}
 				},
 				typeConverters = {
-					x:	function(v)	{return parseInt(v, 16);}
+					x:	function(v)	{return parseInt(v, 16) / 255.;}
 				,	d:	function(v)	{return v / 255.;}
 				,	f:	function(v)	{return v;}
 				,	p:	function(v)	{return v * 0.01;}
@@ -2871,6 +2871,7 @@
 			pattern = format.replace(/[()\\^$.|?*+[\]]/g, function(m) {
 				return '\\'+m;
 			});
+
 
 			pattern = pattern.replace(/\\?[argbhsvcmykLAB][xdfp]/g, function(variable) {
 				if (variable.match(/^\\/)) {
@@ -2917,7 +2918,7 @@
 			var formats = $.isArray(that.options.colorFormat)
 					? that.options.colorFormat
 					: [ that.options.colorFormat ];
-			
+
 			$.each(formats, function(index, format) {
 				if ($.colorpicker.parsers[format]) {
 					color = $.colorpicker.parsers[format](text, that);
