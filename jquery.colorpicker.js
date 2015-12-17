@@ -1449,8 +1449,8 @@
 			footer: function (inst) {
 				var that = this,
 					part = null,
-					id_transparent = 'ui-colorpicker-special-transparent-'+_colorpicker_index,
-					id_none = 'ui-colorpicker-special-none-'+_colorpicker_index,
+					id_transparent = 'ui-colorpicker-special-transparent-' + inst.colorpicker_index,
+					id_none = 'ui-colorpicker-special-none-' + inst.colorpicker_index,
 					html = function () {
 						var html = '';
 
@@ -2162,7 +2162,7 @@
 			var that = this,
 				text;
 
-			++_colorpicker_index;
+			that.colorpicker_index = _colorpicker_index++;
 
 			that.widgetEventPrefix = 'colorpicker';
 
