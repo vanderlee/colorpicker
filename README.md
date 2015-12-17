@@ -46,6 +46,21 @@ Current version: https://github.com/vanderlee/colorpicker/archive/master.zip
 
 Source code on Github: https://github.com/vanderlee/colorpicker
 
+jQueryUI custom build
+---------------------
+If you download a custom build of jQueryUI, you need these components:
+
+*	Dialog (includes Core, Widget, Mouse, Position, Draggable and Resizable)
+*	Fade Effect (only if you use the `showAnim` option, includes Effects Core)
+
+To use the `parts/jquery.ui.colorpicker-rgbslider.js` plugin, you must add:
+
+*	Slider (includes Core, Widget and Mouse)
+
+To use the demo page included in the documentation, you must add:
+
+*	Tabs (includes Core and Widget)
+
 Browser support
 ---------------
 Tested with v1.0.7
