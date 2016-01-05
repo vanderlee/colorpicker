@@ -1,8 +1,8 @@
 jQuery.colorpicker
 ==================
-Version 1.1.7
+Version 1.1.8
 
-Copyright &copy; 2011-2015 Martijn W. van der Lee.
+Copyright &copy; 2011-2016 Martijn W. van der Lee.
 Licensed under the MIT.
 
 Full-featured colorpicker for jQueryUI with full theming support.
@@ -63,12 +63,13 @@ To use the demo page included in the documentation, you must add:
 
 Browser support
 ---------------
-Tested with v1.0.7
+Tested various versions of this plugin with the following browsers:
 
--	Chrome 31
--	FireFox 25
--	Opera 17
--	Internet Explorer 10
+-	Chrome 31-47
+-	FireFox 25-43
+-	Opera 17-34
+-	Internet Explorer 10-11
+-	Edge 20
 
 Documentation
 =============

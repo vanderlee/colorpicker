@@ -4,7 +4,7 @@
 /*!
  * ColorPicker
  *
- * Copyright (c) 2011-2015 Martijn W. van der Lee
+ * Copyright (c) 2011-2016 Martijn W. van der Lee
  * Licensed under the MIT.
  */
 /* Full-featured colorpicker for jQueryUI with full theming support.
@@ -1516,7 +1516,7 @@
 						$('input', part).attr('checked', false).button( "refresh" );
 					}
 
-					$('.ui-colorpicker-cancel', part).button(inst.changed ? 'enable' : 'disable');
+					$('.ui-colorpicker-ok', part).button(inst.changed ? 'enable' : 'disable');
 				};
 
 				this.update = function () {};
@@ -2731,15 +2731,14 @@
 			});
 		},
 		
-		_change: function (stop /* = true */) {
-			this.changed = true;	
-			
-			stop = typeof stop !== 'undefined' ? !!stop : true;
-
+		_change: function (stoppedChanging /* = true */) {		
 			// Limit color palette
 			if (this.color.set && this.options.limit && $.colorpicker.limits[this.options.limit]) {
 				$.colorpicker.limits[this.options.limit](this.color, this);
 			}
+
+			// Set changed if different from starting color
+			this.changed = !this.color.equals(this.currentColor);
 
 			// update input element content
 			if (!this.inline) {
@@ -2762,9 +2761,10 @@
 				this._repaintAllParts();
 			}
 
-			// callback
+			// callbacks
 			this._callback('select');
-			if (stop) {
+
+			if (typeof stoppedChanging === 'undefined' ? true : !!stoppedChanging) {
 				this._callback('stop');
 			}
 		},
