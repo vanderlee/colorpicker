@@ -2643,6 +2643,7 @@
 		},
 
 		destroy: function() {
+			var that = this;
 			if (that.events.document_click_html !== null) {
 				$(document).undelegate('html', 'touchstart click', that.events.document_click_html);
 			}
