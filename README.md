@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-Version 1.1.8
+Version 1.2.0
 
 Copyright &copy; 2011-2016 Martijn W. van der Lee.
 Licensed under the MIT.
@@ -33,6 +33,7 @@ Features
 		memory for colors.
 -	Documented
 -	Limited Unit tests (QUnit-based)
+-	Disable/enable
 
 Download
 --------
@@ -191,6 +192,14 @@ predefined formats HEX3 and EXACT. For example, this array will output
 HEX3 format if possible or HEX format otherwise:
 
 *	``['HEX3', 'HEX']``
+
+###	disabled (false)
+Disable or enable the colorpicker and all it's controls by setting this option.
+
+If you disable the `input` using the `disabled` HTML attribute before attaching
+a colorpicker, it will automatically be disabled.
+
+You can change this option using the `option` method call.
 
 ###	draggable (true)
 Make the dialog draggable if the header is visible and the dialog is
