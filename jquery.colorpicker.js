@@ -2831,8 +2831,10 @@
 				}
 
 				this._setImageBackground();
-				this._setAltField();
 			}
+
+			// Set the alt field
+			this._setAltField();
 
 			// update color option
 			this.options.color = this.color.set ? this.color.toCSS() : '';
