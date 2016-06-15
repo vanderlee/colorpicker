@@ -2435,53 +2435,53 @@
 			// Close on clicking outside window and controls
 			if (that.events.document_click_html === null) {
 				$(document).delegate('html', 'touchstart click', that.events.document_click_html = function (event) {
-				if (!that.opened || event.target === that.element[0] || that.overlay) {
-					return;
-				}
-
-				// Check if clicked on any part of dialog
-				if (that.dialog.is(event.target) || that.dialog.has(event.target).length > 0) {
-					that.element.blur();	// inside window!
-					return;
-				}
-
-				// Check if clicked on known external elements
-				var p,
-					parents = $(event.target).parents();
-				// add the event.target in case of buttonImageOnly and closeOnOutside both are set to true
-				parents.push(event.target);
-				for (p = 0; p <= parents.length; ++p) {
-					// button
-					if (that.button !== null && parents[p] === that.button[0]) {
+					if (!that.opened || event.target === that.element[0] || that.overlay) {
 						return;
 					}
-					// showOn alt
-					if (/\balt|all|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
+
+					// Check if clicked on any part of dialog
+					if (that.dialog.is(event.target) || that.dialog.has(event.target).length > 0) {
+						that.element.blur();	// inside window!
 						return;
 					}
-				}
 
-				// no closeOnOutside
-				if (!that.options.closeOnOutside) {
-					return;
-				}
+					// Check if clicked on known external elements
+					var p,
+						parents = $(event.target).parents();
+					// add the event.target in case of buttonImageOnly and closeOnOutside both are set to true
+					parents.push(event.target);
+					for (p = 0; p <= parents.length; ++p) {
+						// button
+						if (that.button !== null && parents[p] === that.button[0]) {
+							return;
+						}
+						// showOn alt
+						if (/\balt|all|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
+							return;
+						}
+					}
 
-				that.close(that.options.revert);
-			});
+					// no closeOnOutside
+					if (!that.options.closeOnOutside) {
+						return;
+					}
+
+					that.close(that.options.revert);
+				});
 			}
 
 			if (that.events.document_keydown === null) {
 				$(document).bind('keydown', that.events.document_keydown = function (event) {
-				// close on ESC key
-				if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
-					that.close(that.options.revert);
-				}
+					// close on ESC key
+					if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
+						that.close(that.options.revert);
+					}
 
-				// OK on Enter key
-				if (that.opened && event.keyCode === 13 && that.options.okOnEnter) {
-					that.close();
-				}
-			});
+					// OK on Enter key
+					if (that.opened && event.keyCode === 13 && that.options.okOnEnter) {
+						that.close();
+					}
+				});
 			}
 
 			// Close (with OK) on tab key in element
