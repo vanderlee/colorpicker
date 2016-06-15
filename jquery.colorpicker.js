@@ -39,24 +39,21 @@
 			}
 			return result.toLowerCase();
 		},
-
-        _parseHex = function(color) {
-            var c,
-                m;
-
-            // {#}rrggbb
-            m = /^#?([a-fA-F0-9]{1,6})$/.exec(color);
-            if (m) {
-                c = parseInt(m[1], 16);
-                return new $.colorpicker.Color(
-					((c >> 16) & 0xFF) / 255,
-                    ((c >>  8) & 0xFF) / 255,
-                    (c & 0xFF) / 255
-				);
-            }
-
-            return new $.colorpicker.Color();
-        },
+		
+		_keycode = {
+			isPrint: function(keycode) {
+				return keycode == 32						// spacebar
+					|| (keycode >= 48 && keycode <= 57)		// number keys
+					|| (keycode >= 65 && keycode <= 90)		// letter keys
+					|| (keycode >= 96 && keycode <= 111)	// numpad keys
+					|| (keycode >= 186 && keycode < 192)	// ;=,-./` (in order)
+					|| (keycode >= 219 && keycode < 222);	// [\]' (in order)
+			},			
+			isHex: function(keycode) {
+				return (keycode >= 48 && keycode <= 57)		// number keys
+					|| (keycode >= 65 && keycode <= 70);	// a-f
+			}
+		},
 
 		_layoutTable = function(layout, callback) {
 			var bitmap,
@@ -1402,28 +1399,58 @@
 				var that = this,
 					part = null,
 					inputs = {},
-					_html;
+					parseHex = function(color) {
+						var c,
+							m;
 
-				_html = function () {
-					var html = '';
+						// {#}rgb
+						m = /^#?([a-fA-F0-9]{1,3})$/.exec(color);
+						if (m) {
+							c = parseInt(m[1], 16);
+							return new $.colorpicker.Color(
+								((c >> 8) & 0xF) / 15,
+								((c >> 4) & 0xF) / 15,
+								(c & 0xF) / 15
+							);
+						}
 
-					if (inst.options.alpha) {
-						html += '<input class="ui-colorpicker-hex-alpha" type="text" maxlength="2" size="2"/>';
-					}
+						// {#}rrggbb
+						m = /^#?([a-fA-F0-9]{1,6})$/.exec(color);
+						if (m) {
+							c = parseInt(m[1], 16);
+							return new $.colorpicker.Color(
+								((c >> 16) & 0xFF) / 255,
+								((c >>  8) & 0xFF) / 255,
+								(c & 0xFF) / 255
+							);
+						}
+						
+						return new $.colorpicker.Color();
+					},
+					html = function () {
+						var html = '';
 
-					html += '<input class="ui-colorpicker-hex-input" type="text" maxlength="6" size="6"/>';
+						if (inst.options.alpha) {
+							html += '<input class="ui-colorpicker-hex-alpha" type="text" maxlength="2" size="2"/>';
+						}
 
-					return '<div class="ui-colorpicker-hex"><label>#</label>' + html + '</div>';
-				};
+						html += '<input class="ui-colorpicker-hex-input" type="text" maxlength="6" size="6"/>';
+
+						return '<div class="ui-colorpicker-hex"><label>#</label>' + html + '</div>';
+					};
 
 				this.init = function () {
-					part = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
+					part = $(html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
 
 					inputs.color = $('.ui-colorpicker-hex-input', part);
 					inputs.alpha = $('.ui-colorpicker-hex-alpha', part);
 
+					inputs.color.bind('keydown keyup', function(e) {
+						return _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
+					});
+
 					// repeat here makes the invalid input disappear faster
-					inputs.color.bind('change keydown keyup', function (a, b, c) {
+					inputs.color.bind('change', function () {
 						if (/[^a-fA-F0-9]/.test(inputs.color.val())) {
 							inputs.color.val(inputs.color.val().replace(/[^a-fA-F0-9]/, ''));
 						}
@@ -1431,11 +1458,15 @@
 
 					inputs.color.bind('change keyup', function () {
 						// repeat here makes sure that the invalid input doesn't get parsed
-						inst.color = _parseHex(inputs.color.val()).setAlpha(inst.color.getAlpha());
+						inst.color = parseHex(inputs.color.val()).setAlpha(inst.color.getAlpha());
 						inst._change();
 					});
 
-					inputs.alpha.bind('change keydown keyup', function () {
+					inputs.alpha.bind('keydown keyup', function(e) {
+						return _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
+					});
+					
+					inputs.alpha.bind('change', function () {
 						if (/[^a-fA-F0-9]/.test(inputs.alpha)) {
 							inputs.alpha.val(inputs.alpha.val().replace(/[^a-fA-F0-9]/, ''));
 						}
