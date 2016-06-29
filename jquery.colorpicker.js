@@ -1445,8 +1445,8 @@
 					inputs.color = $('.ui-colorpicker-hex-input', part);
 					inputs.alpha = $('.ui-colorpicker-hex-alpha', part);
 
-					inputs.color.bind('keydown keyup', function(e) {
-						return _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
+					inputs.color.bind('keydown keyup', function(e) {	
+						return e.ctrlKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
 					});
 
 					// repeat here makes the invalid input disappear faster
@@ -1463,7 +1463,7 @@
 					});
 
 					inputs.alpha.bind('keydown keyup', function(e) {
-						return _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
+						return e.ctrlKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
 					});
 					
 					inputs.alpha.bind('change', function () {
