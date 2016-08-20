@@ -1568,8 +1568,7 @@
 						inst.close(true);   //cancel
 					});
 
-					//inst._getRegional('transparent')
-					$('.ui-colorpicker-buttonset', part).buttonset();
+					$('.ui-colorpicker-buttonset', part)[$.fn.controlgroup ? 'controlgroup' : 'buttonset']();
 
 					$('.ui-colorpicker-special-color', part).click(function () {
 						inst._change();
