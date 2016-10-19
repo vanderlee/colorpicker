@@ -606,7 +606,6 @@
 					}
 				};
 
-
 				this.disable = function (disable) {
 					$('.ui-dialog-titlebar-close', part)[disable ? 'unbind' : 'bind']('click', _onclick);
 				};
