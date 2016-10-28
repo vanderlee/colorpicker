@@ -615,7 +615,7 @@
 				var that	= this,
 					part	= null,
 					pointer, width, height, layers = {},
-					_mousedown, _mouseup, _mousemove, _html;
+					_mousedown, _mouseup, _mousemove, _keydown, _html;
 
 				_mousedown = function (event) {
 					if (!inst.opened) {
@@ -629,7 +629,7 @@
 					if (x >= 0 && x < width && y >= 0 && y < height) {
 						event.stopImmediatePropagation();
 						event.preventDefault();
-						part.unbind('mousedown', _mousedown);
+						part.unbind('mousedown', _mousedown).focus();
 						$(document).bind('mouseup', _mouseup);
 						$(document).bind('mousemove', _mousemove);
 						_mousemove(event);
@@ -665,37 +665,97 @@
 
 					// interpret values
 					switch (inst.mode) {
-					case 'h':
-						inst.color.setHSV(null, x, 1 - y);
-						break;
+						case 'h':
+							inst.color.setHSV(null, x, 1 - y);
+							break;
 
-					case 's':
-					case 'a':
-						inst.color.setHSV(x, null, 1 - y);
-						break;
+						case 's':
+						case 'a':
+							inst.color.setHSV(x, null, 1 - y);
+							break;
 
-					case 'v':
-						inst.color.setHSV(x, 1 - y, null);
-						break;
+						case 'v':
+							inst.color.setHSV(x, 1 - y, null);
+							break;
 
-					case 'r':
-						inst.color.setRGB(null, 1 - y, x);
-						break;
+						case 'r':
+							inst.color.setRGB(null, 1 - y, x);
+							break;
 
-					case 'g':
-						inst.color.setRGB(1 - y, null, x);
-						break;
+						case 'g':
+							inst.color.setRGB(1 - y, null, x);
+							break;
 
-					case 'b':
-						inst.color.setRGB(x, 1 - y, null);
-						break;
+						case 'b':
+							inst.color.setRGB(x, 1 - y, null);
+							break;
 					}
 
 					inst._change(false);
 				};
 
+				_keydown = function(event) {
+					var x_channel_map = {
+							'h': 's',
+							's': 'h',
+							'v': 'h',
+							'r': 'b',
+							'g': 'b',
+							'b': 'r',
+							'a': 'h'
+						},
+						x_change = {
+							37: -1,
+							39: 1,
+						},
+						y_channel_map = {
+							'h': 'v',
+							's': 'v',
+							'v': 's',
+							'r': 'g',
+							'g': 'r',
+							'b': 'g',
+							'a': 'v'
+						},
+						y_change = {
+							38: 1,
+							40: -1
+						},
+						set = {
+							35: 0,
+							36: 1
+						},
+						change, value;
+
+						if (typeof x_change[event.which] !== 'undefined') {
+							value = inst.color.getChannel(x_channel_map[inst.mode]) * width;
+							change = x_change[event.which];
+							if (event.shiftKey) {
+								change *= 10;
+							} else if (event.ctrlKey) {
+								change *= width;
+							}
+							inst.color.setChannel(x_channel_map[inst.mode], (value + change) / width);
+							inst._change(false);
+						} else if (typeof y_change[event.which] !== 'undefined') {
+							value = inst.color.getChannel(y_channel_map[inst.mode]) * height;
+							change = y_change[event.which];
+							if (event.shiftKey) {
+								change *= 10;
+							} else if (event.ctrlKey) {
+								change *= height;
+							}
+							inst.color.setChannel(y_channel_map[inst.mode], (value + change) / height);
+							inst._change(false);
+						} else if (typeof set[event.which] !== 'undefined') {
+							inst.color.setChannel(x_channel_map[inst.mode], 1 - set[event.which]);
+							inst.color.setChannel(y_channel_map[inst.mode], set[event.which]);
+							inst._change(false);							
+						}					
+				};
+
 				_html = function () {
-					var html = '<div class="ui-colorpicker-map ui-colorpicker-map-'+(inst.options.part.map.size || 256)+' ui-colorpicker-border">'
+					var html = '<div class="ui-colorpicker-map ui-colorpicker-map-'+(inst.options.part.map.size || 256)+' ui-colorpicker-border" tabindex="0">'
 							+ '<span class="ui-colorpicker-map-layer-1">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-map-layer-2">&nbsp;</span>'
 							+ (inst.options.alpha ? '<span class="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
@@ -707,6 +767,7 @@
 					part = $(_html()).appendTo($('.ui-colorpicker-map-container', inst.dialog));
 
 					part.bind('mousedown', _mousedown);
+					part.bind('keydown', _keydown);
 					
 					// cache					
 					layers[1]	= $('.ui-colorpicker-map-layer-1', part);
@@ -723,38 +784,39 @@
 					var step = ((inst.options.part.map.size || 256) * 65 / 64);
 
 					switch (inst.mode) {
-					case 'h':
-						layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
-						layers[2].hide();
-						break;
+						case 'h':
+							layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
+							layers[2].hide();
+							break;
 
-					case 's':
-					case 'a':
-						layers[1].css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
-						break;
+						case 's':
+						case 'a':
+							layers[1].css({'background-position': '0 ' + (-step) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 2) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'v':
-						part.css('background-color', 'black');
-						layers[1].css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
-						layers[2].hide();
-						break;
+						case 'v':
+							part.css('background-color', 'black');
+							layers[1].css({'background-position': '0 ' + (-step * 3) + 'px', 'opacity': ''}).show();
+							layers[2].hide();
+							break;
 
-					case 'r':
-						layers[1].css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
-						break;
+						case 'r':
+							layers[1].css({'background-position': '0 ' + (-step * 4) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 5) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'g':
-						layers[1].css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
-						break;
+						case 'g':
+							layers[1].css({'background-position': '0 ' + (-step * 6) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 7) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'b':
-						layers[1].css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
-						break;
+						case 'b':
+							layers[1].css({'background-position': '0 ' + (-step * 8) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 9) + 'px', 'opacity': ''}).show();
+							break;
 					}
+					
 					that.repaint();
 				};
 
@@ -763,48 +825,48 @@
 						y = 0;
 
 					switch (inst.mode) {
-					case 'h':
-						var hsv = inst.color.getHSV();
-						x = hsv.s * width;
-						y = (1 - hsv.v) * width;
-						part.css('background-color', inst.color.copy().setHSV(null, 1, 1).toCSS());
-						break;
+						case 'h':
+							var hsv = inst.color.getHSV();
+							x = hsv.s * width;
+							y = (1 - hsv.v) * width;
+							part.css('background-color', inst.color.copy().setHSV(null, 1, 1).toCSS());
+							break;
 
-					case 's':
-					case 'a':
-						var hsv = inst.color.getHSV();
-						x = hsv.h * width;
-						y = (1 - hsv.v) * width;
-						layers[2].css('opacity', 1 - hsv.s);
-						break;
+						case 's':
+						case 'a':
+							var hsv = inst.color.getHSV();
+							x = hsv.h * width;
+							y = (1 - hsv.v) * width;
+							layers[2].css('opacity', 1 - hsv.s);
+							break;
 
-					case 'v':
-						var hsv = inst.color.getHSV();
-						x = hsv.h * width;
-						y = (1 - hsv.s) * width;
-						layers[1].css('opacity', hsv.v);
-						break;
+						case 'v':
+							var hsv = inst.color.getHSV();
+							x = hsv.h * width;
+							y = (1 - hsv.s) * width;
+							layers[1].css('opacity', hsv.v);
+							break;
 
-					case 'r':
-						var rgb = inst.color.getRGB()
-						x = rgb.b * width;
-						y = (1 - rgb.g) * width;
-						layers[2].css('opacity', rgb.r);
-						break;
+						case 'r':
+							var rgb = inst.color.getRGB()
+							x = rgb.b * width;
+							y = (1 - rgb.g) * width;
+							layers[2].css('opacity', rgb.r);
+							break;
 
-					case 'g':
-						var rgb = inst.color.getRGB();
-						x = rgb.b * width;
-						y = (1 - rgb.r) * width;
-						layers[2].css('opacity', rgb.g);
-						break;
+						case 'g':
+							var rgb = inst.color.getRGB();
+							x = rgb.b * width;
+							y = (1 - rgb.r) * width;
+							layers[2].css('opacity', rgb.g);
+							break;
 
-					case 'b':
-						var rgb = inst.color.getRGB()
-						x = rgb.r * width;
-						y = (1 - rgb.g) * width;
-						layers[2].css('opacity', rgb.b);
-						break;
+						case 'b':
+							var rgb = inst.color.getRGB()
+							x = rgb.r * width;
+							y = (1 - rgb.g) * width;
+							layers[2].css('opacity', rgb.b);
+							break;
 					}
 
 					if (inst.options.alpha) {
@@ -819,6 +881,7 @@
 
 				this.disable = function (disable) {
 					part[disable ? 'unbind' : 'bind']('mousedown', _mousedown);
+					part[disable ? 'unbind' : 'bind']('keydown', _keydown);
 				};
 			},
 
@@ -826,7 +889,7 @@
 				var that		= this,
 					part		= null,
 					pointer, width, height, layers = {},
-					_mousedown, _mouseup, _mousemove, _html;
+					_mousedown, _mouseup, _mousemove, _keydown, _html;
 
 				_mousedown = function (event) {
 					if (!inst.opened) {
@@ -840,7 +903,7 @@
 					if (x >= 0 && x < width && y >= 0 && y < height) {
 						event.stopImmediatePropagation();
 						event.preventDefault();
-						part.unbind('mousedown', _mousedown);
+						part.unbind('mousedown', _mousedown).focus();
 						$(document).bind('mouseup', _mouseup);
 						$(document).bind('mousemove', _mousemove);
 						_mousemove(event);
@@ -873,40 +936,69 @@
 
 					// interpret values
 					switch (inst.mode) {
-					case 'h':
-						inst.color.setHSV(1 - y, null, null);
-						break;
+						case 'h':
+							inst.color.setHSV(1 - y, null, null);
+							break;
 
-					case 's':
-						inst.color.setHSV(null, 1 - y, null);
-						break;
+						case 's':
+							inst.color.setHSV(null, 1 - y, null);
+							break;
 
-					case 'v':
-						inst.color.setHSV(null, null, 1 - y);
-						break;
+						case 'v':
+							inst.color.setHSV(null, null, 1 - y);
+							break;
 
-					case 'r':
-						inst.color.setRGB(1 - y, null, null);
-						break;
+						case 'r':
+							inst.color.setRGB(1 - y, null, null);
+							break;
 
-					case 'g':
-						inst.color.setRGB(null, 1 - y, null);
-						break;
+						case 'g':
+							inst.color.setRGB(null, 1 - y, null);
+							break;
 
-					case 'b':
-						inst.color.setRGB(null, null, 1 - y);
-						break;
+						case 'b':
+							inst.color.setRGB(null, null, 1 - y);
+							break;
 
-					case 'a':
-						inst.color.setAlpha(1 - y);
-						break;
+						case 'a':
+							inst.color.setAlpha(1 - y);
+							break;
 					}
 
 					inst._change(false);
 				};
+				
+				_keydown = function(event) {
+					var change = {
+							38: 1,
+							40: -1,
+							33: 10,
+							34: -10
+						},
+						set = {
+							35: 0,
+							36: 1
+						},
+						change, value;
+
+					if (typeof change[event.which] !== 'undefined') {
+						value = inst.color.getChannel(inst.mode) * height;
+						change = change[event.which];
+						if (event.shiftKey) {
+							change *= 10;
+						} else if (event.ctrlKey) {
+							change *= height;
+						}
+						inst.color.setChannel(inst.mode, (value + change) / height);
+						inst._change(false);
+					} else if (typeof set[event.which] !== 'undefined') {
+						inst.color.setChannel(inst.mode, set[event.which]);
+						inst._change(false);							
+					}					
+				};
 
 				_html = function () {
-					var html = '<div class="ui-colorpicker-bar ui-colorpicker-bar-'+(inst.options.part.bar.size || 256)+'  ui-colorpicker-border">'
+					var html = '<div class="ui-colorpicker-bar ui-colorpicker-bar-'+(inst.options.part.bar.size || 256)+'  ui-colorpicker-border" tabindex="0">'
 							+ '<span class="ui-colorpicker-bar-layer-1">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-bar-layer-2">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-bar-layer-3">&nbsp;</span>'
@@ -926,6 +1018,7 @@
 					part = $(_html()).appendTo($('.ui-colorpicker-bar-container', inst.dialog));
 
 					part.bind('mousedown', _mousedown);
+					part.bind('keydown', _keydown);
 					
 					// cache				
 					layers[1]	= $('.ui-colorpicker-bar-layer-1', part);
@@ -945,72 +1038,73 @@
 					var step = ((inst.options.part.bar.size || 256) * 65 / 64);
 
 					switch (inst.mode) {
-					case 'h':
-					case 's':
-					case 'v':
-					case 'r':
-					case 'g':
-					case 'b':
-						layers.a.show();
-						layers.ab.hide();
-						break;
+						case 'h':
+						case 's':
+						case 'v':
+						case 'r':
+						case 'g':
+						case 'b':
+							layers.a.show();
+							layers.ab.hide();
+							break;
 
-					case 'a':
-						layers.a.hide();
-						layers.ab.show();
-						break;
+						case 'a':
+							layers.a.hide();
+							layers.ab.show();
+							break;
 					}
 
 					switch (inst.mode) {
-					case 'h':
-						layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
-						layers[2].hide();
-						layers[3].hide();
-						layers[4].hide();
-						break;
+						case 'h':
+							layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
+							layers[2].hide();
+							layers[3].hide();
+							layers[4].hide();
+							break;
 
-					case 's':
-						layers[1].css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
-						layers[3].hide();
-						layers[4].hide();
-						break;
+						case 's':
+							layers[1].css({'background-position': '0 ' + (-step) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 2) + 'px', 'opacity': ''}).show();
+							layers[3].hide();
+							layers[4].hide();
+							break;
 
-					case 'v':
-						layers[1].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
-						layers[2].hide();
-						layers[3].hide();
-						layers[4].hide();
-						break;
+						case 'v':
+							layers[1].css({'background-position': '0 ' + (-step * 2) + 'px', 'opacity': ''}).show();
+							layers[2].hide();
+							layers[3].hide();
+							layers[4].hide();
+							break;
 
-					case 'r':
-						layers[1].css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
-						layers[3].css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
-						layers[4].css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
-						break;
+						case 'r':
+							layers[1].css({'background-position': '0 ' + (-step * 6) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 5) + 'px', 'opacity': ''}).show();
+							layers[3].css({'background-position': '0 ' + (-step * 3) + 'px', 'opacity': ''}).show();
+							layers[4].css({'background-position': '0 ' + (-step * 4) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'g':
-						layers[1].css({'background-position': '0 '+(-step*10)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
-						layers[3].css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
-						layers[4].css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
-						break;
+						case 'g':
+							layers[1].css({'background-position': '0 ' + (-step * 10) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 9) + 'px', 'opacity': ''}).show();
+							layers[3].css({'background-position': '0 ' + (-step * 7) + 'px', 'opacity': ''}).show();
+							layers[4].css({'background-position': '0 ' + (-step * 8) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'b':
-						layers[1].css({'background-position': '0 '+(-step*14)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*13)+'px', 'opacity': ''}).show();
-						layers[3].css({'background-position': '0 '+(-step*11)+'px', 'opacity': ''}).show();
-						layers[4].css({'background-position': '0 '+(-step*12)+'px', 'opacity': ''}).show();
-						break;
+						case 'b':
+							layers[1].css({'background-position': '0 ' + (-step * 14) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 13) + 'px', 'opacity': ''}).show();
+							layers[3].css({'background-position': '0 ' + (-step * 11) + 'px', 'opacity': ''}).show();
+							layers[4].css({'background-position': '0 ' + (-step * 12) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'a':
-						layers[1].hide();
-						layers[2].hide();
-						layers[3].hide();
-						layers[4].hide();
-						break;
+						case 'a':
+							layers[1].hide();
+							layers[2].hide();
+							layers[3].hide();
+							layers[4].hide();
+							break;
 					}
+					
 					that.repaint();
 				};
 
@@ -1018,50 +1112,50 @@
 					var y = 0;
 
 					switch (inst.mode) {
-					case 'h':
-						y = (1 - inst.color.getHSV().h) *  height;
-						break;
+						case 'h':
+							y = (1 - inst.color.getHSV().h) * height;
+							break;
 
-					case 's':
-						var hsv = inst.color.getHSV();
-						y = (1 - hsv.s) *  height;
-						layers[2].css('opacity', 1 - hsv.v);
-						part.css('background-color', inst.color.copy().setHSV(null, 1, null).toCSS());
-						break;
+						case 's':
+							var hsv = inst.color.getHSV();
+							y = (1 - hsv.s) * height;
+							layers[2].css('opacity', 1 - hsv.v);
+							part.css('background-color', inst.color.copy().setHSV(null, 1, null).toCSS());
+							break;
 
-					case 'v':
-						y = (1 - inst.color.getHSV().v) *  height;
-						part.css('background-color', inst.color.copy().setHSV(null, null, 1).toCSS());
-						break;
+						case 'v':
+							y = (1 - inst.color.getHSV().v) * height;
+							part.css('background-color', inst.color.copy().setHSV(null, null, 1).toCSS());
+							break;
 
-					case 'r':
-						var rgb = inst.color.getRGB();
-						y = (1 - rgb.r) *  height;
-						layers[2].css('opacity', Math.max(0, (rgb.b - rgb.g)));
-						layers[3].css('opacity', Math.max(0, (rgb.g - rgb.b)));
-						layers[4].css('opacity', Math.min(rgb.b, rgb.g));
-						break;
+						case 'r':
+							var rgb = inst.color.getRGB();
+							y = (1 - rgb.r) * height;
+							layers[2].css('opacity', Math.max(0, (rgb.b - rgb.g)));
+							layers[3].css('opacity', Math.max(0, (rgb.g - rgb.b)));
+							layers[4].css('opacity', Math.min(rgb.b, rgb.g));
+							break;
 
-					case 'g':
-						var rgb = inst.color.getRGB();
-						y = (1 - rgb.g) *  height;
-						layers[2].css('opacity', Math.max(0, (rgb.b - rgb.r)));
-						layers[3].css('opacity', Math.max(0, (rgb.r - rgb.b)));
-						layers[4].css('opacity', Math.min(rgb.r, rgb.b));
-						break;
+						case 'g':
+							var rgb = inst.color.getRGB();
+							y = (1 - rgb.g) * height;
+							layers[2].css('opacity', Math.max(0, (rgb.b - rgb.r)));
+							layers[3].css('opacity', Math.max(0, (rgb.r - rgb.b)));
+							layers[4].css('opacity', Math.min(rgb.r, rgb.b));
+							break;
 
-					case 'b':
-						var rgb = inst.color.getRGB();
-						y = (1 - rgb.b) *  height;
-						layers[2].css('opacity', Math.max(0, (rgb.r - rgb.g)));
-						layers[3].css('opacity', Math.max(0, (rgb.g - rgb.r)));
-						layers[4].css('opacity', Math.min(rgb.r, rgb.g));
-						break;
+						case 'b':
+							var rgb = inst.color.getRGB();
+							y = (1 - rgb.b) * height;
+							layers[2].css('opacity', Math.max(0, (rgb.r - rgb.g)));
+							layers[3].css('opacity', Math.max(0, (rgb.g - rgb.r)));
+							layers[4].css('opacity', Math.min(rgb.r, rgb.g));
+							break;
 
-					case 'a':
-						y = (1 - inst.color.getAlpha()) *  height;
-						part.css('background-color', inst.color.copy().toCSS());
-						break;
+						case 'a':
+							y = (1 - inst.color.getAlpha()) * height;
+							part.css('background-color', inst.color.copy().toCSS());
+							break;
 					}
 
 					if (inst.mode !== 'a') {
@@ -1073,6 +1167,7 @@
 
 				this.disable = function (disable) {
 					part[disable ? 'unbind' : 'bind']('mousedown', _mousedown);
+					part[disable ? 'unbind' : 'bind']('keydown', _keydown);
 				};
 			},
 
@@ -1935,6 +2030,52 @@
 					spaces.rgb.b = _clip(b);
 				}
 				this.set = true;
+				
+				return this;
+			};
+			
+			this.getChannel = function(channel) {
+				switch (channel) {
+					case 'h':
+					case 's':
+					case 'v':
+						return this.getHSV()[channel];
+
+					case 'r':
+					case 'g':
+					case 'b':
+						return this.getRGB()[channel];
+
+					case 'a':
+						return this.getAlpha();
+				}			
+				
+				return null;
+			};
+			
+			this.setChannel = function(channel, value) {
+				switch (channel) {
+					case 'h':
+						return this.setHSV(value, null, null);
+						
+					case 's':
+						return this.setHSV(null, value, null);
+						
+					case 'v':
+						return this.setHSV(null, null, value);
+
+					case 'r':
+						return this.setRGB(value, null, null);
+						
+					case 'g':
+						return this.setRGB(null, value, null);
+						
+					case 'b':
+						return this.setRGB(null, null, value);
+
+					case 'a':
+						return this.setAlpha(value);
+				}
 				
 				return this;
 			};

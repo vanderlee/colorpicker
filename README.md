@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-Version 1.2.5
+Version 1.2.6
 
 [![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)]()
 
@@ -36,6 +36,7 @@ Features
 -	Documented
 -	Limited Unit tests (QUnit-based)
 -	Disable/enable
+-	Keyboard support
 
 Download
 --------
@@ -68,11 +69,22 @@ Browser support
 ---------------
 Tested various versions of this plugin with the following browsers:
 
--	Chrome 31-52
+-	Chrome 31-54
 -	FireFox 25-48
 -	Opera 17-39
 -	Internet Explorer 10-11
 -	Edge 20-25
+
+Keyboard support
+----------------
+You can use the arrow keys to move the cursors on the map and bar controls.
+Steps are measures in on-screen pixels.
+
+Holding the `shift` key while using the arrow keys takes steps 10x larger.
+Pressing the `page down` and `page up` keys does the same for vertical movement.
+
+Holding the `ctrl` key while using the arrow keys takes you to the edges.
+Pressing the `home` and `end` keys does the same for vertical movement.
 
 Documentation
 =============
