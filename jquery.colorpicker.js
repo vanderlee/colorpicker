@@ -1585,14 +1585,8 @@
 				};
 
 				this.repaint = function () {
-					if (!inst.color.set) {
-						$('.ui-colorpicker-special-none', part).attr('checked', true).button('refresh');
-					} else if (inst.color.getAlpha() === 0) {
-						$('.ui-colorpicker-special-transparent', part).attr('checked', true).button('refresh');
-					} else {
-						$('input', part).attr('checked', false).button( "refresh" );
-					}
-
+					$('.ui-colorpicker-special-none', part).prop('checked', !inst.color.set).button('refresh');
+					$('.ui-colorpicker-special-transparent', part).prop('checked', inst.color.set && inst.color.getAlpha() === 0).button('refresh');
 					$('.ui-colorpicker-ok', part).button(inst.changed ? 'enable' : 'disable');
 				};
 

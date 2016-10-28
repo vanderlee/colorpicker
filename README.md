@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-Version 1.2.4
+Version 1.2.5
 
 [![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)]()
 
