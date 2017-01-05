@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-Version 1.2.7
+Version 1.2.8
 
 [![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)]()
 
@@ -42,9 +42,11 @@ Download
 --------
 Install with bower using `bower install colorpicker`.
 
-jQuery v1.7.1 or higher required. (Will not work with v1.6 or before).
+jQuery 1.7.1 or higher required. (Will not work with v1.6 or before).
 
-jQueryUI v1.8.0 or higher required.
+jQueryUI 1.8.0 or higher required.
+
+For jQuery 3.0.0 or higher, you must use jQueryUI 1.12.0 or higher.
 
 Current version: https://github.com/vanderlee/colorpicker/archive/master.zip
 

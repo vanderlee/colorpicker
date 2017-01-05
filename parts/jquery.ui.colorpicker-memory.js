@@ -25,7 +25,7 @@
 											break;
 									}
 								}
-							}).bind('contextmenu', function(e) {
+							}).on('contextmenu', function(e) {
 								e.preventDefault();								
 							});
 
