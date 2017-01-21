@@ -4,7 +4,7 @@
 /*!
  * ColorPicker
  *
- * Copyright (c) 2011-2016 Martijn W. van der Lee
+ * Copyright (c) 2011-2017 Martijn W. van der Lee
  * Licensed under the MIT.
  */
 /* Full-featured colorpicker for jQueryUI with full theming support.
@@ -1271,7 +1271,7 @@
 				this.update = function () {
 					$('.ui-colorpicker-mode', part).each(function () {
 						var $this = $(this);
-						$this.attr('checked', $this.val() === inst.mode);
+						$this.prop('checked', $this.val() === inst.mode);
 					});
 					this.repaint();
 				};
@@ -1333,7 +1333,7 @@
 				this.update = function () {
 					$('.ui-colorpicker-mode', part).each(function () {
 						var $this = $(this);
-						$this.attr('checked', $this.val() === inst.mode);
+						$this.prop('checked', $this.val() === inst.mode);
 					});
 					this.repaint();
 				};
@@ -1475,7 +1475,7 @@
 
 				this.update = function () {
 					$('.ui-colorpicker-mode', part).each(function () {
-						$(this).attr('checked', $(this).val() === inst.mode);
+						$(this).prop('checked', $(this).val() === inst.mode);
 					});
 					this.repaint();
 				};
