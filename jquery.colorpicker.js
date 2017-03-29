@@ -732,7 +732,7 @@
 							change = x_change[event.which];
 							if (event.shiftKey) {
 								change *= 10;
-							} else if (event.ctrlKey) {
+							} else if (event.ctrlKey || e.metaKey) {
 								change *= width;
 							}
 							inst.color.setChannel(x_channel_map[inst.mode], (value + change) / width);
@@ -742,7 +742,7 @@
 							change = y_change[event.which];
 							if (event.shiftKey) {
 								change *= 10;
-							} else if (event.ctrlKey) {
+							} else if (event.ctrlKey || e.metaKey) {
 								change *= height;
 							}
 							inst.color.setChannel(y_channel_map[inst.mode], (value + change) / height);
@@ -986,7 +986,7 @@
 						change = change[event.which];
 						if (event.shiftKey) {
 							change *= 10;
-						} else if (event.ctrlKey) {
+						} else if (event.ctrlKey || e.metaKey) {
 							change *= height;
 						}
 						inst.color.setChannel(inst.mode, (value + change) / height);
@@ -1540,7 +1540,7 @@
 					inputs.alpha = $('.ui-colorpicker-hex-alpha', part);
 
 					inputs.color.on('keydown keyup', function(e) {	
-						return e.ctrlKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
+						return e.ctrlKey || e.metaKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
 					});
 
 					// repeat here makes the invalid input disappear faster
@@ -1557,7 +1557,7 @@
 					});
 
 					inputs.alpha.on('keydown keyup', function(e) {
-						return e.ctrlKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
+						return e.ctrlKey || e.metaKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
 					});
 					
 					inputs.alpha.on('change', function () {
