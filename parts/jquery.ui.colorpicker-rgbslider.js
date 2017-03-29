@@ -10,22 +10,10 @@
 	function setGradient(element, startColor, endColor) {
 		var start	= startColor.toCSS(),
 			end		= endColor.toCSS(),
-			prefixes = {
-				mozilla:	'-moz-',
-				webkit:		'-webkit-',
-				msie:		'-ms-',
-				opera:		'-o-'
-			},
-			prefix = '';
-
-		$.each(prefixes, function(key, p) {
-			if ($.browser[key]) {
-				prefix = p;
-				return false;
-			}
-		});
-
-		element.css('background-image', prefix+'linear-gradient(left, '+start+' 0%, '+end+' 100%)');
+			styles = window.getComputedStyle(document.documentElement, ''),	
+			prefix = (Array.prototype.slice.call(styles).join('').match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o']))[1];
+		  
+		element.css('background-image', '-'+prefix+'-linear-gradient(left, '+start+' 0%, '+end+' 100%)');
 	}
 
 	$.colorpicker.parts.rgbslider = function (inst) {
