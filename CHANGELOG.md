@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.12 - 2017-03-29
+### Fixed
+- Fixed #136 by @mateuszf; Cannot disable animation.
+
 ## 1.2.11 - 2017-03-29
 ### Fixed
 - Fixed #134 by @larsinsd and @justzuhri; `Ctrl+V` not working on Mac OS-X.

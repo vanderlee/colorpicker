@@ -66,6 +66,7 @@
 			  <li><a href="#tab-customcolor">Custom color format</a></li>
 			  <li><a href="#tab-position">Centered in window</a></li>
 			  <li><a href="#tab-disable">Disable/enable</a></li>
+			  <li><a href="#tab-noanim">No show animation</a></li>
 			</ul>
 
 			<div id="tab-input">
@@ -611,6 +612,19 @@
 
 						$('#toggle-cp-disable').click(function() {
 							$('.cp-disable, .cp-disable-option').colorpicker($(this).is(':checked') ? 'enable' : 'disable');
+						});
+					});
+				</script>
+			</div>
+
+			<div id="tab-noanim">
+				<h2>No show animation</h2>
+				<input type="text" class="cp-noanim" value="8e44ad"/>
+
+				<script>
+					$(function() {
+						$('.cp-noanim').colorpicker({
+							showAnim: ''
 						});
 					});
 				</script>
