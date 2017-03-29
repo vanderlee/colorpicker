@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unrelease
+## 1.2.10 - 2017-03-29
 ### Added
-- Copic and Prismacolor color swatches.
+- Added Copic color swatches.
+- Added Prismacolor color swatches.
+- Added DIN 6164 color swatches.
+- Added ISCC-NBS color swatches.
 
 ## 1.2.9 - 2017-01-21
 ### Fixed
