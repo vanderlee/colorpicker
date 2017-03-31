@@ -732,7 +732,7 @@
 							change = x_change[event.which];
 							if (event.shiftKey) {
 								change *= 10;
-							} else if (event.ctrlKey || e.metaKey) {
+							} else if (event.ctrlKey || event.metaKey) {
 								change *= width;
 							}
 							inst.color.setChannel(x_channel_map[inst.mode], (value + change) / width);
@@ -742,7 +742,7 @@
 							change = y_change[event.which];
 							if (event.shiftKey) {
 								change *= 10;
-							} else if (event.ctrlKey || e.metaKey) {
+							} else if (event.ctrlKey || event.metaKey) {
 								change *= height;
 							}
 							inst.color.setChannel(y_channel_map[inst.mode], (value + change) / height);
@@ -986,7 +986,7 @@
 						change = change[event.which];
 						if (event.shiftKey) {
 							change *= 10;
-						} else if (event.ctrlKey || e.metaKey) {
+						} else if (event.ctrlKey || event.metaKey) {
 							change *= height;
 						}
 						inst.color.setChannel(inst.mode, (value + change) / height);
@@ -1546,7 +1546,7 @@
 					// repeat here makes the invalid input disappear faster
 					inputs.color.on('change', function () {
 						if (/[^a-fA-F0-9]/.test(inputs.color.val())) {
-							inputs.color.val(inputs.color.val().replace(/[^a-fA-F0-9]/, ''));
+							inputs.color.val(inputs.color.val().replace(/[^a-fA-F0-9]/g, ''));
 						}
 					});
 
@@ -1562,7 +1562,7 @@
 					
 					inputs.alpha.on('change', function () {
 						if (/[^a-fA-F0-9]/.test(inputs.alpha)) {
-							inputs.alpha.val(inputs.alpha.val().replace(/[^a-fA-F0-9]/, ''));
+							inputs.alpha.val(inputs.alpha.val().replace(/[^a-fA-F0-9]/g, ''));
 						}
 					});
 
