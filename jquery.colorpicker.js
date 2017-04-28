@@ -2895,8 +2895,8 @@
 				$(document).off('keydown', that.events.document_keydown);
 			}
 			
-			if (that.events.resizeOverlay !== null) {
-				$(window).off('resize', that.events.resizeOverlay);					
+			if (that.events.window_resize !== null) {
+				$(window).off('resize', that.events.window_resize);					
 			}			
 			
 			this.element.off();
