@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.13 - 2017-05-02
+### Fixed
+- Fix #137 by @larsinsd; Typing in hex input does not enable OK button.
+- Fix #139 by @s1738berger; Colorpicker cannot get disabled with option
+	'buttonImageOnly'
+- Fix #130 by @actionpark; Return `css` and `hex` color in all events.
+
 ## 1.2.12 - 2017-03-29
 ### Fixed
 - Fixed #136 by @mateuszf; Cannot disable animation.
