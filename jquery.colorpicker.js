@@ -2844,7 +2844,7 @@
 				that.dialog.position(position);
 				
 				that.opened = true;
-				that._callback('open', true);
+				that._callback('open');
 
 				// Without waiting for domready the width of the map is 0 and we
 				// wind up with the cursor stuck in the upper left corner
@@ -2864,10 +2864,10 @@
             if (cancel) {
 				that.color = that.currentColor.copy();
                 that._change();
-                that._callback('cancel', true);
+                that._callback('cancel');
             } else {
 				that.currentColor	= that.color.copy();
-                that._callback('ok', true);
+                that._callback('ok');
             }
 			that.changed		= false;
 
@@ -2883,7 +2883,7 @@
 				that.generated	= false;
 
 				that.opened		= false;
-				that._callback('close', true);
+				that._callback('close');
 			});
 		},
 
@@ -2920,7 +2920,7 @@
 			}
 		},
 
-		_callback: function (callback, spaces) {
+		_callback: function (callback) {
 			var that = this,
 				data,
 				lab;
@@ -2931,18 +2931,18 @@
 					colorPicker: that
 				};
 
+				data.hex	= that.color.toHex();
+				data.css	= that.color.toCSS();
+				data.a		= that.color.getAlpha();
+				data.rgb	= that.color.getRGB();
+				data.hsv	= that.color.getHSV();
+				data.cmyk	= that.color.getCMYK();
+				data.hsl	= that.color.getHSL();
+
 				lab = that.color.getLAB();
 				lab.a = (lab.a * 2) - 1;
 				lab.b = (lab.b * 2) - 1;
-
-				if (spaces === true) {
-					data.a		= that.color.getAlpha();
-					data.rgb	= that.color.getRGB();
-					data.hsv	= that.color.getHSV();
-					data.cmyk	= that.color.getCMYK();
-					data.hsl	= that.color.getHSL();
-					data.lab	= lab;
-				}
+				data.lab	= lab;
 
 				return that._trigger(callback, null, data);
 			} else {
