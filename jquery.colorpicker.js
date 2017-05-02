@@ -2456,10 +2456,12 @@
 						that.image = that.image ? $('img', that.button).first() : null;
 					}
 					that.button.insertAfter(that.element).click(function () {
-						if (that.opened && /\bbutton|all|both\b/.test(that.options.hideOn)) {
-							that.close();
-						} else {
-							that.open();
+						if (!that.options.disabled) {
+							if (that.opened && /\bbutton|all|both\b/.test(that.options.hideOn)) {
+								that.close();
+							} else {
+								that.open();
+							}
 						}
 					});
 				}
