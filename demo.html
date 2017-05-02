@@ -164,7 +164,7 @@
 					$(function() {
 						var count = 0;
 
-						function addToEventLog(label, message) {
+						function addToEventLog(label, color) {
 							var line = '<div>#'+(++count)+' '+label+': '+message+'</div>';
 							var log = $('.cp-events-log');
 							log.append(line).scrollTop(log[0].scrollHeight);
@@ -172,7 +172,7 @@
 
 						$('.cp-events').colorpicker({
 							init:			function(event, color) {
-												addToEventLog('Init', color.formatted);
+												addToEventLog('Init', color.formatted, color.colorPicker.color.toCSS());
 											},
 							select:			function(event, color) {
 												addToEventLog('Select', color.formatted);
@@ -460,12 +460,18 @@
 			<div id="tab-buttonImageOnly">
 				<h2>Only a button image</h2>
 				<input type="text" class="cp-buttonImageOnly" value="#18b7af"/>
+				<br/>
+				<label for="toggle-cp-buttonImageOnly-disable">Enabled: <input type="checkbox" id="toggle-cp-buttonImageOnly-disable" checked="checked"/></label>
 
 				<script>
 					$(function() {
 						$('.cp-buttonImageOnly').colorpicker({
 							showOn:				'both',
 							buttonImageOnly:	true
+						});
+					
+						$('#toggle-cp-buttonImageOnly-disable').click(function() {
+							$('.cp-buttonImageOnly').colorpicker($(this).is(':checked') ? 'enable' : 'disable');
 						});
 					});
 				</script>
