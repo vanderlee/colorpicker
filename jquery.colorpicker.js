@@ -2375,7 +2375,8 @@
             ok:                 null,
 			open:               null,
 			select:             null,
-			stop:				null
+			stop:				null,
+			ready:		null
 		},
 		
 		_create: function () {
@@ -2490,6 +2491,9 @@
 
 			// Disable Widget-style
 			(that.element.is(':disabled') || that.options.disabled) && that.disable();
+			
+			// Set callback just before creation ending
+			that._callback('ready');
 
 			return this;
 		},
