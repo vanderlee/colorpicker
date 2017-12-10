@@ -1,6 +1,6 @@
 jQuery.colorpicker
 ==================
-Version 1.2.13
+Version 1.2.14
 
 [![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)]()
 
@@ -424,6 +424,9 @@ Triggered when the dialog is closed through the cancel button.
 
 ### open (event, {formatted: ..., colorPicker: ...})
 Triggered whenever the dialog is opened.
+
+###	ready (event, {formatted: ..., colorPicker: ...})
+Triggered after creating the widget/dialog.
 
 ###	select (event, {formatted: ..., colorPicker: ...})
 Triggered on each change, confirmation (click on OK button) and
