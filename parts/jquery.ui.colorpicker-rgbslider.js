@@ -22,25 +22,28 @@
 						g: $('<div class="ui-colorpicker-slider"/>'),
 						b: $('<div class="ui-colorpicker-slider"/>')
 					};
+					
+		this.updateGradients = function () {
+			var color = inst.color.getRGB();
+			
+			setGradient(sliders.r, new $.colorpicker.Color(0, color.g, color.b), new $.colorpicker.Color(1, color.g, color.b));
+			setGradient(sliders.g, new $.colorpicker.Color(color.r, 0, color.b), new $.colorpicker.Color(color.r, 1, color.b));
+			setGradient(sliders.b, new $.colorpicker.Color(color.r, color.g, 0), new $.colorpicker.Color(color.r, color.g, 1));
+		};
 
 		this.init = function () {
 			$('<div class="ui-colorpicker-rgbslider"/>').append(sliders.r, sliders.g, sliders.b)
 			.appendTo($('.ui-colorpicker-rgbslider-container', inst.dialog));
 
 			function refresh() {
-				var min,
-					max,
-					r = sliders.r.slider('value') / 255,
+				var r = sliders.r.slider('value') / 255,
 					g = sliders.g.slider('value') / 255,
 					b = sliders.b.slider('value') / 255;
 
 				inst.color.setRGB(r, g, b);
-
-				setGradient(sliders.r, new $.colorpicker.Color(0, g, b), new $.colorpicker.Color(1, g, b));
-				setGradient(sliders.g, new $.colorpicker.Color(r, 0, b), new $.colorpicker.Color(r, 1, b));
-				setGradient(sliders.b, new $.colorpicker.Color(r, g, 0), new $.colorpicker.Color(r, g, 1));
-
 				inst._change();
+				
+				that.updateGradients();
 			}
 
 			$(sliders.r).add(sliders.g).add(sliders.b).slider({
@@ -50,6 +53,8 @@
 				slide:	refresh,
 				change:	refresh
 			});
+			
+			this.updateGradients();
 		};
 
 		this.repaint = function () {

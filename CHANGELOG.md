@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.15 - 2018-02-12
+### Fixed
+- Fix #144 by @Backslider23; memory part doesn't enable OK button correctly.
+- Fixed black initialization issue in rgbslider part.
+
 ## 1.2.14 - 2017-12-10
 ### Added
 - PR #143 by @zaeder; `ready` event at end of widget creation.

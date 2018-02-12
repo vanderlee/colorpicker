@@ -3,7 +3,7 @@
 		var that		= this,
 			container,
 			selectNode	= function(node) {
-							inst._setColor($(node).css('backgroundColor'));
+							inst.color = inst._parseColor($(node).css('backgroundColor'));
 							inst._change();
 						},
 			deleteNode	= function(node) {

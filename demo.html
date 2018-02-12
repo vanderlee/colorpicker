@@ -164,9 +164,9 @@
 					$(function() {
 						var count = 0;
 
-						function addToEventLog(label, color) {
-							var line = '<div>#'+(++count)+' '+label+': '+message+'</div>';
-							var log = $('.cp-events-log');
+						function addToEventLog(label, message) {
+							var line = '<div>#'+(++count)+' '+label+': '+message+'</div>',
+								log = $('.cp-events-log');
 							log.append(line).scrollTop(log[0].scrollHeight);
 						}
 
