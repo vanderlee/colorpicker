@@ -51,6 +51,7 @@
 			},			
 			isHex: function(keycode) {
 				return (keycode >= 48 && keycode <= 57)		// number keys
+					|| (keycode >= 96 && keycode <= 105)	// numpad keys
 					|| (keycode >= 65 && keycode <= 70);	// a-f
 			}
 		},
