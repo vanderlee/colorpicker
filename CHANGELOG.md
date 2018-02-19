@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.16 - 2018-02-19
+### Fixed
+- Merged PR #145 by @gentoo90; accept numpad keys on hex inputs.
+
 ## 1.2.15 - 2018-02-12
 ### Fixed
 - Fix #144 by @Backslider23; memory part doesn't enable OK button correctly.

@@ -1,10 +1,10 @@
 jQuery.colorpicker
 ==================
-Version 1.2.15
+Version 1.2.16
 
 [![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)]()
 
-Copyright &copy; 2011-2017 Martijn W. van der Lee.
+Copyright &copy; 2011-2018 Martijn W. van der Lee.
 Licensed under the MIT.
 
 Full-featured colorpicker for jQueryUI with full theming support.
