@@ -1252,7 +1252,7 @@
 					inputs.s = $('.ui-colorpicker-hsv-s .ui-colorpicker-number', part);
 					inputs.v = $('.ui-colorpicker-hsv-v .ui-colorpicker-number', part);
 
-					$('.ui-colorpicker-number', part).on('change keyup', function () {
+					$('.ui-colorpicker-number', part).on('input change keyup', function () {
 						inst.color.setHSV(
 							inputs.h.val() / 360,
 							inputs.s.val() / 100,
@@ -1312,7 +1312,7 @@
 					inputs.g = $('.ui-colorpicker-rgb-g .ui-colorpicker-number', part);
 					inputs.b = $('.ui-colorpicker-rgb-b .ui-colorpicker-number', part);
 
-					$('.ui-colorpicker-number', part).on('change keyup', function () {
+					$('.ui-colorpicker-number', part).on('input change keyup', function () {
 						var r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', part).val();
 						inst.color.setRGB(
 							inputs.r.val() / 255,
@@ -1369,7 +1369,7 @@
 					inputs.a = $('.ui-colorpicker-lab-a .ui-colorpicker-number', part);
 					inputs.b = $('.ui-colorpicker-lab-b .ui-colorpicker-number', part);
 
-					$('.ui-colorpicker-number', part).on('change keyup', function (event) {
+					$('.ui-colorpicker-number', part).on('input change keyup', function (event) {
 						inst.color.setLAB(
 							parseInt(inputs.l.val(), 10) / 100,
 							(parseInt(inputs.a.val(), 10) + 128) / 255,
@@ -1418,7 +1418,7 @@
 					inputs.y = $('.ui-colorpicker-cmyk-y .ui-colorpicker-number', part);
 					inputs.k = $('.ui-colorpicker-cmyk-k .ui-colorpicker-number', part);
 					
-					$('.ui-colorpicker-number', part).on('change keyup', function (event) {
+					$('.ui-colorpicker-number', part).on('input change keyup', function (event) {
 						inst.color.setCMYK(
 							parseInt(inputs.c.val(), 10) / 100,
 							parseInt(inputs.m.val(), 10) / 100,
@@ -1468,7 +1468,7 @@
 					
 					input = $('.ui-colorpicker-a .ui-colorpicker-number', part);
 
-					$('.ui-colorpicker-number', part).on('change keyup', function () {
+					$('.ui-colorpicker-number', part).on('input change keyup', function () {
 						inst.color.setAlpha(input.val() / 100);
 						inst._change();
 					});
