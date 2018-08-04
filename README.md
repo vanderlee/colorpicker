@@ -1,5 +1,5 @@
-jQuery.colorpicker
-==================
+<p align="center"><img src="images/logotype-a.png"></p>
+
 Version 1.2.17
 
 [![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)]()
