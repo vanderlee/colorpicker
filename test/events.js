@@ -4,7 +4,7 @@ test("Empty input value should not set altField background to black", function()
 	expect(4);
 
 	var $input = $('<input type="text" value=""/>').appendTo("#qunit-fixture");
-	var $altfield = $('<div/>').appendTo("#qunit-fixture");
+	var $altfield = $('<div></div>').appendTo("#qunit-fixture");
 	
 	equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'Initial state, no color');
 
