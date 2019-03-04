@@ -1,18 +1,15 @@
 <p align="center"><img src="images/logotype-a.png"></p>
 
-Version 1.2.17
+<p align="center">A full-featured colorpicker for jQueryUI with full theming support.</p>
 
-[![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)]()
+[![Release](https://badge.fury.io/js/vanderlee-colorpicker.svg)](https://badge.fury.io/js/vanderlee-colorpicker)
+[![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)](https://choosealicense.com/licenses/mit/)
 
-Copyright &copy; 2011-2018 Martijn W. van der Lee.
-Licensed under the MIT.
 
-Full-featured colorpicker for jQueryUI with full theming support.
+Copyright © 2011-2019 Martijn W. van der Lee.
+
 Most images from jPicker by Christopher T. Tillman.
 Sourcecode created from scratch by Martijn W. van der Lee.
-
-IE support; make sure you have a doctype defined, or the colorpicker will not
-display correctly.
 
 Features
 --------
@@ -38,19 +35,27 @@ Features
 -	Disable/enable
 -	Keyboard support
 
-Download
---------
-Install with bower using `bower install colorpicker`.
-
-jQuery 1.7.1 or higher required. (Will not work with v1.6 or before).
+Requirements
+------------
+jQuery 1.7.1 or higher required (will not work with v1.6 or before).
 
 jQueryUI 1.8.0 or higher required.
 
 For jQuery 3.0.0 or higher, you must use jQueryUI 1.12.0 or higher.
 
-Current version: https://github.com/vanderlee/colorpicker/archive/master.zip
+IE support; make sure you have a doctype defined, or the colorpicker will not
+display correctly.
 
-Source code on Github: https://github.com/vanderlee/colorpicker
+Installation
+------------
+
+With **npm**: `npm install vanderlee-colorpicker`
+
+With **yarn**: `yarn add vanderlee-colorpicker`
+
+With **bower** (deprecated): `bower install colorpicker`
+
+Zip archive: https://github.com/vanderlee/colorpicker/archive/master.zip
 
 jQueryUI custom build
 ---------------------
