@@ -1,39 +1,39 @@
 module('events');
 
-test("Empty input value should not set altField background to black", function() {
-	expect(4);
+test('Empty input value should not set altField background to black', function() {
+  expect(4);
 
-	var $input = $('<input type="text" value=""/>').appendTo("#qunit-fixture");
-	var $altfield = $('<div></div>').appendTo("#qunit-fixture");
-	
-	equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'Initial state, no color');
+  var $input = $('<input type="text" value=""/>').appendTo('#qunit-fixture');
+  var $altfield = $('<div></div>').appendTo('#qunit-fixture');
 
-	var jqcp = $input.colorpicker({
-		altField: $altfield
-	});
+  equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'Initial state, no color');
 
-	equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'After creation, no color');
+  var jqcp = $input.colorpicker({
+    altField: $altfield
+  });
 
-	jqcp.colorpicker('open');
+  equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'After creation, no color');
 
-	equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'After open, no color');
+  jqcp.colorpicker('open');
 
-	jqcp.colorpicker('close');
+  equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'After open, no color');
 
-	equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'After close, no color');
+  jqcp.colorpicker('close');
+
+  equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'After close, no color');
 });
 
-asyncTest("Changing the color in input should trigger a 'change' event on the input", function() {
-	expect(1);
+asyncTest('Changing the color in input should trigger a \'change\' event on the input', function() {
+  expect(1);
 
-	var $input = $('<input type="text" value=""/>').appendTo("#qunit-fixture");
+  var $input = $('<input type="text" value=""/>').appendTo('#qunit-fixture');
 
-	$input.change(function() {
-		ok(true, 'triggered');
-		start();
-	});
+  $input.change(function() {
+    ok(true, 'triggered');
+    start();
+  });
 
-	var jqcp = $input.colorpicker();
+  var jqcp = $input.colorpicker();
 
-	jqcp.colorpicker('setColor', 'red');
+  jqcp.colorpicker('setColor', 'red');
 });

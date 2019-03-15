@@ -18,11 +18,15 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "test"
   ],
   "dependencies": {
     "jquery": ">=1.7.1",
     "jquery-ui": ">=1.8.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.15.1",
+    "stylelint": "^9.10.1",
+    "stylelint-config-recommended": "^2.1.0"
   }
 }

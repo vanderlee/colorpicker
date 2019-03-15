@@ -1,0 +1,7 @@
+{
+    "rules": {
+        "indentation": 2,
+        "no-descending-specificity": null
+     },
+    "extends": "stylelint-config-recommended"
+}
