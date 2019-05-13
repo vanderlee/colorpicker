@@ -351,22 +351,22 @@
       }
       , '#HEXA':  function(color, that) {
         return that._formatColor('#rxgxbxax', color);
-      }           
+      }
       , '#HEXA4': function(color, that) {
         var hexa4 = $.colorpicker.writers.HEXA4(color, that);
         return hexa4 === false? false : '#'+hexa4;
-      }           
+      }
       , 'HEXA': function(color, that) {
         return that._formatColor('rxgxbxax', color);
-      }   
+      }
       , 'HEXA4':    function(color, that) {
         var a = Math.round(color.getAlpha() * 255);
-            
+
         if ((a >>> 4) === (a &= 0xf)) {
           return $.colorpicker.writers.HEX3(color, that)+a.toString(16);
         }
         return false;
-      }           
+      }
       , 'RGB':    function(color, that) {
         return color.getAlpha() >= 1
           ? that._formatColor('rgb(rd,gd,bd)', color)
@@ -613,8 +613,8 @@
       },
 
       map: function (inst) {
-        var that	= this,
-          part	= null,
+        var that = this,
+          part = null,
           pointer, width, height, layers = {},
           _mousedown, _mouseup, _mousemove, _keydown, _html;
 
@@ -623,9 +623,9 @@
             return;
           }
 
-          var offset	= layers.p.offset(),
-            x		= event.pageX - offset.left,
-            y		= event.pageY - offset.top;
+          var offset = layers.p.offset(),
+            x = event.pageX - offset.left,
+            y = event.pageY - offset.top;
 
           if (x >= 0 && x < width && y >= 0 && y < height) {
             event.stopImmediatePropagation();
@@ -751,8 +751,8 @@
           } else if (typeof set[event.which] !== 'undefined') {
             inst.color.setChannel(x_channel_map[inst.mode], 1 - set[event.which]);
             inst.color.setChannel(y_channel_map[inst.mode], set[event.which]);
-            inst._change(false);							
-          }					
+            inst._change(false);
+          }
         };
 
         _html = function () {
@@ -887,8 +887,8 @@
       },
 
       bar: function (inst) {
-        var that		= this,
-          part		= null,
+        var that = this,
+          part = null,
           pointer, width, height, layers = {},
           _mousedown, _mouseup, _mousemove, _keydown, _html;
 
@@ -897,9 +897,9 @@
             return;
           }
 
-          var offset	= layers.p.offset(),
-            x		= event.pageX - offset.left,
-            y		= event.pageY - offset.top;
+          var offset = layers.p.offset(),
+            x = event.pageX - offset.left,
+            y = event.pageY - offset.top;
 
           if (x >= 0 && x < width && y >= 0 && y < height) {
             event.stopImmediatePropagation();
@@ -1546,7 +1546,7 @@
           inputs.color = $('.ui-colorpicker-hex-input', part);
           inputs.alpha = $('.ui-colorpicker-hex-alpha', part);
 
-          inputs.color.on('keydown keyup', function(e) {	
+          inputs.color.on('keydown keyup', function(e) {
             return e.ctrlKey || e.metaKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
           });
 
@@ -2329,6 +2329,7 @@
       buttonImage:    'images/ui-colorpicker.png',
       buttonImageOnly:  false,
       buttonText:     null,   // Text on the button and/or title of button image.
+      cancelOnExit:     false, // Should we revert to original value if user clicks outside?
       closeOnEscape:    true,   // Close the dialog when the escape key is pressed.
       closeOnOutside:   true,   // Close the dialog when clicking outside the dialog (not for inline)
       color:        '#00FF00',  // Initial color (for inline only)
@@ -2385,7 +2386,7 @@
       stop:       null,
       ready:    null
     },
-    
+
     _create: function () {
       var that = this,
         text;
@@ -2403,7 +2404,7 @@
       that.button   = null;
       that.image    = null;
       that.overlay  = null;
-      
+
       that.events = {
         window_resize:      null,
         document_keydown:   null,
@@ -2431,7 +2432,7 @@
 
         // showOn click
         if (/\bclick|all|both\b/.test(that.options.showOn)) {
-          that.element.on('click', function (e) {           
+          that.element.on('click', function (e) {
             if (that.opened && /\bclick|all|both\b/.test(that.options.hideOn)) {
               that.close();
             } else {
@@ -2574,7 +2575,7 @@
           }
         }
 
-        this.options.altAlpha && 
+        this.options.altAlpha &&
           $(this.options.altField).css('opacity', this.color.set? this.color.getAlpha() : '');
       }
     },
@@ -2641,6 +2642,12 @@
           // no closeOnOutside
           if (!that.options.closeOnOutside) {
             return;
+          }
+
+          // bring back the previous color if cancelOnExit is set to true
+          if (that.options.cancelOnExit) {
+            that.color = that.currentColor.copy();
+            that._change();
           }
 
           that.close(that.options.revert);
@@ -2834,7 +2841,7 @@
           },
 
           $(window).on('resize', that.events.window_resize);
-          that.events.window_resize();      
+          that.events.window_resize();
         }
 
         that._effectShow(this.dialog);
@@ -3121,7 +3128,7 @@
           , setLAB:   [ 'L', 'A', 'B' ]
         },
         channels = [],
-        converters = [],						
+        converters = [],
         setter = null,
         color,
         pattern;
