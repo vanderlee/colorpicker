@@ -145,6 +145,9 @@ Same as jQueryUI DatePicker.
 ###	buttonText (null)
 Same as jQueryUI DatePicker. If null, use language default.
 
+###	cancelOnExit (false)
+If true, the value is reverted to the original one on exit.
+
 ###	closeOnEscape (true)
 Close the window when pressing the Escape key on the keyboard.
 
