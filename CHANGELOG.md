@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.18 - 2019-05-13
+### Added
+- Merged PR #159 by @NicolasCARPi; Added `cancelOnExit` option in response to #158.
+
 ## 1.2.17 - 2018-07-15
 ### Fixed
 - Merged PR #148 by @teambuktu; Input event for ui-colorpicker-number.
