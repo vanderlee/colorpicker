@@ -5,7 +5,6 @@
 [![Release](https://badge.fury.io/js/vanderlee-colorpicker.svg)](https://badge.fury.io/js/vanderlee-colorpicker)
 [![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)](https://choosealicense.com/licenses/mit/)
 
-
 Copyright © 2011-2019 Martijn W. van der Lee.
 
 Most images from jPicker by Christopher T. Tillman.
