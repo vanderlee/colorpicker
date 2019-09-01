@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.20 - 2019-09-01
+### Fixed
+- Merged security patches for third party components.
+
 ## 1.2.19 - 2019-07-11
 ### Fixed
 - Merged security patches for third party components.
