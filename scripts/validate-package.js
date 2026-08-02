@@ -15,7 +15,8 @@ const sourceEntries = [
 const jsonFiles = [
   'package.json',
   'bower.json',
-  '.eslintrc.json'
+  '.eslintrc.json',
+  '.stylelintrc'
 ];
 
 function collectJavaScript(entry, files) {
@@ -56,15 +57,15 @@ function validateJavaScript(file) {
 try {
   jsonFiles.forEach(validateJson);
 
-  const JavaScriptFiles = [];
-  sourceEntries.forEach((entry) => collectJavaScript(entry, JavaScriptFiles));
-  JavaScriptFiles.forEach(validateJavaScript);
+  const javaScriptFiles = [];
+  sourceEntries.forEach((entry) => collectJavaScript(entry, javaScriptFiles));
+  javaScriptFiles.forEach(validateJavaScript);
 
-  if (JavaScriptFiles.length === 0) {
+  if (javaScriptFiles.length === 0) {
     throw new Error('No JavaScript source files were found');
   }
 
-  process.stdout.write(`validated ${JavaScriptFiles.length} JavaScript files\n`);
+  process.stdout.write(`validated ${javaScriptFiles.length} JavaScript files\n`);
 } catch (error) {
   process.stderr.write(`${error.message}\n`);
   process.exit(1);
