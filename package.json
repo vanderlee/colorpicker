@@ -20,6 +20,10 @@
     "bower_components",
     "test"
   ],
+  "scripts": {
+    "test": "node scripts/validate-package.js",
+    "pack:check": "npm pack --dry-run"
+  },
   "dependencies": {
     "jquery": ">=1.7.1",
     "jquery-ui": ">=1.8.0"
