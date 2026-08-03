@@ -26,13 +26,15 @@ jobs:
 
           path = Path('jquery.colorpicker.js')
           source = path.read_text(encoding='utf-8')
-          old = """          $('.ui-colorpicker-special-none', part).prop('checked', !inst.color.set).button('refresh');
-          $('.ui-colorpicker-special-transparent', part).prop('checked', inst.color.set && inst.color.getAlpha() === 0).button('refresh');"""
-          new = """          $('.ui-colorpicker-special-none:ui-button', part).prop('checked', !inst.color.set).button('refresh');
-          $('.ui-colorpicker-special-transparent:ui-button', part).prop('checked', inst.color.set && inst.color.getAlpha() === 0).button('refresh');"""
-          if source.count(old) != 1:
-              raise SystemExit('Expected footer repaint block exactly once')
-          path.write_text(source.replace(old, new), encoding='utf-8')
+          replacements = {
+              "$('.ui-colorpicker-special-none', part)": "$('.ui-colorpicker-special-none:ui-button', part)",
+              "$('.ui-colorpicker-special-transparent', part)": "$('.ui-colorpicker-special-transparent:ui-button', part)",
+          }
+          for old, new in replacements.items():
+              if source.count(old) != 1:
+                  raise SystemExit('Expected selector exactly once: ' + old)
+              source = source.replace(old, new)
+          path.write_text(source, encoding='utf-8')
           Path('.github/workflows/apply-issue-182.yml').unlink()
           PY
 
