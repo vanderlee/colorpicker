@@ -8,7 +8,7 @@ def replace(old, new, count):
     global text
     actual = text.count(old)
     if actual != count:
-        raise SystemExit('Expected %d occurrences, found %d' % (count, actual))
+        raise SystemExit('Expected %d occurrences, found %d for %r' % (count, actual, old[:60]))
     text = text.replace(old, new)
 
 
@@ -31,11 +31,21 @@ replace(
 )
 
 replace(
-    """          var offset = layers.p.offset(),
+    """        _mousedown = function (event) {
+          if (!inst.opened) {
+            return;
+          }
+
+          var offset = layers.p.offset(),
             x = event.pageX - offset.left,
             y = event.pageY - offset.top;
 """,
-    """          var point = _eventPoint(event),
+    """        _mousedown = function (event) {
+          if (!inst.opened) {
+            return;
+          }
+
+          var point = _eventPoint(event),
             offset = layers.p.offset(),
             x = point.pageX - offset.left,
             y = point.pageY - offset.top;
