@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.21 - 2026-08-03
+### Added
+- Added touch dragging for the color map and value bar (#127, #190).
+- Added the opt-in `altContrast` option for readable altField text (#121, #196).
+- Added dependency-free package validation, GitHub Actions CI, and automated npm publishing.
+
+### Changed
+- Hardened npm package metadata and limited published files to runtime assets and documentation.
+- Updated development dependencies with accumulated security fixes.
+
+### Fixed
+- Restored compatibility with jQuery UI 1.14 when optional footer buttons are disabled (#182, #188).
+
 ## 1.2.20 - 2019-09-01
 ### Fixed
 - Merged security patches for third party components.
