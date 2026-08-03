@@ -40,6 +40,14 @@
       return result.toLowerCase();
     },
 
+    _eventPoint = function(event) {
+      var original = event.originalEvent || event,
+        touch = (original.touches && original.touches[0])
+          || (original.changedTouches && original.changedTouches[0]);
+
+      return touch || event;
+    },
+
     _keycode = {
       isPrint: function(keycode) {
         return keycode == 32 // spacebar
@@ -623,16 +631,17 @@
             return;
           }
 
-          var offset = layers.p.offset(),
-            x = event.pageX - offset.left,
-            y = event.pageY - offset.top;
+          var point = _eventPoint(event),
+            offset = layers.p.offset(),
+            x = point.pageX - offset.left,
+            y = point.pageY - offset.top;
 
           if (x >= 0 && x < width && y >= 0 && y < height) {
             event.stopImmediatePropagation();
             event.preventDefault();
-            part.off('mousedown', _mousedown).focus();
-            $(document).on('mouseup', _mouseup);
-            $(document).on('mousemove', _mousemove);
+            part.off('mousedown touchstart', _mousedown).focus();
+            $(document).on('mouseup touchend touchcancel', _mouseup);
+            $(document).on('mousemove touchmove', _mousemove);
             _mousemove(event);
           }
         };
@@ -640,9 +649,9 @@
         _mouseup = function (event) {
           event.stopImmediatePropagation();
           event.preventDefault();
-          $(document).off('mouseup', _mouseup);
-          $(document).off('mousemove', _mousemove);
-          part.on('mousedown', _mousedown);
+          $(document).off('mouseup touchend touchcancel', _mouseup);
+          $(document).off('mousemove touchmove', _mousemove);
+          part.on('mousedown touchstart', _mousedown);
 
           inst._callback('stop');
         };
@@ -651,15 +660,17 @@
           event.stopImmediatePropagation();
           event.preventDefault();
 
-          if (event.pageX === that.x && event.pageY === that.y) {
+          var point = _eventPoint(event);
+
+          if (point.pageX === that.x && point.pageY === that.y) {
             return;
           }
-          that.x = event.pageX;
-          that.y = event.pageY;
+          that.x = point.pageX;
+          that.y = point.pageY;
 
           var offset = layers.p.offset(),
-            x = event.pageX - offset.left,
-            y = event.pageY - offset.top;
+            x = point.pageX - offset.left,
+            y = point.pageY - offset.top;
 
           x = Math.max(0, Math.min(x / width, 1));
           y = Math.max(0, Math.min(y / height, 1));
@@ -767,7 +778,7 @@
         this.init = function () {
           part = $(_html()).appendTo($('.ui-colorpicker-map-container', inst.dialog));
 
-          part.on('mousedown', _mousedown);
+          part.on('mousedown touchstart', _mousedown);
           part.on('keydown', _keydown);
 
           // cache
@@ -881,7 +892,7 @@
         };
 
         this.disable = function (disable) {
-          part[disable ? 'off' : 'on']('mousedown', _mousedown);
+          part[disable ? 'off' : 'on']('mousedown touchstart', _mousedown);
           part[disable ? 'off' : 'on']('keydown', _keydown);
         };
       },
@@ -897,16 +908,17 @@
             return;
           }
 
-          var offset = layers.p.offset(),
-            x = event.pageX - offset.left,
-            y = event.pageY - offset.top;
+          var point = _eventPoint(event),
+            offset = layers.p.offset(),
+            x = point.pageX - offset.left,
+            y = point.pageY - offset.top;
 
           if (x >= 0 && x < width && y >= 0 && y < height) {
             event.stopImmediatePropagation();
             event.preventDefault();
-            part.off('mousedown', _mousedown).focus();
-            $(document).on('mouseup', _mouseup);
-            $(document).on('mousemove', _mousemove);
+            part.off('mousedown touchstart', _mousedown).focus();
+            $(document).on('mouseup touchend touchcancel', _mouseup);
+            $(document).on('mousemove touchmove', _mousemove);
             _mousemove(event);
           }
         };
@@ -914,9 +926,9 @@
         _mouseup = function (event) {
           event.stopImmediatePropagation();
           event.preventDefault();
-          $(document).off('mouseup', _mouseup);
-          $(document).off('mousemove', _mousemove);
-          part.on('mousedown', _mousedown);
+          $(document).off('mouseup touchend touchcancel', _mouseup);
+          $(document).off('mousemove touchmove', _mousemove);
+          part.on('mousedown touchstart', _mousedown);
 
           inst._callback('stop');
         };
@@ -925,13 +937,15 @@
           event.stopImmediatePropagation();
           event.preventDefault();
 
-          if (event.pageY === that.y) {
+          var point = _eventPoint(event);
+
+          if (point.pageY === that.y) {
             return;
           }
-          that.y = event.pageY;
+          that.y = point.pageY;
 
           var offset  = layers.p.offset(),
-            y = event.pageY - offset.top;
+            y = point.pageY - offset.top;
 
           y = Math.max(0, Math.min(y / height, 1));
 
@@ -1018,7 +1032,7 @@
         this.init = function () {
           part = $(_html()).appendTo($('.ui-colorpicker-bar-container', inst.dialog));
 
-          part.on('mousedown', _mousedown);
+          part.on('mousedown touchstart', _mousedown);
           part.on('keydown', _keydown);
 
           // cache
@@ -1167,7 +1181,7 @@
         };
 
         this.disable = function (disable) {
-          part[disable ? 'off' : 'on']('mousedown', _mousedown);
+          part[disable ? 'off' : 'on']('mousedown touchstart', _mousedown);
           part[disable ? 'off' : 'on']('keydown', _keydown);
         };
       },
