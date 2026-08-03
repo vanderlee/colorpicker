@@ -23,6 +23,29 @@ test('Empty input value should not set altField background to black', function()
   equal($altfield.css('backgroundColor'), 'rgba(0, 0, 0, 0)', 'After close, no color');
 });
 
+test('altContrast should keep altField text readable', function() {
+  expect(4);
+
+  var $input = $('<input type="text" value="#000000"/>').appendTo('#qunit-fixture');
+  var $altfield = $('<div></div>').appendTo('#qunit-fixture');
+
+  var jqcp = $input.colorpicker({
+    altContrast: true,
+    altField: $altfield
+  });
+
+  equal($altfield.css('color'), 'rgb(255, 255, 255)', 'Dark colors use white text');
+
+  jqcp.colorpicker('setColor', '#ffffff');
+  equal($altfield.css('color'), 'rgb(0, 0, 0)', 'Light colors use black text');
+
+  jqcp.colorpicker('setColor', '#777777');
+  equal($altfield.css('color'), 'rgb(0, 0, 0)', 'The text color with the greater contrast is used');
+
+  jqcp.colorpicker('setColor', '');
+  equal($altfield[0].style.color, '', 'No color restores the stylesheet text color');
+});
+
 asyncTest('Changing the color in input should trigger a \'change\' event on the input', function() {
   expect(1);
 

@@ -106,6 +106,10 @@ Whether or not to show the inputs for alpha.
 ### altAlpha (true)
 Change the opacity of the altField element(s) according to the alpha setting.
 
+### altContrast (false)
+Set the altField text color to black or white, whichever has the greater WCAG
+contrast against the selected color.
+
 ### altField ('')
 Change the background color of the elements specified in this element.
 
