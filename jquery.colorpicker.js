@@ -1687,8 +1687,8 @@
         };
 
         this.repaint = function () {
-          $('.ui-colorpicker-special-none', part).prop('checked', !inst.color.set).button('refresh');
-          $('.ui-colorpicker-special-transparent', part).prop('checked', inst.color.set && inst.color.getAlpha() === 0).button('refresh');
+          $('.ui-colorpicker-special-none:ui-button', part).prop('checked', !inst.color.set).button('refresh');
+          $('.ui-colorpicker-special-transparent:ui-button', part).prop('checked', inst.color.set && inst.color.getAlpha() === 0).button('refresh');
           $('.ui-colorpicker-ok', part).button(inst.changed ? 'enable' : 'disable');
         };
 
