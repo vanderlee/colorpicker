@@ -48,6 +48,20 @@
       return touch || event;
     },
 
+    _contrastTextColor = function(color) {
+      var rgb = color.getRGB(),
+        linear = function(channel) {
+          return channel <= 0.04045
+            ? channel / 12.92
+            : Math.pow((channel + 0.055) / 1.055, 2.4);
+        },
+        luminance = 0.2126 * linear(rgb.r)
+          + 0.7152 * linear(rgb.g)
+          + 0.0722 * linear(rgb.b);
+
+      return luminance > 0.179 ? '#000000' : '#ffffff';
+    },
+
     _keycode = {
       isPrint: function(keycode) {
         return keycode == 32 // spacebar
@@ -2334,6 +2348,7 @@
     options: {
       alpha:        false,    // Show alpha controls and mode
       altAlpha:     true,   // change opacity of altField as well?
+      altContrast:    false,    // use black or white text for contrast with the selected color.
       altField:     '',     // selector for DOM elements which change background color on change.
       altOnChange:    true,   // true to update on each change, false to update only on close.
       altProperties:    'background-color', // comma separated list of any of 'background-color', 'color', 'border-color', 'outline-color'
@@ -2570,7 +2585,8 @@
      */
     _setAltField: function () {
       if (this.options.altOnChange && this.options.altField && this.options.altProperties) {
-        var index,
+        var $altField = $(this.options.altField),
+          index,
           property,
           properties = this.options.altProperties.split(',');
 
@@ -2584,13 +2600,17 @@
           case 'backgroundColor':
           case 'outline-color':
           case 'border-color':
-            $(this.options.altField).css(property, this.color.set? this.color.toCSS() : '');
+            $altField.css(property, this.color.set? this.color.toCSS() : '');
             break;
           }
         }
 
+        if (this.options.altContrast) {
+          $altField.css('color', this.color.set ? _contrastTextColor(this.color) : '');
+        }
+
         this.options.altAlpha &&
-          $(this.options.altField).css('opacity', this.color.set? this.color.getAlpha() : '');
+          $altField.css('opacity', this.color.set? this.color.getAlpha() : '');
       }
     },
 
