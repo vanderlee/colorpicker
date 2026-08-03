@@ -1,6 +1,6 @@
 {
   "name": "vanderlee-colorpicker",
-  "version": "1.2.20",
+  "version": "1.2.21",
   "description": "jQuery UI color picker with RGB, HSL, HSV, CMYK, L*a*b, alpha, swatches, localization, and theming support.",
   "homepage": "https://github.com/vanderlee/colorpicker",
   "author": "Martijn van der Lee <martijn@vanderlee.com>",

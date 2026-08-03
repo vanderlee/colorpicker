@@ -5,7 +5,7 @@
 [![Release](https://badge.fury.io/js/vanderlee-colorpicker.svg)](https://badge.fury.io/js/vanderlee-colorpicker)
 [![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)](https://choosealicense.com/licenses/mit/)
 
-Copyright © 2011-2019 Martijn W. van der Lee.
+Copyright © 2011-2026 Martijn W. van der Lee.
 
 Most images from jPicker by Christopher T. Tillman.
 Sourcecode created from scratch by Martijn W. van der Lee.
@@ -55,6 +55,16 @@ With **yarn**: `yarn add vanderlee-colorpicker`
 With **bower** (deprecated): `bower install colorpicker`
 
 Zip archive: https://github.com/vanderlee/colorpicker/archive/master.zip
+
+What's new in 1.2.21
+--------------------
+
+- Touch dragging for the color map and value bar.
+- Compatibility with jQuery UI 1.14 when optional footer controls are disabled.
+- The opt-in `altContrast` option for readable text on colorized alt fields.
+- Hardened npm package contents, automated validation, and release publishing.
+
+See the [CHANGELOG](CHANGELOG.md) for the complete release history.
 
 jQueryUI custom build
 ---------------------
