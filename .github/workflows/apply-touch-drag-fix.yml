@@ -4,12 +4,16 @@ on:
   push:
     branches:
       - agent/support-touch-dragging
+  pull_request:
+    branches:
+      - master
 
 permissions:
   contents: write
 
 jobs:
   patch:
+    if: github.event_name == 'push' || github.head_ref == 'agent/support-touch-dragging'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
