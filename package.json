@@ -1,25 +1,42 @@
 {
   "name": "vanderlee-colorpicker",
   "version": "1.2.20",
+  "description": "jQuery UI color picker with RGB, HSL, HSV, CMYK, L*a*b, alpha, swatches, localization, and theming support.",
   "homepage": "https://github.com/vanderlee/colorpicker",
   "author": "Martijn van der Lee <martijn@vanderlee.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vanderlee/colorpicker"
+    "url": "git+https://github.com/vanderlee/colorpicker.git"
   },
-  "description": "JQuery colorpicker: themeroller styling, RGB, HSL, CMYK and L*A*B support. Standard look & feel, configurable. Works as a popup or inline.",
+  "bugs": {
+    "url": "https://github.com/vanderlee/colorpicker/issues"
+  },
   "main": "jquery.colorpicker.js",
+  "style": "jquery.colorpicker.css",
+  "files": [
+    "jquery.colorpicker.js",
+    "jquery.colorpicker.css",
+    "i18n/",
+    "images/",
+    "parsers/",
+    "parts/",
+    "swatches/",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
   "keywords": [
     "jquery",
-    "colorpicker"
+    "jquery-ui",
+    "color",
+    "colorpicker",
+    "picker"
   ],
   "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test"
-  ],
+  "scripts": {
+    "test": "node scripts/validate-package.js",
+    "pack:check": "npm pack --dry-run"
+  },
   "dependencies": {
     "jquery": ">=1.7.1",
     "jquery-ui": ">=1.8.0"
