@@ -1,9 +1,9 @@
 name: Apply issue 182 patch
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/fix-issue-182
+      - master
 
 permissions:
   contents: write
