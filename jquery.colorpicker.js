@@ -436,7 +436,7 @@
         }
       }
       , 'NAME':   function(color, that) {
-        var c = that._getSwatch($.trim(color));
+        var c = that._getSwatch((color).trim());
         if (c) {
           return new $.colorpicker.Color(c.r, c.g, c.b);
         }
@@ -2590,8 +2590,8 @@
           property,
           properties = this.options.altProperties.split(',');
 
-        for (index = 0; index <= properties.length; ++index) {
-          property = $.trim(properties[index]);
+        for (index = 0; index < properties.length; ++index) {
+          property = (properties[index]).trim();
           switch (property) {
           case 'color':
           case 'fill':
@@ -2798,7 +2798,7 @@
           :	(that.options.showAnim === 'fadeIn' ?
             fade
             :	show))]((that.options.showAnim ? that.options.duration : null), callback);
-        if ($.isFunction(callback) && (!that.options.showAnim || !that.options.duration)) {
+        if (typeof callback === 'function' && (!that.options.showAnim || !that.options.duration)) {
           callback();
         }
       }
@@ -3108,7 +3108,7 @@
       var currentSwatches = this._getSwatches(),
         name;
       $.each(currentSwatches, function (nameOrIndex, swatch) {
-        name = $.isArray(currentSwatches) ? swatch.name : nameOrIndex;
+        name = Array.isArray(currentSwatches) ? swatch.name : nameOrIndex;
         return callback(name, swatch);
       });
     },
@@ -3215,7 +3215,7 @@
       var that = this,
         color;
 
-      var formats = $.isArray(that.options.colorFormat)
+      var formats = Array.isArray(that.options.colorFormat)
         ? that.options.colorFormat
         : [ that.options.colorFormat ];
 
@@ -3291,7 +3291,7 @@
         },
         channels  = color.getChannels();
 
-      if (!$.isArray(formats)) {
+      if (!Array.isArray(formats)) {
         formats = [formats];
       }
 
